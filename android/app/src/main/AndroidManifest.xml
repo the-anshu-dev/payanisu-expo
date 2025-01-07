@@ -1,0 +1,105 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+  <!-- Permissions -->
+  <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+  <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+  <uses-permission android:name="android.permission.CAMERA" />
+  <uses-permission android:name="android.permission.INTERNET" />
+  <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
+  <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+  <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+  <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+  <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+  <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+  <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+      tools:targetApi="30" />
+  <uses-permission android:name="android.permission.RECORD_AUDIO" />
+  <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+  <uses-permission android:name="android.permission.VIBRATE" />
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+      tools:targetApi="29" />
+
+  <!-- Camera Features -->
+  <uses-feature android:name="android.hardware.camera" />
+  <uses-feature android:name="android.hardware.camera.autofocus" />
+
+  <!-- Intent Queries -->
+  <queries>
+    <intent>
+      <action android:name="android.intent.action.VIEW" />
+      <category android:name="android.intent.category.BROWSABLE" />
+      <data android:scheme="https" />
+    </intent>
+  </queries>
+
+  <!-- Application -->
+  <application
+      android:name=".MainApplication"
+      android:label="@string/app_name"
+      android:icon="@mipmap/ic_launcher"
+      android:roundIcon="@mipmap/ic_launcher_round"
+      android:allowBackup="true"
+      android:usesCleartextTraffic="true"
+      android:theme="@style/AppTheme"
+      android:requestLegacyExternalStorage="true">
+
+    <!-- Google Maps API Key -->
+    <meta-data
+        android:name="com.google.android.geo.API_KEY"
+        android:value="AIzaSyB_EhOLUePnuFPSOSSjRyAWZRUb2jWcQ8s" />
+
+    <!-- Expo Updates -->
+    <meta-data
+        android:name="expo.modules.updates.ENABLED"
+        android:value="false" />
+    <meta-data
+        android:name="expo.modules.updates.EXPO_UPDATES_CHECK_ON_LAUNCH"
+        android:value="ALWAYS" />
+    <meta-data
+        android:name="expo.modules.updates.EXPO_UPDATES_LAUNCH_WAIT_MS"
+        android:value="0" />
+    <meta-data
+    android:name="com.mapbox.token"
+    android:value="sk.eyJ1IjoiZGV2LXByaW5jZSIsImEiOiJjbTQ0azdpcWMwaHBsMmpxeGs3aGJkazVhIn0.TqNHhd71lV3U_dTX89-PTg" />
+
+    <!-- Main Activity -->
+    <activity
+        android:name=".MainActivity"
+        android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|uiMode"
+        android:launchMode="singleTask"
+        android:windowSoftInputMode="adjustResize"
+        android:theme="@style/Theme.App.SplashScreen"
+        android:exported="true"
+>
+
+      <!-- Default Launcher -->
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+      </intent-filter>
+
+      <!-- Deep Links -->
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        <data android:scheme="trekies" />
+        <data android:scheme="com.anonymous.trekies" />
+        <data android:scheme="exp+trekies" />
+      </intent-filter>
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+        <data android:scheme="trekies" android:host="trekies" android:pathPrefix="/" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        <category android:name="android.intent.category.DEFAULT" />
+      </intent-filter>
+    </activity>
+
+    <!-- Developer Settings -->
+    <activity
+        android:name="com.facebook.react.devsupport.DevSettingsActivity"
+        android:exported="false" />
+  </application>
+</manifest>

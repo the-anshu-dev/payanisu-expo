@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "120425922383",
+    "project_id": "payanisu-trekies",
+    "storage_bucket": "payanisu-trekies.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:120425922383:android:76687efa996eec2dd30f3a",
+        "android_client_info": {
+          "package_name": "com.anonymous.trekies"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAgMRci0rFWPe9cxNU0ZkMRaGmK6mT-56k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

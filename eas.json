@@ -1,0 +1,55 @@
+{
+  "cli": {
+    "version": ">= 3.0.0"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "ios": {
+        "simulator": true
+      },
+      "android": {
+        "buildType": "apk"
+      }
+    },
+    "development-simulator": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "ios": {
+        "simulator": true
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "ios": {
+        "simulator": false
+      },
+      "android": {
+        "buildType": "apk"
+      }
+    },
+    "production": {
+      "ios": {
+        "simulator": false
+      },
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_ANDROID_CLIENT_ID": "5589470403357-b40tftk1k9mpc2ipo23uev2spkhlihju.apps.googleusercontent.com",
+        "EXPO_PUBLIC_BASE_URL": "https://trakies-backend.onrender.com",
+        "EXPO_PUBLIC_NN_APP_ID": "24785",
+        "EXPO_PUBLIC_NN_APP_TOKEN": "OtXSAq1N7jAogLbdYOdzCy",
+        "EXPO_PUBLIC_GOOGLE_API_KEY": "AIzaSyB_EhOLUePnuFPSOSSjRyAWZRUb2jWcQ8s"
+      }
+    }
+  },
+  "submit": {
+    "production": {
+      "android": {
+        "serviceAccountKeyPath": "./path/to/your-service-account.json"
+      }
+    }
+  }
+}
