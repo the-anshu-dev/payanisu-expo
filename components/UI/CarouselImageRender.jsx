@@ -4,8 +4,8 @@ import { Image } from "expo-image";
 
 const CarouselImageRender = ({ item }) => {
   return (
-    <View className="w-full h-full ">
-      <Image source={{ uri: item }} className="h-full w-full object-cover" />
+    <View style={{ height: "100%", width: "100%" }}>
+      <Image source={{ uri: item }} style={{ height: "100%", width: "100%" }} contentFit="cover" />
     </View>
   );
 };

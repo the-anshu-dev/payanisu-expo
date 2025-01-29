@@ -4,14 +4,16 @@ import {
   StyleSheet,
   Text,
   RefreshControl,
+  ActivityIndicator,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { ScrollView } from "react-native-gesture-handler";
 import { StatusBar } from "expo-status-bar";
 import { useDispatch, useSelector } from "react-redux";
 import { setBookedTour } from "../../redux/slices/tourSlice";
 import MyTourCard from "../../components/UI/MyTourCard";
 import LoginReqCard from "../../components/UI/LoginReqCard.jsx";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const { width, height } = Dimensions.get("window");
 
@@ -19,58 +21,55 @@ const MyTours = () => {
   const { user } = useSelector((state) => state.user);
   const { bookedTour } = useSelector((state) => state.tour);
   const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const dispatch = useDispatch();
 
-  const getAllBookedTours = async () => {
+  const getAllBookedTours = useCallback(async () => {
+    if (!user) return;
+    setLoading(true);
     try {
-      const res = await fetch(
+      const response = await fetch(
         `${process.env.EXPO_PUBLIC_BASE_URL}/api/booking/get-my-tour?email=${user.email}`
       );
 
-      if (res.status !== 200) {
-        console.log("Failed to get my tours", res);
-        throw new Error("Failed to get my tour");
+      if (!response.ok) {
+        console.error("Failed to fetch tours", response);
+        throw new Error("Failed to fetch booked tours");
       }
 
-      const resData = await res.json();
-      dispatch(setBookedTour(resData.data));
+      const data = await response.json();
+      dispatch(setBookedTour(data.data));
     } catch (error) {
-      console.log("Failed to get my tours", error);
+      console.error("Error fetching booked tours:", error);
+    } finally {
+      setLoading(false);
     }
-  };
+  }, [user, dispatch]);
+
+  useEffect(() => {
+    getAllBookedTours();
+  }, [getAllBookedTours]);
 
   const onRefresh = async () => {
     setRefreshing(true);
-    try {
-      await getAllBookedTours();
-    } finally {
-      setRefreshing(false);
-    }
+    await getAllBookedTours();
+    setRefreshing(false);
   };
 
-  useEffect(() => {
-    onRefresh();
-  }, []);
-
-  if (!bookedTour || bookedTour.lenght <= 0) {
-    return (
-      <View style={styles.noBookedTourContainer}>
-        <Text>No booked tours</Text>
-      </View>
-    );
+  if (!user) {
+    return <LoginReqCard />;
   }
 
   return (
-    <>
-      {user ? (
+    <SafeAreaView style={styles.safeArea}>
+      <StatusBar style="dark" backgroundColor="#fff" translucent animated />
+      {loading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#4CAF50" />
+        </View>
+      ) : bookedTour?.length > 0 ? (
         <View style={styles.container}>
-          <StatusBar
-            style="dark"
-            backgroundColor="#fff"
-            translucent={true}
-            animated
-          />
           <ScrollView
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.scrollContainer}
@@ -81,7 +80,7 @@ const MyTours = () => {
             <View style={styles.toursContainer}>
               {bookedTour.map((tour, idx) => (
                 <MyTourCard
-                  key={idx}
+                  key={tour.id || idx}
                   tour={tour.tourDetails}
                   status={tour.status}
                 />
@@ -90,37 +89,47 @@ const MyTours = () => {
           </ScrollView>
         </View>
       ) : (
-        <LoginReqCard />
+        <View style={styles.noTourContainer}>
+          <Text style={styles.noTourText}>No booked tours available</Text>
+        </View>
       )}
-    </>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#F7F8FA",
+  },
   container: {
-    marginTop: height * 0.08,
     flex: 1,
     width: "100%",
-    justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#fff",
   },
   scrollContainer: {
     width: "100%",
-    alignItems: "center",
     paddingBottom: height * 0.1,
     paddingHorizontal: width * 0.05,
   },
   toursContainer: {
     width: "100%",
     alignItems: "center",
-    marginTop: height * 0.05,
-    paddingBottom: height * 0.01,
+    marginTop: height * 0.03,
   },
-  noBookedTourContainer: {
-    height: "100%",
-    width: "100%",
-    display: "flex",
+  noTourContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  noTourText: {
+    fontSize: 18,
+    fontWeight: "500",
+    color: "#666",
+  },
+  loadingContainer: {
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },

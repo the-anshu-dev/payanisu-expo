@@ -1,4 +1,4 @@
-import { Dimensions, useWindowDimensions, View } from "react-native";
+import { Dimensions, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import CarouselCard from "./UI/CarouselCard";
 import { ScrollView } from "react-native-gesture-handler";
@@ -6,11 +6,10 @@ import { useSelector } from "react-redux";
 import CardSkeleton from "./UI/CardSkeleton";
 import { StyleSheet } from "react-native";
 
-const { height, width } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 
 const CarouselComponent = () => {
   const { tour } = useSelector((state) => state.tour);
-    
   const [activeTours, setActiveTours] = useState([]);
 
   useEffect(() => {
@@ -19,18 +18,20 @@ const CarouselComponent = () => {
 
   return (
     <View style={styles.container}>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ display: "flex", justifyContent: "center", alignItems: "center" }} style={styles.scrollViewContainer} >
-        {activeTours && activeTours.length !== 0 ? (
-          <View style={{ width: width, height: "90%" }} className="flex flex-row justify-center items-center relative">
-            {activeTours.map((tour, index) => (
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.scrollViewContent}
+      >
+        <View style={styles.cardContainer}>
+          {activeTours.length > 0 ? (
+            activeTours.map((tour, index) => (
               <CarouselCard key={index} tour={tour} />
-            ))}
-          </View>
-        ) : (
-          <View style={{ width: width, height: "90%" }} className="flex flex-row justify-center items-center relative">
+            ))
+          ) : (
             <CardSkeleton />
-          </View>
-        )}
+          )}
+        </View>
       </ScrollView>
     </View>
   );
@@ -40,14 +41,24 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: "center",
     alignItems: "center",
-    position: "relative",
-    height: "60%",
+    height: "70%",
     zIndex: 999,
   },
-  scrollViewContainer: {
-    flex: 1,
-    width: width,
-  }
+  scrollViewContent: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 10,
+  },
+  cardContainer: {
+    height: "100%",
+    marginLeft: 10,
+    marginRight:10,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center",
+  },
 });
 
 export default CarouselComponent;

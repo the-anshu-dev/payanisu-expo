@@ -19,7 +19,7 @@ const Header = () => {
     <SafeAreaView>
       <View style={{ height: 0.07 * height, elevation: 0.9 }} className="w-full bg-white">
         <View
-          className={`h-full flex justify-between items-center flex-row px-3 py-2`}
+          className={`h-full flex justify-between items-center flex-row px-5 py-2`}
         >
           <TouchableOpacity
             onPress={() => router.push(route)}
@@ -30,7 +30,7 @@ const Header = () => {
             <Logo width={width * 0.35} height={height * 0.04} />
           </TouchableOpacity>
           <View>
-            <View className="h-14 w-14 rounded-full border-2 border-green-700 p-0.5 overflow-hidden">
+            <View className="h-12 w-12 rounded-full border-2 border-green-700 p-0.5 overflow-hidden">
               <Image source={user?.picture} style={{ height: "100%", width: "100%", borderRadius: 50 }} />
             </View>
           </View>
