@@ -206,7 +206,7 @@ const UpdateProfile = () => {
               selectedValue={profile.idProofType}
               onValueChange={setIdProofType}
             >
-              <Picker.Item label="Select tour type" value={null} />
+              <Picker.Item label="Select ID type" value={null} />
               <Picker.Item label="Aadhar Card" value="Aadhar" />
               <Picker.Item label="Driving License" value="Driving License" />
               <Picker.Item label="Pan Card" value="Pan Card" />

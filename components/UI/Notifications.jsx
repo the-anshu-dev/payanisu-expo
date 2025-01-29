@@ -6,8 +6,9 @@ import { apiRequest } from "../../utils/helpers";
 import { useSelector } from "react-redux";
 
 const Notifications = ({ id, title, content, seen }) => {
-  const { user } = useSelector((state) => state.user);
 
+  const { user } = useSelector((state) => state.user);
+  
   const handleSeen = async () => {
     const userEmail = user.email;
     try {
@@ -24,14 +25,14 @@ const Notifications = ({ id, title, content, seen }) => {
   return (
     <TouchableOpacity activeOpacity={0.8} onPress={handleSeen}>
       <View
-        className={`border-2 border-green-600 h-fit rounded-lg p-2 mt-3 relative`}
+        className={`border border-green-600 h-fit rounded-lg p-2 mt-3 relative`}
       >
         {seen === false && (
           <View className="h-2 w-2 bg-red-600  absolute right-2 top-2 rounded-full" />
         )}
-        <View className="flex flex-row justify-start items-center space-x-3">
-          <FontAwesome6 name="bell" size={20} color={"green"} />
-          <Text className={`text-base font-semibold `}>{title}</Text>
+        <View className="flex flex-row justify-start items-center gap-3">
+          <FontAwesome6 name="bell" size={16} color={"green"} />
+          <Text className={`text-base font-semibold`}>{title}</Text>
         </View>
         {content && (
           <View className="mt-2">

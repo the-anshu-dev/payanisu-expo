@@ -26,8 +26,9 @@ import {
   setTotalCost,
   setTourMembers,
 } from "../../redux/slices/bookingSlice.js";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-const width = Dimensions.get("window").width;
+const { width, height } = Dimensions.get("window");
 
 const DetailsScreen = () => {
   const { id } = useLocalSearchParams();
@@ -132,12 +133,12 @@ const DetailsScreen = () => {
   const handleReserveButton = () => {
     if (!profile) {
       Alert.alert(
-        "Profile not found!",
-        "Create your profile first",
+        "Create Profile",
+        "Create your profile and book the tour.",
         [
           {
-            text: "Go to Profile",
-            onPress: () => router.push("/profile"),
+            text: "Create Profile",
+            onPress: () => router.push("/editProfile"),
           },
           {
             text: "Cancel",
@@ -169,183 +170,185 @@ const DetailsScreen = () => {
 
   return (
     <>
-      <ScrollView className="flex h-full">
-        <StatusBar
-          style="dark"
-          backgroundColor="#fff"
-          translucent={true}
-          animated
-        />
-        <Carousel
-          loop
-          width={width}
-          height={288}
-          autoPlay={true}
-          data={images}
-          autoPlayInterval={2000}
-          scrollAnimationDuration={1000}
-          renderItem={CarouselImageRender}
-        />
-        <View className="px-4 mt-4 pb-8 relative">
-          <LinearGradient
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            colors={["rgba(240, 101, 2, 0.2)", "rgba(0, 174, 255, 0.2)"]}
-            className="rounded-xl"
-          >
+      <SafeAreaView style={styles.safeArea} edges={['left', 'right', 'bottom']}>
+        <ScrollView className="flex h-full" showsVerticalScrollIndicator={false}>
+          <StatusBar
+            style="dark"
+            backgroundColor="#fff"
+            translucent={true}
+            animated
+          />
+          <Carousel
+            loop
+            width={width}
+            height={288}
+            autoPlay={true}
+            data={images}
+            autoPlayInterval={2000}
+            scrollAnimationDuration={1000}
+            renderItem={CarouselImageRender}
+          />
+          <View className="px-4 mt-4 pb-8 relative">
+            <LinearGradient
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              colors={["rgba(240, 101, 2, 0.2)", "rgba(0, 174, 255, 0.2)"]}
+              style={{ borderRadius: 10 }}
+            >
+              <View
+                className={`flex flex-row justify-between py-3 px-4 rounded-xl`}
+              >
+                <View className="space-y-2">
+                  <Text className={`font-medium `}>Price</Text>
+                  <Text
+                    className={`text-lg font-semibold `}
+                  >{`₹ ${tourData?.tour_cost}`}</Text>
+                </View>
+                <View className="space-y-2">
+                  <Text className={`font-medium`}>Seats Available</Text>
+                  <Text className={`text-lg font-semibold  text-right`}>
+                    {`${tourData?.total_seats} seats`}
+                  </Text>
+                </View>
+              </View>
+            </LinearGradient>
             <View
-              className={`flex flex-row justify-between py-3 px-4 rounded-xl`}
+              className={`flex flex-row justify-between py-3 px-2 rounded-xl mt-4`}
             >
               <View className="space-y-2">
-                <Text className={`font-medium `}>Price</Text>
+                <Text className={`font-medium `}>Tour Name</Text>
                 <Text
                   className={`text-lg font-semibold `}
-                >{`₹ ${tourData?.tour_cost}`}</Text>
+                >{`${tourData?.name}`}</Text>
               </View>
               <View className="space-y-2">
-                <Text className={`font-medium`}>Seats Available</Text>
+                <Text className={`font-medium `}>Booking Close</Text>
                 <Text className={`text-lg font-semibold  text-right`}>
-                  {`${tourData?.total_seats} seats`}
+                  {`${formatDate(tourData?.booking_close)}`}
                 </Text>
               </View>
             </View>
-          </LinearGradient>
-          <View
-            className={`flex flex-row justify-between py-3 px-4 rounded-xl mt-4`}
-          >
-            <View className="space-y-2">
-              <Text className={`font-medium `}>Tour Name</Text>
+            <View className={`px-2 space-y-2 mt-3 `}>
+              <Text className={`font-semibold text-md `}>Description</Text>
+              <Text className={`text-justify tracking-wider text-md `}>
+                {tourData?.description}
+              </Text>
+            </View>
+            <View className={`px-2 space-y-2 mt-3 `}>
+              <Text className={`font-semibold text-md `}>Dates</Text>
               <Text
-                className={`text-lg font-semibold `}
-              >{`${tourData?.name}`}</Text>
-            </View>
-            <View className="space-y-2">
-              <Text className={`font-medium `}>Booking Close</Text>
-              <Text className={`text-lg font-semibold  text-right`}>
-                {`${formatDate(tourData?.booking_close)}`}
+                className={`text-justify tracking-wider text-md font-semibold `}
+              >
+                {`${formatDate(tourData?.tour_start)} to ${formatDate(
+                  tourData?.tour_end
+                )}`}
               </Text>
             </View>
+            <View className="px-2 mt-5">
+              <View className="flex flex-row justify-left items-center gap-3 border-b border-gray-300 pb-1 px-1">
+                <Ionicons name="thumbs-up-outline" size={24} color={"green"} />
+                <Text className={`text-base  font-semibold`}>
+                  What is included ?
+                </Text>
+              </View>
+              <View className="px-1 mt-3 gap-2">
+                {includeds?.map((i, idx) => {
+                  return (
+                    <ListComponent
+                      icon="checkmark-circle"
+                      text={i.item}
+                      key={idx}
+                      color={"#0e9c02"}
+                    />
+                  );
+                })}
+              </View>
+            </View>
+            <View className="px-2 mt-6">
+              <View className="flex flex-row justify-left items-center gap-3 border-b border-gray-300 pb-1 px-1">
+                <Ionicons name="thumbs-down-outline" size={24} color={"red"} />
+                <Text className={`text-base  font-semibold`}>
+                  What is not included ?
+                </Text>
+              </View>
+              <View className="px-1 mt-3 gap-2">
+                {notincludeds?.map((i, idx) => {
+                  return (
+                    <ListComponent
+                      icon="close-circle-outline"
+                      text={i.item}
+                      key={idx}
+                      color={"#f00"}
+                    />
+                  );
+                })}
+              </View>
+            </View>
+            <View className="px-2 mt-6">
+              <View className="flex flex-row justify-left items-center gap-3 border-b border-gray-300 pb-1 px-1">
+                <Ionicons name="bag-check-outline" size={24} color={"green"} />
+                <Text className={`text-base  font-semibold`}>Bag Pack</Text>
+              </View>
+              <View className="px-1 mt-3 gap-2">
+                {backpacks?.map((i, idx) => {
+                  return (
+                    <ListComponent
+                      icon="checkmark-circle-outline"
+                      text={i.item}
+                      color={"gray"}
+                      key={idx}
+                    />
+                  );
+                })}
+              </View>
+            </View>
+            <View className="px-2 mt-6">
+              <View className="flex flex-row justify-left items-center gap-3 border-b border-gray-300 pb-1 px-1">
+                <Ionicons
+                  name="checkmark-done-circle-outline"
+                  size={24}
+                  color={"green"}
+                />
+                <Text className={`text-base font-semibold`}>
+                  Check In Baggage
+                </Text>
+              </View>
+              <View className="px-1 mt-3 gap-2">
+                {checkinbagages?.map((i, idx) => {
+                  return (
+                    <ListComponent
+                      icon="checkmark-circle-outline"
+                      text={i.item}
+                      color={"gray"}
+                      key={idx}
+                    />
+                  );
+                })}
+              </View>
+            </View>
           </View>
-          <View className={`px-4 space-y-2 mt-3 `}>
-            <Text className={`font-semibold text-md `}>Description</Text>
-            <Text className={`text-justify tracking-wider text-md `}>
-              {tourData?.description}
-            </Text>
-          </View>
-          <View className={`px-4 space-y-2 mt-3 `}>
-            <Text className={`font-semibold text-md `}>Dates</Text>
-            <Text
-              className={`text-justify tracking-wider text-md font-semibold `}
-            >
-              {`${formatDate(tourData?.tour_start)} to ${formatDate(
-                tourData?.tour_end
-              )}`}
-            </Text>
-          </View>
-          <View className="px-4 mt-5">
-            <View className="flex flex-row justify-left items-center space-x-3">
-              <Ionicons name="thumbs-up-outline" size={24} color={"green"} />
-              <Text className={`text-base  font-semibold`}>
-                What is included ?
+        </ScrollView>
+        <View style={{ backgroundColor: "transparent" }} className="h-fit mb-5 p-1 flex flex-row justify-center items-center w-full gap-5">
+          <TouchableOpacity onPress={handleInterested} activeOpacity={0.8}>
+            <View style={{ width: width * 0.4 }} className="bg-slate-500 rounded-lg h-12 flex justify-center items-center ">
+              {loading ? (
+                <ActivityIndicator color="white" size={"small"} />
+              ) : (
+                <Text className="text-white text-center text-md font-semibold">
+                  Interested
+                </Text>
+              )}
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleReserveButton} activeOpacity={0.8}>
+            <View style={{ width: width * 0.4 }} className="py-3 bg-green-700 rounded-lg h-12 flex justify-center items-center">
+              <Text className="text-center text-white font-semibold">
+                Reserve Seat
               </Text>
             </View>
-            <View className="px-1 mt-3 space-y-2">
-              {includeds?.map((i, idx) => {
-                return (
-                  <ListComponent
-                    icon="checkmark-circle"
-                    text={i.item}
-                    key={idx}
-                    color={"#0e9c02"}
-                  />
-                );
-              })}
-            </View>
-          </View>
-          <View className="px-4 mt-6">
-            <View className="flex flex-row justify-left items-center space-x-3">
-              <Ionicons name="thumbs-down-outline" size={24} color={"red"} />
-              <Text className={`text-base  font-semibold`}>
-                What is not included ?
-              </Text>
-            </View>
-            <View className="px-1 mt-3 space-y-2">
-              {notincludeds?.map((i, idx) => {
-                return (
-                  <ListComponent
-                    icon="close-circle-outline"
-                    text={i.item}
-                    key={idx}
-                    color={"#f00"}
-                  />
-                );
-              })}
-            </View>
-          </View>
-          <View className="px-4 mt-6">
-            <View className="flex flex-row justify-left items-center space-x-3">
-              <Ionicons name="bag-check-outline" size={24} color={"green"} />
-              <Text className={`text-base  font-semibold`}>Bag Pack</Text>
-            </View>
-            <View className="px-1 mt-3 space-y-2">
-              {backpacks?.map((i, idx) => {
-                return (
-                  <ListComponent
-                    icon="checkmark-circle-outline"
-                    text={i.item}
-                    color={"gray"}
-                    key={idx}
-                  />
-                );
-              })}
-            </View>
-          </View>
-          <View className="px-4 mt-6">
-            <View className="flex flex-row justify-left items-center space-x-3">
-              <Ionicons
-                name="checkmark-done-circle-outline"
-                size={24}
-                color={"green"}
-              />
-              <Text className={`text-base  font-semibold`}>
-                Check In Baggage
-              </Text>
-            </View>
-            <View className="px-1 mt-3 space-y-2">
-              {checkinbagages?.map((i, idx) => {
-                return (
-                  <ListComponent
-                    icon="checkmark-circle-outline"
-                    text={i.item}
-                    color={"gray"}
-                    key={idx}
-                  />
-                );
-              })}
-            </View>
-          </View>
+          </TouchableOpacity>
         </View>
-      </ScrollView>
-      <View className="h-fit mb-2 flex flex-row justify-center items-center w-full px-6 space-x-6 bg-transparent">
-        <TouchableOpacity onPress={handleInterested} activeOpacity={0.8}>
-          <View className=" bg-slate-500 w-[170px] rounded-lg h-12 flex justify-center items-center ">
-            {loading ? (
-              <ActivityIndicator color="white" size={"small"} />
-            ) : (
-              <Text className="text-white text-center text-md font-semibold">
-                Interested
-              </Text>
-            )}
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={handleReserveButton} activeOpacity={0.8}>
-          <View className="py-3 bg-green-700 w-[170px] rounded-lg h-12 flex justify-center items-center">
-            <Text className="text-center text-white font-semibold">
-              Reserve Seat
-            </Text>
-          </View>
-        </TouchableOpacity>
-      </View>
+      </SafeAreaView>
       <Modalize
         ref={interestedRef}
         handleStyle={{ backgroundColor: "green" }}
@@ -414,9 +417,8 @@ const DetailsScreen = () => {
             <View className="flex flex-row w-full justify-between items-center">
               <View>
                 <Text className={`text-xs `}>Total Payable</Text>
-                <Text className={`text-xl font-semibold `}>{`₹ ${
-                  curatedMembers.length * tourData?.tour_cost
-                }`}</Text>
+                <Text className={`text-xl font-semibold `}>{`₹ ${curatedMembers.length * tourData?.tour_cost
+                  }`}</Text>
               </View>
               <TouchableOpacity activeOpacity={0.8} onPress={handlePayNow}>
                 <View className="h-10 w-40 flex justify-center items-center rounded-lg bg-green-700">
@@ -474,6 +476,10 @@ const BookingMembers = ({
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
   memberCardStyle: {
     padding: 10,
     marginVertical: 10,

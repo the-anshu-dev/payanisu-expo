@@ -26,7 +26,7 @@ const Header = () => {
             activeOpacity={0.7}
             className="flex flex-row gap-2 justify-center items-center h-full w-[50%]"
           >
-            <FontAwesome6 name="bars" size={32} color="green" />
+            <FontAwesome6 name="bars" size={28} color="green" />
             <Logo width={width * 0.35} height={height * 0.04} />
           </TouchableOpacity>
           <View>

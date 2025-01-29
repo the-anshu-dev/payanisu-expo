@@ -65,7 +65,7 @@ export default function HomeScreen() {
 
   if (!isConnected) {
     return (
-      <SafeAreaView style={styles.safeArea}>
+      <SafeAreaView style={styles.safeArea} edges={["left", "right", "bottom"]}>
         <View style={styles.offlineContainer}>
           <View style={styles.modalContent}>
             <MaterialIcons name="wifi-off" size={60} color="red" />
@@ -86,7 +86,7 @@ export default function HomeScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea} edges={["left", "right", "bottom"]}>
       <View style={styles.container}>
         <View style={styles.imageContainer}>
           <V1 width={width * 1.8} height={height * 0.7} />

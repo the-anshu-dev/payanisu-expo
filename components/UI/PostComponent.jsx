@@ -12,26 +12,28 @@ const PostComponent = ({ post }) => {
       onPress={() => router.push(`/postdetails/${post._id}`)}
     >
       <View
-        className={`h-fit mb-2 px-2 py-2 border border-gray-500/50  rounded-lg `}
+        className={`h-fit p-2 border border-gray-500/50 rounded-lg gap-2 w-full `}
       >
         <Text className={`h-fit`}>{shorten(post?.content, 100)}</Text>
-        <View className="flex flex-row w-full justify-center space-x-5 mt-2">
+        <View className="flex flex-row w-full justify-center">
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {post?.images.map((image, index) => (
-              <Image
-                key={index}
-                source={{ uri: image.url }}
-                className="h-[80px] w-[80px] rounded-lg ml-2"
-              />
-            ))}
+            <View className="flex flex-row gap-2">
+              {post?.images.map((image, index) => (
+                <Image
+                  key={index}
+                  source={{ uri: image.url }}
+                  style={{ height: 80, width: 80, borderRadius: 5 }}
+                />
+              ))}
+            </View>
           </ScrollView>
         </View>
-        <View className="mt-2 flex flex-row justify-start items-center space-x-2">
+        <View className="mt-2 flex flex-row justify-start items-center gap-2">
           <Text className={`text-xs font-semibold tracking-wider `}>
             {post.name}
           </Text>
           <View className="h-1.5 w-1.5 bg-gray-400 rounded-full" />
-          <Text className={`text-xs font-semibold tracking-wider `}>
+          <Text className={`text-xs font-semibold tracking-wider`}>
             {formatDate(post.createdAt)}
           </Text>
         </View>

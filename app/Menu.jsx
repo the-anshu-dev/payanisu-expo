@@ -19,17 +19,22 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const { width, height } = Dimensions.get("window");
 
 const Menu = () => {
-  // redux states
   const { user, profile } = useSelector((state) => state.user);
 
-  // local states
   const [loggingOut, setLoggingOut] = React.useState(false);
 
-  // redux dispatch
   const dispatch = useDispatch();
 
   const openProfile = () => {
     profile ? router.push("/profile") : router.push("/editProfile");
+  };
+
+  const handleNavigation = (route) => {
+    if (route === "/updateProfile") {
+      profile ? router.push("/updateProfile") : router.push("/editProfile");
+      return;
+    }
+    router.push(route);
   };
 
   const handleLogOut = async () => {
@@ -72,7 +77,7 @@ const Menu = () => {
           <TouchableOpacity
             key={option.id}
             activeOpacity={0.7}
-            onPress={() => router.push(option.route)}
+            onPress={() => handleNavigation(option.route)}
             style={styles.optionButtonContainer}
           >
             <Text style={{ fontSize: 16, fontWeight: "600" }}>
@@ -137,6 +142,11 @@ const options = [
     name: "Offline Location",
     route: "/offline",
   },
+  {
+    id: "adm",
+    name: "Admin",
+    route: "/(admin)/tours",
+  },
 ];
 
 const styles = StyleSheet.create({
@@ -156,8 +166,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   imageStyle: {
-    width: 50,
-    height: 50,
+    width: 40,
+    height: 40,
     borderRadius: 50,
   },
   linearGradientContainerStyle: {
@@ -188,18 +198,21 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 20,
     width: width,
-    height: height * 0.05,
+    height: height * 0.07,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
   },
   logOutButton: {
     width: "70%",
+    color: "#000",
     height: "100%",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "red",
+    borderWidth: 2,
+    backgroundColor: "#a1140a",
+    borderColor: "gray",
     borderRadius: 10,
   },
 });
