@@ -20,8 +20,9 @@ const CardSkeleton = () => {
       ])
     ).start();
   }, [opacity]);
+
   return (
-    <View className="bg-white h-[430px] w-72 ml-9 rounded-xl shadow-xl shadow-black/70">
+    <View className="bg-white h-[90%] w-[70%] rounded-xl shadow-xl shadow-black/70">
       <Animated.View
         style={{
           opacity,
@@ -30,7 +31,7 @@ const CardSkeleton = () => {
         }}
       >
         <View
-          className={`h-full w-full relative rounded-xl  space-y-2 bg-white`}
+          className={`h-full w-full relative rounded-xl gap-4 bg-white`}
         >
           <View className="h-44 bg-slate-300 rounded-t-xl flex justify-center items-center " />
           <View className="h-16 rounded-xl bg-slate-300 mx-2" />
@@ -38,7 +39,7 @@ const CardSkeleton = () => {
           <View className="h-6 rounded-xl bg-slate-300 mx-2" />
           <View className="h-5 rounded-xl bg-slate-300 mx-2" />
           <View className="h-5 rounded-xl bg-slate-300 mx-2" />
-          <View className="h-12 bg-slate-300 mx-10 rounded-2xl absolute -bottom-6 z-50 left-0 right-0 " />
+          <View className="h-16 bg-slate-300 mx-10 rounded-2xl absolute -bottom-6 z-50 left-0 right-0 " />
         </View>
       </Animated.View>
     </View>

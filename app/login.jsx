@@ -15,11 +15,11 @@ import * as Google from "expo-auth-session/providers/google";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch } from "react-redux";
 import { setProfile, setRole, setUser } from "../redux/slices/userSlice";
-import payanisuPoster from "../assets/payanisu.png";
-
-const { width, height } = Dimensions.get("window");
+import payanisuPoster from "../assets/payanisu.png";  
 
 WebBrowser.maybeCompleteAuthSession();
+
+const { width, height } = Dimensions.get("window");
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -66,7 +66,6 @@ const Login = () => {
       const userEmail = user?.email;
 
       if (userEmail) {
-        // Fetch role data
         const roleResponse = await fetch(
           `${process.env.EXPO_PUBLIC_BASE_URL}/api/users/signin`,
           {
@@ -86,7 +85,6 @@ const Login = () => {
         const roleData = await roleResponse.json();
         dispatch(setRole(roleData));
 
-        // Fetch profile data
         const profileResponse = await fetch(
           `${process.env.EXPO_PUBLIC_BASE_URL}/api/users/getProfile`,
           {

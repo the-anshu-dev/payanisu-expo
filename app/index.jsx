@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { setProfile, setRole, setUser } from "../redux/slices/userSlice";
 import Loader from "../components/common/Loader";
@@ -53,6 +53,7 @@ const Index = () => {
     setLoading(true);
     try {
       const storedUser = await AsyncStorage.getItem("user");
+      console.log(storedUser)
       if (storedUser) {
         const userData = JSON.parse(storedUser);
         dispatch(setUser(userData));

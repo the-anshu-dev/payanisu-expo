@@ -1,70 +1,61 @@
-import v1 from "@/assets/welcomeTile.svg";
-import { Image } from "expo-image";
 import { SafeAreaView } from "react-native-safe-area-context";
-import CarouselComponent from "@/components/CarouselComponent";
+import V1 from "@/assets/welcomeTile.svg";
 import {
-  View,
-  Text,
   Dimensions,
   StyleSheet,
-  Modal,
+  View,
+  Text,
   TouchableOpacity,
 } from "react-native";
-import { useEffect, useState } from "react";
+import CarouselComponent from "@/components/CarouselComponent";
 import { useDispatch, useSelector } from "react-redux";
-import { setTour } from "@/redux/slices/tourSlice";
-import { setAdminAccessEnabled } from "@/redux/slices/userSlice";
-import { StatusBar } from "expo-status-bar";
-import * as Network from "expo-network";
-import { MaterialIcons } from "@expo/vector-icons";
+import { useEffect, useState } from "react";
 import { useIsFocused } from "@react-navigation/native";
-import {
-  checkNetworkStatus,
-  getUserLocation,
-  requestLocationPermissions,
-} from "../../utils/offlineLocationHelper";
+import { setTour } from "../../redux/slices/tourSlice";
+import { setAdminAccessEnabled } from "@/redux/slices/userSlice";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const { width, height } = Dimensions.get("window");
 
 export default function HomeScreen() {
   const dispatch = useDispatch();
-  const [isConnected, setIsConnected] = useState(null);
+  const [isConnected, setIsConnected] = useState(true); 
   const { user } = useSelector((state) => state.user);
-  const [isMounted, setIsMounted] = useState(false);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-
   const isFocused = useIsFocused();
 
-  const getAllTours = async () => {
+  const checkNetworkStatus = async () => {
     try {
-      const response = await fetch(
-        `${process.env.EXPO_PUBLIC_BASE_URL}/api/tour/get-alltours`
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch tours");
-      }
-      const tour = await response.json();
-      dispatch(setTour(tour));
-    } catch (error) {
-      console.error("Error fetching tours:", error);
+      const response = await fetch("https://www.google.com", { method: "HEAD" });
+      return response.ok;
+    } catch {
+      return false;
     }
   };
 
   const checkNetworkConnection = async () => {
-    const isConnected = await checkNetworkStatus();
-    setIsConnected(isConnected);
+    const connection = await checkNetworkStatus();
+    setIsConnected(connection);
   };
 
   useEffect(() => {
-    setIsMounted(true);
     checkNetworkConnection();
+  }, []);
+
+  useEffect(() => {
     if (isConnected && user) {
-      getAllTours();
+      (async () => {
+        try {
+          if (!process.env.EXPO_PUBLIC_BASE_URL) throw new Error("Base URL missing");
+          const response = await fetch(`${process.env.EXPO_PUBLIC_BASE_URL}/api/tour/get-alltours`);
+          if (!response.ok) throw new Error("Failed to fetch tours");
+          const tours = await response.json();
+          dispatch(setTour(tours));
+        } catch (error) {
+          console.error("Error fetching tours:", error);
+        }
+      })();
     }
-    return () => {
-      setIsMounted(false);
-    };
-  }, [isConnected, user, isMounted]);
+  }, [isConnected, user]);
 
   useEffect(() => {
     if (isFocused) {
@@ -72,94 +63,80 @@ export default function HomeScreen() {
     }
   }, [isFocused]);
 
-
-  // useEffect(() => {
-  //   requestLocationPermissions();
-  // }, []);
+  if (!isConnected) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.offlineContainer}>
+          <View style={styles.modalContent}>
+            <MaterialIcons name="wifi-off" size={60} color="red" />
+            <Text style={styles.modalText}>You are offline</Text>
+            <Text style={styles.modalSubText}>
+              Please check your network connection
+            </Text>
+            <TouchableOpacity
+              style={styles.retryButton}
+              onPress={checkNetworkConnection}
+            >
+              <Text style={styles.retryButtonText}>Retry</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   return (
-    <SafeAreaView style={styles.safeAreaView}>
-      <StatusBar
-        style="dark"
-        backgroundColor="#fff"
-        translucent={true}
-        animated
-      />
+    <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        <Image source={v1} style={styles.image} />
-
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={isModalVisible}
-          onRequestClose={() => setIsModalVisible(false)}
-        >
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContent}>
-              <MaterialIcons name="wifi-off" size={60} color="red" />
-              <Text style={styles.modalText}>You are offline</Text>
-              <Text style={styles.modalSubText}>
-                Please check your network connection
-              </Text>
-              <TouchableOpacity
-                style={styles.retryButton}
-                onPress={checkNetworkConnection}
-              >
-                <Text style={styles.retryButtonText}>Retry</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Modal>
-
-        {isConnected === false ? (
-          <View style={styles.centeredContainer}>
-            <Text style={styles.offlineText}>Mobile data off</Text>
-          </View>
-        ) : (
-          <View style={styles.carouselContainer}>
-            <CarouselComponent />
-          </View>
-        )}
+        <View style={styles.imageContainer}>
+          <V1 width={width * 1.8} height={height * 0.7} />
+        </View>
+        <View style={styles.carouselContainer}>
+          <CarouselComponent />
+        </View>
       </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  safeAreaView: {
+  safeArea: {
     flex: 1,
     backgroundColor: "#fff",
   },
+  offlineContainer: {
+    flex: 1,
+    width: width,
+    height: height,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   container: {
     flex: 1,
-    justifyContent: "flex-start",
+    width: width,
+    height: height,
+    justifyContent: "flex-end",
     alignItems: "center",
+    position: "relative",
   },
-  image: {
-    width: "100%",
-    height: height * 0.45,
-    contentFit: "cover",
+  imageContainer: {
     position: "absolute",
-  },
-  centeredContainer: {
-    flex: 1,
-    justifyContent: "center",
+    top: 0,
+    left: 0,
+    width: "100%",
+    display: "flex",
+    justifyContent: "flex-end",
     alignItems: "center",
-  },
-  offlineText: {
-    fontSize: width * 0.05,
-    color: "red",
+    height: height * 0.47,
+    zIndex: 0,
   },
   carouselContainer: {
-    flex: 1,
-    justifyContent: "center",
+    width: width,
+    height: height,
+    display: "flex",
+    justifyContent: "flex-end",
     alignItems: "center",
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    justifyContent: "center",
-    alignItems: "center",
+    zIndex: 1,
   },
   modalContent: {
     width: "80%",
