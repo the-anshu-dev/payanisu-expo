@@ -6,9 +6,13 @@ import Loader from "../components/common/Loader";
 import { Redirect } from "expo-router";
 import { Alert } from "react-native";
 import { setTour } from "../redux/slices/tourSlice";
+import * as SplashScreen from "expo-splash-screen";
+
+SplashScreen.preventAutoHideAsync();
 
 const Index = () => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [showLoader, setShowLoader] = useState(false);
   const [authenticated, setAuthenticated] = useState(false);
 
   const dispatch = useDispatch();
@@ -44,7 +48,6 @@ const Index = () => {
   };
 
   const loadUserData = async () => {
-    setLoading(true);
     try {
       const storedUser = await AsyncStorage.getItem("user");
       if (storedUser) {
@@ -58,12 +61,12 @@ const Index = () => {
         setAuthenticated(false);
       }
     } catch (error) {
-      Alert.alert(
-        "Oops",
-        "Something went wrong. Please try again."
-      );
+      Alert.alert("Oops", "Something went wrong. Please try again.");
     } finally {
       setLoading(false);
+      await SplashScreen.hideAsync();
+      setShowLoader(true);
+      setTimeout(() => setShowLoader(false), 1000);
     }
   };
 
@@ -84,14 +87,16 @@ const Index = () => {
   };
 
   useEffect(() => {
-    loadUserData();
-    getAllTours();
+    const initApp = async () => {
+      await loadUserData();
+      await getAllTours();
+    };
+    initApp();
   }, []);
 
-  if (loading) return <Loader />;
+  if (showLoader) return <Loader />;
 
   return <Redirect href={authenticated ? "/(tabs)" : "/login"} />;
-
 };
 
 export default Index;

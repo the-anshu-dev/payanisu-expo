@@ -5,10 +5,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const Offline = () => {
   const [logs, setLogs] = useState([]);
 
-  // Function to fetch logs from AsyncStorage
   const fetchLogs = async () => {
     const keys = await AsyncStorage.getAllKeys();
-    const logKeys = keys.filter(key => key.startsWith("log_")); // Filter log keys
+    const logKeys = keys.filter(key => key.startsWith("log_")); 
 
     const logEntries = [];
     for (const key of logKeys) {

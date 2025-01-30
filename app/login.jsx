@@ -15,14 +15,15 @@ import * as Google from "expo-auth-session/providers/google";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch } from "react-redux";
 import { setProfile, setRole, setUser } from "../redux/slices/userSlice";
-import payanisuPoster from "../assets/payanisu.png";  
+import payanisuPoster from "../assets/payanisu.png";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 WebBrowser.maybeCompleteAuthSession();
 
 const { width, height } = Dimensions.get("window");
 
 const Login = () => {
-  
+
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [sessionActive, setSessionActive] = useState(false);
@@ -134,30 +135,32 @@ const Login = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.backgroundImageContainer}>
-        <Image style={styles.backgroundImage} source={payanisuPoster} />
+    <SafeAreaView style={{ flex: 1 }} edges={["top", "bottom", "left", "right"]}>
+      <View style={styles.container}>
+        <View style={styles.backgroundImageContainer}>
+          <Image style={styles.backgroundImage} source={payanisuPoster} />
+        </View>
+        <View style={styles.contentContainer}>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={handleLogin}
+            style={styles.loginButton}
+            disabled={loading}
+          >
+            <View style={styles.loginButtonContent}>
+              {loading ? (
+                <ActivityIndicator size={24} color="green" />
+              ) : (
+                <View style={styles.loginButtonTextContainer}>
+                  <Ionicons name="logo-google" size={20} color="white" />
+                  <Text style={styles.loginButtonText}>Login with Google</Text>
+                </View>
+              )}
+            </View>
+          </TouchableOpacity>
+        </View>
       </View>
-      <View style={styles.contentContainer}>
-        <TouchableOpacity
-          activeOpacity={0.7}
-          onPress={handleLogin}
-          style={styles.loginButton}
-          disabled={loading}
-        >
-          <View style={styles.loginButtonContent}>
-            {loading ? (
-              <ActivityIndicator size={24} color="green" />
-            ) : (
-              <View style={styles.loginButtonTextContainer}>
-                <Ionicons name="logo-google" size={20} color="white" />
-                <Text style={styles.loginButtonText}>Login with Google</Text>
-              </View>
-            )}
-          </View>
-        </TouchableOpacity>
-      </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -169,8 +172,8 @@ const styles = StyleSheet.create({
   },
   backgroundImageContainer: {
     ...StyleSheet.absoluteFillObject,
-    width: "100%",
-    height: "100%",
+    width: width,
+    height: height,
   },
   backgroundImage: {
     width: "100%",
