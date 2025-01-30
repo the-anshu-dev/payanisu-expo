@@ -5,6 +5,7 @@ import { setProfile, setRole, setUser } from "../redux/slices/userSlice";
 import Loader from "../components/common/Loader";
 import { Redirect } from "expo-router";
 import { Alert } from "react-native";
+import { setTour } from "../redux/slices/tourSlice";
 
 const Index = () => {
   const [loading, setLoading] = useState(false);
@@ -12,9 +13,7 @@ const Index = () => {
 
   const dispatch = useDispatch();
 
-  const fetchUserData = async (userData) => {
-    const { email } = userData;
-
+  const fetchUserData = async (email) => {
     try {
       const [roleResponse, profileResponse] = await Promise.all([
         fetch(`${process.env.EXPO_PUBLIC_BASE_URL}/api/users/signin`, {
@@ -31,8 +30,6 @@ const Index = () => {
       if (roleResponse.ok) {
         const roleData = await roleResponse.json();
         dispatch(setRole(roleData));
-      } else {
-        console.warn("Failed to fetch role data.");
       }
 
       if (profileResponse.ok) {
@@ -40,12 +37,9 @@ const Index = () => {
         if (profileData && !profileData.error) {
           dispatch(setProfile(profileData));
         }
-      } else {
-        console.warn("Failed to fetch profile data.");
       }
     } catch (error) {
       console.error("Error fetching user data:", error);
-      throw error;
     }
   };
 
@@ -53,14 +47,12 @@ const Index = () => {
     setLoading(true);
     try {
       const storedUser = await AsyncStorage.getItem("user");
-      console.log(storedUser)
       if (storedUser) {
         const userData = JSON.parse(storedUser);
         dispatch(setUser(userData));
         setAuthenticated(true);
-
         if (userData?.email) {
-          await fetchUserData(userData);
+          await fetchUserData(userData.email);
         }
       } else {
         setAuthenticated(false);
@@ -68,16 +60,32 @@ const Index = () => {
     } catch (error) {
       Alert.alert(
         "Oops",
-        "Something went wrong. Please try again.\n\n User Role could not be loaded."
+        "Something went wrong. Please try again."
       );
-      console.error("Error loading user data:", error);
     } finally {
       setLoading(false);
     }
   };
 
+  const getAllTours = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_BASE_URL}/api/tour/get-alltours`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch tours");
+      }
+      const tour = await response.json();
+      dispatch(setTour(tour));
+    } catch (error) {
+      Alert.alert("Oops", "Something went wrong.");
+      console.error("Error fetching tours:", error);
+    }
+  };
+
   useEffect(() => {
     loadUserData();
+    getAllTours();
   }, []);
 
   if (loading) return <Loader />;

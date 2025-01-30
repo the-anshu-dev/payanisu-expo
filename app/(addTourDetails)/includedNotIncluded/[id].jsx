@@ -11,7 +11,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { useLocalSearchParams } from "expo-router";
-import trashIcon from "../../../assets/trash-04.svg";
+import TrashIcon from "../../../assets/trash-04.svg";
 import { useSelector } from "react-redux";
 import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
@@ -161,7 +161,7 @@ const TourDetails = () => {
                   activeOpacity={0.7}
                   onPress={() => handleDelete(i?._id)}
                 >
-                  <Image source={trashIcon} className="h-4 w-4" />
+                  <TrashIcon height={20} width={20} />
                 </TouchableOpacity>
               </View>
             ))

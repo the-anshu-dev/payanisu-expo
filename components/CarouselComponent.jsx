@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
   cardContainer: {
     height: "100%",
     marginLeft: 10,
-    marginRight:10,
+    marginRight: 10,
     display: "flex",
     flexDirection: "row",
     justifyContent: "flex-start",

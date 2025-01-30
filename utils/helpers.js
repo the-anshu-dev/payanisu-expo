@@ -1,5 +1,3 @@
-import { useDispatch } from "react-redux";
-import { setTour } from "../redux/slices/tourSlice";
 import { Alert, Platform } from "react-native";
 import * as FileSystem from "expo-file-system";
 import * as XLSX from "xlsx";
@@ -81,24 +79,6 @@ export const transformAllocationData = (data) => {
   // Convert the map values to an array
   return Object.values(roomMap);
 };
-
-export const getAllTours = async () => {
-  const dispatch = useDispatch();
-  try {
-    const response = await fetch(
-      `${process.env.EXPO_PUBLIC_BASE_URL}/api/tour/get-alltours`
-    );
-    if (!response.ok) {
-      throw new Error("Failed to fetch tours");
-    }
-    const tour = await response.json();
-    dispatch(setTour(tour));
-  } catch (error) {
-    Alert.alert("Oops", "Something went wrong.");
-    console.error("Error fetching tours:", error);
-  }
-};
-
 
 export const exportDataToExcel = async (data, fileName) => {
   try {

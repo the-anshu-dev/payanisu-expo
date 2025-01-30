@@ -132,7 +132,7 @@ const tourDetails = () => {
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           colors={["rgba(240, 101, 2, 0.2)", "rgba(0, 174, 255, 0.2)"]}
-          className="rounded-xl"
+          style={{borderRadius:10}}
         >
           <View
             className={`flex flex-row justify-between py-3 px-4 rounded-lg `}
@@ -157,7 +157,7 @@ const tourDetails = () => {
           marginTop: 10,
           width: "100%",
           paddingBottom: 80,
-          paddingHorizontal: 25,
+          paddingHorizontal: 15,
         }}
         showsVerticalScrollIndicator={false}
       >

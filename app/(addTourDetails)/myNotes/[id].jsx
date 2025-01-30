@@ -1,10 +1,11 @@
-import { View, Text, Alert, ScrollView,
+import {
+  View, Text, Alert, ScrollView,
   TextInput,
-  TouchableOpacity, } from "react-native";
+  TouchableOpacity,
+} from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
-import { Image } from "expo-image";
-import trash from "../../../assets/trash-04.svg";
+import TrashIcon from "../../../assets/trash-04.svg";
 import { ActivityIndicator, Checkbox } from "react-native-paper";
 import { Modalize } from "react-native-modalize";
 import { Ionicons } from "@expo/vector-icons";
@@ -253,7 +254,7 @@ const NotesCard = ({
           <Text className="text-base font-semibold">{title}</Text>
         </View>
         <TouchableOpacity activeOpacity={0.5} onPress={handleDeleteNotes}>
-          <Image source={trash} className="h-4 w-4" />
+          <TrashIcon height={20} width={20} />
         </TouchableOpacity>
       </View>
       <View className="px-2">

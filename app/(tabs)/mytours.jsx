@@ -62,8 +62,8 @@ const MyTours = () => {
   }
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <StatusBar style="dark" backgroundColor="#fff" translucent animated />
+    <SafeAreaView style={styles.safeArea} edges={["left", "right", "bottom"]}>
+      <StatusBar style="dark" backgroundColor="#fff" translucent />
       {loading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#4CAF50" />
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
   toursContainer: {
     width: "100%",
     alignItems: "center",
-    marginTop: height * 0.03,
+    marginTop: height * 0.01,
   },
   noTourContainer: {
     flex: 1,

@@ -10,8 +10,8 @@ import { Image } from "expo-image";
 import { Checkbox } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 import qr from "../assets/qr.png";
-import share from "../assets/share.svg";
-import download from "../assets/downloadIcon.svg";
+import ShareIcon from "../assets/share.svg";
+import DownloadIcon from "../assets/downloadIcon.svg";
 import { useSelector } from "react-redux";
 import { router, useLocalSearchParams } from "expo-router";
 
@@ -97,7 +97,7 @@ const payment = () => {
         </View>
         <View className="flex flex-row justify-between items-center w-full px-6 mt-2">
           <View className="flex flex-row justify-center items-center">
-            <Image source={share} className="h-5 w-5" />
+            <ShareIcon height={20} width={20} />
             <Text className="text-base pl-3">Share QR Code</Text>
           </View>
           <View className="flex flex-row justify-center items-center">
@@ -148,7 +148,7 @@ const payment = () => {
           </Text>
         </View>
         <View className="flex flex-row mt-4 justify-start items-center pl-3">
-          <Image source={download} className="h-5 w-5" />
+          <DownloadIcon height={25} width={20} />
           <Text className="pl-3 text-base text-green-700">
             View and download consent form.
           </Text>

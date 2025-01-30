@@ -7,12 +7,11 @@ import {
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
-import { Image, ImageBackground } from "expo-image";
-import marker from "../../../assets/marker-pin.svg";
-import edit from "../../../assets/edit.svg";
-import user from "../../../assets/user.svg";
+import { Image } from "expo-image";
+import MarkerIcon from "../../../assets/marker-pin.svg";
+import EditIcon from "../../../assets/edit.svg";
+import UserIcon from "../../../assets/user.svg";
 import { Modalize } from "react-native-modalize";
-import { Picker } from "@react-native-picker/picker";
 import MapView, { Marker } from "react-native-maps";
 import { router, useLocalSearchParams } from "expo-router";
 import { shorten } from "../../../components/UI/PostComponent";
@@ -22,6 +21,7 @@ import { Alert } from "react-native";
 import * as MediaLibrary from "expo-media-library";
 import { useDispatch } from "react-redux";
 import { setCheckPoints } from "../../../redux/slices/tourSlice";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const Checkpoints = () => {
   const { id } = useLocalSearchParams();
@@ -29,6 +29,7 @@ const Checkpoints = () => {
   const [qrUrl, setQrUrl] = useState();
   const [allCheckPoints, setAllCheckPoints] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [qrLoading, setQrLoading] = useState(false);
   const [activationLoading, setActivationLoading] = useState(false);
 
   const editCheckPointRef = useRef(null);
@@ -38,6 +39,7 @@ const Checkpoints = () => {
   const dispatch = useDispatch();
 
   const handleQr = async () => {
+    setQrLoading(true);
     try {
       const qr = await fetch(
         `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(
@@ -45,14 +47,17 @@ const Checkpoints = () => {
         )}&size=200x200`
       );
       setQrUrl(qr.url);
+      downloadQRref.current?.open();
     } catch (error) {
+      Alert.alert("Failed to generate QR code", "Please try again.");
       console.log("failed to generate qr", error);
+    } finally {
+      setQrLoading(false);
     }
   };
 
   const handleQrModal = async () => {
     await handleQr();
-    downloadQRref.current?.open();
   };
 
   const handleDownloadQr = async () => {
@@ -160,7 +165,7 @@ const Checkpoints = () => {
   }
 
   return (
-    <>
+    <SafeAreaView style={{ flex: 1 }} edges={["bottom", "left", "right"]}>
       <View className="px-4 relative h-full w-full flex justify-start items-center">
         {allCheckPoints.length === 0 ? (
           <View className="h-full w-full flex justify-center items-center -mt-10">
@@ -191,7 +196,7 @@ const Checkpoints = () => {
             ))}
           </ScrollView>
         )}
-        <View className="w-full absolute bottom-0 flex flex-row justify-center items-center space-x-5 h-16 bg-transparent">
+        <View className="w-full absolute bottom-0 flex flex-row justify-center items-center gap-5 h-16 bg-transparent">
           <TouchableOpacity
             activeOpacity={0.8}
             onPress={handleQrModal}
@@ -202,9 +207,14 @@ const Checkpoints = () => {
               borderRadius: 8,
             }}
           >
-            <Text style={{ textAlign: "center", color: "#fff" }}>
-              Download QR code
-            </Text>
+            {
+              qrLoading ? (
+                <ActivityIndicator color="white" size={20} />
+              ) : (
+                <Text style={{ textAlign: "center", color: "#fff" }}>
+                  Download QR code
+                </Text>)
+            }
           </TouchableOpacity>
           <TouchableOpacity
             activeOpacity={0.8}
@@ -315,7 +325,7 @@ const Checkpoints = () => {
           </View>
         </View>
       </Modalize>
-    </>
+    </SafeAreaView>
   );
 };
 
@@ -372,13 +382,13 @@ const CheckPointCard = ({
       <View className="flex flex-row justify-between items-center mt-2 px-4">
         <TouchableOpacity onPress={() => mapRef.current?.open()}>
           <View className="flex flex-row space-x-1">
-            <Image source={marker} className="h-4 w-4" />
+            <MarkerIcon height={20} width={20} />
             <Text className="text-xs text-green-700">Show On Map</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => editRef.current?.open()}>
           <View className="flex flex-row space-x-1">
-            <Image source={edit} className="h-4 w-4" />
+            <EditIcon height={20} width={20} />
             <Text className="text-xs text-green-700">Edit</Text>
           </View>
         </TouchableOpacity>
@@ -388,7 +398,7 @@ const CheckPointCard = ({
           }
         >
           <View className="flex flex-row space-x-1">
-            <Image source={user} className="h-4 w-4" />
+            <UserIcon height={20} width={20} />
             <Text className="text-xs text-green-700">View Check-Ins</Text>
           </View>
         </TouchableOpacity>

@@ -1,7 +1,6 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
-import { Image } from "expo-image";
-import trash from "../../assets/trash-04.svg";
+import TrashIcon from "../../assets/trash-04.svg";
 
 const MemberCard = ({ data }) => {
   const id = data._id;
@@ -33,7 +32,7 @@ const MemberCard = ({ data }) => {
           <Text className="text-lg">{data.name}</Text>
         </View>
         <TouchableOpacity activeOpacity={0.8} onPress={handleDeleteMember}>
-          <Image source={trash} className="h-5 w-5" />
+          <TrashIcon height={20} width={20} />
         </TouchableOpacity>
       </View>
       <View className="w-full px-2 mt-2">

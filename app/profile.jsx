@@ -12,12 +12,10 @@ import React, { useEffect, useState } from "react";
 import { router, useRouter } from "expo-router";
 import LabelValue from "../components/UI/LabelValue";
 import { useDispatch, useSelector } from "react-redux";
-import { Ionicons } from "@expo/vector-icons";
 import MemberCard from "../components/UI/MemberCard";
 import { formatDate } from "../utils/helpers";
 import { setMembers, setAdminAccessEnabled } from "../redux/slices/userSlice";
 import LinearGradient from "react-native-linear-gradient";
-import { useNavigation } from "@react-navigation/native";
 
 const { width, height } = Dimensions.get("window");
 
@@ -98,48 +96,32 @@ const Profile = () => {
         </View>
         <LabelValue label={"Name"} value={profile?.name || user?.given_name} />
         <View style={styles.detailsContainer}>
-          {profile ? (
-            <View>
-              <LabelValue
-                label={"Date Of Birth"}
-                value={formatDate(profile.dob)}
-              />
-              <LabelValue label={"Age"} value={profile.age} />
-              <LabelValue label={"Gender"} value={profile.gender} />
-              <LabelValue label={"Contact No"} value={profile.contact} />
-              <LabelValue
-                label={"Identity Proof Type"}
-                value={profile.id_type}
-              />
-              <LabelValue
-                label={"Identity Proof Number"}
-                value={profile.id_number}
-              />
-              <LabelValue label={"Address"} value={profile.address} />
-              <LabelValue
-                label={"How You Know About Us ?"}
-                value={profile.Ganesh}
-              />
-              <LabelValue
-                label={"Emergency Contact No"}
-                value={profile.emergency_contact}
-              />
-            </View>
-          ) : (
-            <View style={styles.createProfileContainer}>
-              <Text style={styles.createProfileText}>
-                You haven't created your profile yet!
-              </Text>
-              <TouchableOpacity
-                onPress={() => router.push("/editProfile")}
-                style={styles.createProfileButton}
-              >
-                <Text style={styles.createProfileButtonText}>
-                  Create Profile
-                </Text>
-              </TouchableOpacity>
-            </View>
-          )}
+          <View>
+            <LabelValue
+              label={"Date Of Birth"}
+              value={formatDate(profile.dob)}
+            />
+            <LabelValue label={"Age"} value={profile.age} />
+            <LabelValue label={"Gender"} value={profile.gender} />
+            <LabelValue label={"Contact No"} value={profile.contact} />
+            <LabelValue
+              label={"Identity Proof Type"}
+              value={profile.id_type}
+            />
+            <LabelValue
+              label={"Identity Proof Number"}
+              value={profile.id_number}
+            />
+            <LabelValue label={"Address"} value={profile.address} />
+            <LabelValue
+              label={"How You Know About Us ?"}
+              value={profile.Ganesh}
+            />
+            <LabelValue
+              label={"Emergency Contact No"}
+              value={profile.emergency_contact}
+            />
+          </View>
           <View className="mt-4">
             {role && (
               <AdminCard

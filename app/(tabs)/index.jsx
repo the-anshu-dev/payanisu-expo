@@ -6,62 +6,47 @@ import {
   View,
   Text,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import CarouselComponent from "@/components/CarouselComponent";
-import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { useIsFocused } from "@react-navigation/native";
-import { setTour } from "../../redux/slices/tourSlice";
-import { setAdminAccessEnabled } from "@/redux/slices/userSlice";
 import { MaterialIcons } from "@expo/vector-icons";
+import { setTour } from "../../redux/slices/tourSlice";
+import { useDispatch } from "react-redux";
 
 const { width, height } = Dimensions.get("window");
 
 export default function HomeScreen() {
+  const [isConnected, setIsConnected] = useState(true);
+
   const dispatch = useDispatch();
-  const [isConnected, setIsConnected] = useState(true); 
-  const { user } = useSelector((state) => state.user);
-  const isFocused = useIsFocused();
 
   const checkNetworkStatus = async () => {
+    const response = await fetch("https://www.google.com", { method: "HEAD" });
+    console.log("network response", response)
+    setIsConnected(response.ok);
+  };
+
+  const getAllTours = async () => {
     try {
-      const response = await fetch("https://www.google.com", { method: "HEAD" });
-      return response.ok;
-    } catch {
-      return false;
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_BASE_URL}/api/tour/get-alltours`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch tours");
+      }
+      const tour = await response.json();
+      dispatch(setTour(tour));
+    } catch (error) {
+      Alert.alert("Oops", "Something went wrong.");
+      console.error("Error fetching tours:", error);
     }
   };
 
-  const checkNetworkConnection = async () => {
-    const connection = await checkNetworkStatus();
-    setIsConnected(connection);
-  };
-
   useEffect(() => {
-    checkNetworkConnection();
+    checkNetworkStatus()
+    getAllTours();
   }, []);
-
-  useEffect(() => {
-    if (isConnected && user) {
-      (async () => {
-        try {
-          if (!process.env.EXPO_PUBLIC_BASE_URL) throw new Error("Base URL missing");
-          const response = await fetch(`${process.env.EXPO_PUBLIC_BASE_URL}/api/tour/get-alltours`);
-          if (!response.ok) throw new Error("Failed to fetch tours");
-          const tours = await response.json();
-          dispatch(setTour(tours));
-        } catch (error) {
-          console.error("Error fetching tours:", error);
-        }
-      })();
-    }
-  }, [isConnected, user]);
-
-  useEffect(() => {
-    if (isFocused) {
-      dispatch(setAdminAccessEnabled(false));
-    }
-  }, [isFocused]);
 
   if (!isConnected) {
     return (

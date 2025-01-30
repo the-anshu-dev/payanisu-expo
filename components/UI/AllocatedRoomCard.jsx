@@ -2,7 +2,7 @@ import { View, Text, Alert } from "react-native";
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
-import edit from "../../assets/edit.svg";
+import EditIcon from "../../assets/edit.svg";
 import { Image } from "expo-image";
 import { ActivityIndicator } from "react-native-paper";
 
@@ -66,7 +66,7 @@ const AllocatedRoomCard = ({
             onPress={() => setEditModalVisible(true)}
             activeOpacity={0.5}
           >
-            <Image source={edit} className="w-4 h-4" />
+            <EditIcon height={20} width={20} />
           </TouchableOpacity>
           <TouchableOpacity
             onPress={handleDeleteAllocation}

@@ -9,8 +9,7 @@ import {
   Dimensions,
   Alert,
 } from "react-native";
-import trashIcon from "../../../assets/trash-04.svg";
-import { Image } from "expo-image";
+import TrashIcon from "../../../assets/trash-04.svg";
 import { router, useLocalSearchParams } from "expo-router";
 import { ActivityIndicator } from "react-native-paper";
 import { useSelector } from "react-redux";
@@ -166,7 +165,7 @@ const Luggage = () => {
                   activeOpacity={0.5}
                   onPress={() => handleDelete(i?._id)}
                 >
-                  <Image source={trashIcon} className="h-4 w-4" />
+                  <TrashIcon height={20} width={20} />
                 </TouchableOpacity>
               </View>
             ))
