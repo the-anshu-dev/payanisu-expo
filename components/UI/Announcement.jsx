@@ -9,12 +9,12 @@ const Announcement = () => {
   return (
     <TouchableOpacity activeOpacity={0.8}>
       <View className="border-2 h-32 rounded-lg border-green-600/20 p-2 mt-3">
-        <View className="flex flex-row justify-start items-center space-x-3">
-          <FontAwesome6 name="bell" size={20} color={"green"} />
+        <View className="flex flex-row justify-start items-center gap-3">
+          <FontAwesome6 name="bell" size={16} color={"green"} />
           <Text className={`text-base font-semibold `}>ShriShailm Trek</Text>
         </View>
-        <View className="mt-2 ">
-          <Text className={`tracking-wide text-justify `}>
+        <View className="mt-2">
+          <Text className={`tracking-wide text-justify`}>
             {shorten(text, 160)}
           </Text>
         </View>

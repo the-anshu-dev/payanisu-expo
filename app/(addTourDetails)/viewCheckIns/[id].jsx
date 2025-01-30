@@ -479,11 +479,11 @@ const CheckedInUserCard = ({
             },
           ]}
         >
-          {name.split(" ")[0]}
+          {name?.split(" ")[0]}
         </Text>
         <View className="flex justify-center items-center flex-row space-x-1 mt-2 mb-1">
           <Text style={styles.text}>{age} Yrs</Text>
-          <Text style={styles.text}>({gender.charAt(0)})</Text>
+          <Text style={styles.text}>({gender?.charAt(0)})</Text>
         </View>
         <Text style={styles.text}>
           {checkInTime ? format(new Date(checkInTime), "HH:mm") : "--"}

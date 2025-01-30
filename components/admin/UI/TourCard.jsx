@@ -1,10 +1,12 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Dimensions } from "react-native";
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { shorten } from "../../UI/PostComponent";
 import { formatDate } from "../../../utils/helpers";
+
+const { height, width } = Dimensions.get("window");
 
 const TourCard = ({ tour }) => {
   return (
@@ -13,12 +15,12 @@ const TourCard = ({ tour }) => {
       className={`w-full flex flex-1 justify-center items-center ${tour.status === false ? "bg-slate-300" : "bg-white"}  rounded-lg overflow-hidden shadow-xl shadow-black`}
       onPress={() => router.push(`/tour/${tour?._id}`)}
     >
-      <View className="flex flex-row justify-between h-[150px] w-[360px] p-2 ">
+      <View style={{ height: height * 0.18, width:"100%" }} className="flex flex-row justify-between p-2 ">
         <View>
           <Text className="text-xl font-medium text-gray-700">
             {shorten(tour?.name, 20)}
           </Text>
-          <View className="flex flex-row mt-4 space-x-2 justify-start items-center">
+          <View className="flex flex-row mt-4 gap-2 justify-start items-center">
             <Ionicons name="calendar-outline" size={16} color="black" />
             <Text>{`${formatDate(tour?.tour_start)} - ${formatDate(
               tour?.tour_end
@@ -29,7 +31,7 @@ const TourCard = ({ tour }) => {
               <Image
                 key={index}
                 source={image}
-                className="h-9 w-9 -ml-3 rounded-full border-2 border-white"
+                style={{ height: 30, width: 30, borderRadius:30, marginLeft:-10 }}
               />
             ))}
             <Text className="ml-2 text-green-700 font-medium">{`+ more`}</Text>
@@ -45,7 +47,7 @@ const TourCard = ({ tour }) => {
               </Text>
             </View>
           </View>
-          <View className="mt-8 bg-green-700/20 px-4 py-1 rounded-full">
+          <View className="mt-5 bg-green-700/20 px-4 py-1 rounded-full">
             <Text className="font-medium capitalize text-green-600">
               completed
             </Text>

@@ -148,8 +148,6 @@ const TransportDetails = () => {
     }
   };
 
-  console.log("boarding points--<", boardingPoints);
-
   const onRefresh = async () => {
     setRefreshing(true);
     try {
@@ -169,7 +167,8 @@ const TransportDetails = () => {
     <>
       <View style={styles.screenContainer}>
         <ScrollView
-          style={{ width: "100%", height: "100%", paddingBottom: 120 }}
+          showsVerticalScrollIndicator={false}
+          style={{ width: "100%", height: "100%", paddingBottom: 120,}}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
@@ -178,7 +177,7 @@ const TransportDetails = () => {
             />
           }
         >
-          <View style={{ paddingHorizontal: 5, paddingBottom: 10 }}>
+          <View className="" style={{ paddingVertical: 10, paddingHorizontal:20 }}>
             {boardingPoints.length > 0 ? (
               <>
                 {boardingPoints.map(
@@ -472,8 +471,6 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
     position: "relative",
-    paddingHorizontal: 14,
-    paddingTop: 16,
   },
   buttonsContainer: {
     position: "absolute",

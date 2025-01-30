@@ -16,6 +16,7 @@ import { useSelector } from "react-redux";
 import { Button } from "react-native";
 import { sendNotificaton } from "../../utils/pushNotification";
 import { ActivityIndicator } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const { width, height } = Dimensions.get("window");
 
@@ -55,7 +56,7 @@ const AnnouncementScreen = () => {
   };
 
   return (
-    <>
+    <SafeAreaView style={{ flex: 1 }} edges={["left", "right", "bottom"]}>
       <View style={styles.container}>
         <View style={styles.dropDownContainer}>
           <DropDownPicker
@@ -111,7 +112,7 @@ const AnnouncementScreen = () => {
         <View style={styles.modalContent}>
           <Text style={styles.modalTitle}>Announcement</Text>
           <TextInput
-            placeholder="Enter announcement title..."
+            placeholder="Announcement Title"
             style={styles.textInput}
             onChangeText={setAnnouncementTitle}
             value={announcementTitle}
@@ -123,7 +124,7 @@ const AnnouncementScreen = () => {
             textAlign="left"
             textAlignVertical="top"
             onChangeText={setContent}
-            placeholder="Enter announcement content..."
+            placeholder="Announcement Content"
             style={styles.textInput}
           />
           <View
@@ -159,15 +160,15 @@ const AnnouncementScreen = () => {
           </View>
         </View>
       </Modalize>
-    </>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: height * 0.13,
     paddingHorizontal: width * 0.01,
+    marginTop: height * 0.015,
   },
   dropDownContainer: {
     paddingHorizontal: width * 0.03,
@@ -183,18 +184,17 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: height * 0.009,
     width: "100%",
-    paddingHorizontal: width * 0.06,
+    paddingHorizontal: width * 0.07,
     justifyContent: "center",
     alignItems: "center",
   },
   newAnnouncementButton: {
     width: "100%",
-    height: height * 0.05,
+    height: height * 0.06,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "green",
     borderRadius: 10,
-    marginBottom: height * 0.001,
   },
   buttonContent: {
     flexDirection: "row",
@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     borderRadius: 8,
     padding: width * 0.02,
-    fontWeight: "600",
+    fontWeight: "500",
     marginBottom: height * 0.02,
     fontSize: width * 0.04,
   },

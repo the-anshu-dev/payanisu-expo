@@ -94,15 +94,15 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 0,
     width: "100%",
-    paddingHorizontal: width * 0.05,
-    paddingVertical: height * 0.02,
+    paddingHorizontal: width * 0.06,
+    paddingVertical: height * 0.01,
   },
   createButton: {
     backgroundColor: "green",
     width: "100%",
     justifyContent: "center",
     alignItems: "center",
-    paddingVertical: height * 0.01,
+    paddingVertical: height * 0.015,
     borderRadius: 10,
   },
   createButtonText: {

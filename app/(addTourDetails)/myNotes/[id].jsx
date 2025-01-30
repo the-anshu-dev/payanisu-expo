@@ -2,6 +2,7 @@ import {
   View, Text, Alert, ScrollView,
   TextInput,
   TouchableOpacity,
+  Dimensions,
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
@@ -9,6 +10,8 @@ import TrashIcon from "../../../assets/trash-04.svg";
 import { ActivityIndicator, Checkbox } from "react-native-paper";
 import { Modalize } from "react-native-modalize";
 import { Ionicons } from "@expo/vector-icons";
+
+const { height, width } = Dimensions.get("window");
 
 const Mynotes = () => {
   const { id } = useLocalSearchParams();
@@ -173,7 +176,7 @@ const Mynotes = () => {
             activeOpacity={0.8}
             onPress={() => addNotesRef.current?.open()}
             style={{
-              width: 350,
+              width: width * 0.7,
               backgroundColor: "green",
               paddingVertical: 12,
               borderRadius: 8,
@@ -186,10 +189,10 @@ const Mynotes = () => {
         </View>
       </View>
       <Modalize ref={addNotesRef} adjustToContentHeight snapPoint={500}>
-        <View className="h-96 px-3 py-4 flex justify-between items-center">
+        <View className="h-96 px-6 py-4 flex justify-center gap-2 items-center">
           <View className="w-full flex justify-start items-center">
-            <Text className="mt-3 text-xl font-semibold">Add Note</Text>
-            <View className="border mt-3 border-gray-500/50 p-1 px-2 rounded-lg w-full">
+            <Text className=" text-xl font-semibold">Add Note</Text>
+            <View className="border mt-6 border-gray-500/50 p-1 px-2 rounded-lg w-full">
               <Text className="text-xs text-gray-500/70">Title</Text>
               <TextInput
                 placeholder="Enter Title"
@@ -214,7 +217,7 @@ const Mynotes = () => {
               activeOpacity={0.8}
               onPress={handleAddNotes}
               style={{
-                width: 350,
+                width: width * 0.7,
                 backgroundColor: "green",
                 paddingVertical: 12,
                 borderRadius: 8,

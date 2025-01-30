@@ -1,4 +1,4 @@
-import { View, Text, Alert, ScrollView, TouchableOpacity } from "react-native";
+import { View, Text, Alert, ScrollView, TouchableOpacity, Dimensions } from "react-native";
 import React, { useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import LinearGradient from "react-native-linear-gradient";
@@ -8,6 +8,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { formatDate } from "../../utils/helpers";
 import { ActivityIndicator } from "react-native-paper";
 import { setTour } from "../../redux/slices/tourSlice";
+
+const { height, width } = Dimensions.get("window");
 
 const tourDetails = () => {
   const { id } = useLocalSearchParams();
@@ -132,7 +134,7 @@ const tourDetails = () => {
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           colors={["rgba(240, 101, 2, 0.2)", "rgba(0, 174, 255, 0.2)"]}
-          style={{borderRadius:10}}
+          style={{ borderRadius: 10 }}
         >
           <View
             className={`flex flex-row justify-between py-3 px-4 rounded-lg `}
@@ -172,13 +174,13 @@ const tourDetails = () => {
           ))}
         </View>
       </ScrollView>
-      <View className="w-full flex flex-row justify-between items-center h-16 bg-transparent px-6">
+      <View className="w-full flex flex-row justify-between items-center h-16 px-6">
         <TouchableOpacity
           activeOpacity={0.8}
           disabled={unPublishLoading}
           onPress={handleTourStatus}
           style={{
-            width: 165,
+            width: width * 0.4,
             backgroundColor: tourDetail.status === false ? "green" : "#414141",
             height: 44,
             display: "flex",
@@ -200,7 +202,7 @@ const tourDetails = () => {
           disabled={loading}
           onPress={handleDeleteTour}
           style={{
-            width: 165,
+            width: width * 0.4,
             height: 44,
             display: "flex",
             justifyContent: "center",

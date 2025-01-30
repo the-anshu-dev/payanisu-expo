@@ -90,7 +90,7 @@ const Transportation = () => {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
-        <View>
+        <View className=" px-2">
           {transportationDetails.length > 0 ? (
             <>
               {transportationDetails?.map((item) => (
@@ -162,11 +162,11 @@ const Transportation = () => {
 const TransportDetailButton = ({ id, name, totalCapacity, filled, tourId }) => {
   return (
     <TouchableOpacity
-      activeOpacity={0.7}
+      activeOpacity={0.95}
       onPress={() =>
         router.push(`(addTourDetails)/transportDetails/${id}?tourId=${tourId}`)
       }
-      style={{ width: "100%", marginBottom: 10 }}
+      style={{ width: "100%" }}
     >
       <View style={styles.transportButtonContainer}>
         <Text style={{ fontWeight: "500" }}>{name}</Text>
@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: height * 0.05,
     borderRadius: 6,
-    paddingHorizontal: 5,
+    paddingHorizontal: 10,
     backgroundColor: "white",
     elevation: 8,
   },

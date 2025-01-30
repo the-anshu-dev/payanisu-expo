@@ -6,6 +6,7 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
+  Dimensions,
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { Picker } from "@react-native-picker/picker";
@@ -14,6 +15,8 @@ import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplet
 import { router, useLocalSearchParams } from "expo-router";
 import { apiRequest } from "../../../utils/helpers";
 import * as Location from "expo-location"
+
+const { width, height } = Dimensions.get("window");
 
 const Page = () => {
   const { id } = useLocalSearchParams();
@@ -158,8 +161,9 @@ const Page = () => {
   };
 
   return (
-    <View className="h-full flex justify-between items-center w-full relative">
+    <View className="h-full flex justify-between items-center w-full relative px-2">
       <ScrollView
+        showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           paddingBottom: 20,
           flexGrow: 1,
@@ -167,7 +171,7 @@ const Page = () => {
         style={{ width: "100%", flex: 1 }}
         keyboardShouldPersistTaps="handled"
       >
-        <View className="px-3 h-full w-full flex justify-between items-center">
+        <View className="px-3 h-full w-full flex justify-between items-center pb-12">
           <View className="w-full flex justify-start items-center">
             <View className="border mt-3 border-gray-500/50 p-2 rounded-lg w-full">
               <Text className="text-xs text-gray-500/70">Title</Text>
@@ -206,7 +210,7 @@ const Page = () => {
               <View className="w-full">
                 <GooglePlacesAutocomplete
                   ref={googlePlacesRef}
-                  placeholder="Search for a location"
+                  placeholder="Search location"
                   minLength={2}
                   fetchDetails={true}
                   onPress={(data, details = null) =>
@@ -234,7 +238,8 @@ const Page = () => {
               </View>
               <View className="h-fit w-full rounded-xl overflow-hidden mt-2 border border-gray-500/50">
                 <MapView
-                  className="h-[350px] w-full rounded-xl"
+                  style={{ height: height * 0.5, width: "100%" }}
+                  className="rounded-xl"
                   region={region}
                   onPress={handleMapPress}
                 >
@@ -250,7 +255,7 @@ const Page = () => {
           activeOpacity={0.8}
           onPress={handleAddCheckPoint}
           style={{
-            width: 350,
+            width: width * 0.7,
             backgroundColor: "green",
             paddingVertical: 12,
             borderRadius: 8,

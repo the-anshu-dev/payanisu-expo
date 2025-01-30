@@ -56,7 +56,8 @@ const EditProfile = () => {
 
   const handleUpdate = async () => {
     setError("");
-      if (
+
+    if (
       !name ||
       !user?.email ||
       !dob ||
@@ -71,52 +72,55 @@ const EditProfile = () => {
       setError("Please fill in all the fields");
       return;
     }
-  
+
     setLoading(true);
-  
+
     try {
+
+      const body = JSON.stringify({
+        email: user?.email,
+        name,
+        dob,
+        age: Number(age),
+        gender,
+        contact,
+        emergencyContact,
+        address,
+        idProofType,
+        identityProofNumber
+      })
+
+      console.log(body);
+
       const response = await fetch(
         `${process.env.EXPO_PUBLIC_BASE_URL}/api/users/createProfile`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email: user?.email,
-            name,
-            dob,
-            age: Number(age), 
-            gender,
-            contact,
-            emergency_contact: emergencyContact,
-            address,
-            id_type: idProofType,
-            id_number: identityProofNumber,
-            info,
-          }),
+          body
         }
       );
-  
+
+      // Read JSON response once and store it
+      const result = await response.json();
+
+      console.log("result-->", result);
+
       if (!response.ok) {
-        let errorMessage = "Failed to create profile"; 
-  
-        try {
-          const errorData = await response.json();
-          if (errorData?.message) {
-            errorMessage = errorData.message;
-          }
-        } catch (jsonError) {
-          console.warn("Error parsing JSON response:", jsonError);
+        let errorMessage = "Failed to create profile";
+
+        if (result?.message) {
+          errorMessage = result.message;
         }
-  
+
         throw new Error(errorMessage);
       }
-  
-      const profileData = await response.json();
-      dispatch(setProfile(profileData));
-  
+
+      dispatch(setProfile(result));
+
       Alert.alert("Success", "Profile Created!");
       router.push("/profile");
-    } catch (error) {  
+    } catch (error) {
       if (error instanceof TypeError) {
         setError("Network error. Please check your internet connection.");
       } else {
@@ -126,7 +130,7 @@ const EditProfile = () => {
       setLoading(false);
     }
   };
-  
+
 
 
   return (

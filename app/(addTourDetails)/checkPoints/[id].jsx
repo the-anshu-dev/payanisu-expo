@@ -4,6 +4,7 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
+  Dimensions,
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
@@ -22,6 +23,9 @@ import * as MediaLibrary from "expo-media-library";
 import { useDispatch } from "react-redux";
 import { setCheckPoints } from "../../../redux/slices/tourSlice";
 import { SafeAreaView } from "react-native-safe-area-context";
+
+
+const { height, width } = Dimensions.get("window");
 
 const Checkpoints = () => {
   const { id } = useLocalSearchParams();
@@ -196,12 +200,12 @@ const Checkpoints = () => {
             ))}
           </ScrollView>
         )}
-        <View className="w-full absolute bottom-0 flex flex-row justify-center items-center gap-5 h-16 bg-transparent">
+        <View style={{ width: width }} className="w-full absolute bottom-0 flex flex-row justify-center items-center gap-5 h-16 bg-transparent">
           <TouchableOpacity
             activeOpacity={0.8}
             onPress={handleQrModal}
             style={{
-              width: 180,
+              width: width * 0.4,
               backgroundColor: "gray",
               paddingVertical: 12,
               borderRadius: 8,
@@ -220,7 +224,7 @@ const Checkpoints = () => {
             activeOpacity={0.8}
             onPress={() => router.push(`/createCheckpoints/${id}`)}
             style={{
-              width: 180,
+              width: width * 0.4,
               backgroundColor: "green",
               paddingVertical: 12,
               borderRadius: 8,
@@ -233,7 +237,7 @@ const Checkpoints = () => {
         </View>
       </View>
       <Modalize ref={editCheckPointRef} adjustToContentHeight snapPoint={500}>
-        <View className="h-96 px-3 py-4 flex justify-between items-center">
+        <View className="h-96 px-6 py-4 flex justify-center gap-3 items-center">
           <View className="w-full flex justify-start items-center">
             <Text className="mt-3 text-xl font-semibold">Edit Check Point</Text>
             <View className="border mt-3 border-gray-500/50 p-1 px-2 rounded-lg w-full">
@@ -254,19 +258,19 @@ const Checkpoints = () => {
               />
             </View>
           </View>
-          <View className="w-full flex justify-center items-center mt-4">
+          <View className="w-full flex justify-center items-center mt-2">
             <TouchableOpacity
               activeOpacity={0.8}
               onPress={() => addNotesRef.current?.open()}
               style={{
-                width: 350,
+                width: width * 0.8,
                 backgroundColor: "green",
                 paddingVertical: 12,
                 borderRadius: 8,
               }}
             >
-              <Text style={{ textAlign: "center", color: "#fff" }}>
-                Add Notes
+              <Text style={{ textAlign: "center", color: "#fff", fontWeight: "600" }}>
+                Save
               </Text>
             </TouchableOpacity>
           </View>
@@ -312,7 +316,7 @@ const Checkpoints = () => {
             <Text className="text-base font-semibold">QR Code</Text>
           </View>
           <View className="p-1 border border-green-700 rounded-xl">
-            <Image source={qrUrl} className="w-40 h-40 rounded-lg" />
+            <Image source={qrUrl} style={{ height: height * 0.2, width: width * 0.4, borderRadius: 6 }} />
           </View>
           <View className="mt-6">
             <TouchableOpacity
@@ -379,16 +383,16 @@ const CheckPointCard = ({
           )}
         </View>
       </View>
-      <View className="flex flex-row justify-between items-center mt-2 px-4">
+      <View className="flex flex-row justify-between items-center mt-2 px-2">
         <TouchableOpacity onPress={() => mapRef.current?.open()}>
-          <View className="flex flex-row space-x-1">
-            <MarkerIcon height={20} width={20} />
+          <View className="flex flex-row gap-1 justify-center items-center">
+            <MarkerIcon height={20} width={12} />
             <Text className="text-xs text-green-700">Show On Map</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => editRef.current?.open()}>
-          <View className="flex flex-row space-x-1">
-            <EditIcon height={20} width={20} />
+          <View className="flex flex-row gap-1 justify-center items-center">
+            <EditIcon height={20} width={12} />
             <Text className="text-xs text-green-700">Edit</Text>
           </View>
         </TouchableOpacity>
@@ -397,8 +401,8 @@ const CheckPointCard = ({
             router.push(`(addTourDetails)/viewCheckIns/${point._id}`)
           }
         >
-          <View className="flex flex-row space-x-1">
-            <UserIcon height={20} width={20} />
+          <View className="flex flex-row gap-1 justify-center items-center">
+            <UserIcon height={20} width={12} />
             <Text className="text-xs text-green-700">View Check-Ins</Text>
           </View>
         </TouchableOpacity>

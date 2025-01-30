@@ -122,7 +122,7 @@ const Community = () => {
   return (
     <>
       {user ? (
-        <SafeAreaView style={styles.safeArea}>
+        <SafeAreaView style={styles.safeArea} edges={["bottom", "left", "right"]}>
           <ScrollView
             contentContainerStyle={styles.scrollContainer}
             showsVerticalScrollIndicator={false}
@@ -189,14 +189,14 @@ const Community = () => {
                     </View>
                   ) : (
                     <View style={styles.addImagesPlaceholder}>
-                      <Text>Please share the moments you captured</Text>
+                      <Text>Add the moments you captured</Text>
                       <TouchableOpacity
                         onPress={pickImage}
                         activeOpacity={0.6}
                         style={styles.addImagesButton}
                       >
                         <Text style={styles.addImagesButtonText}>
-                          Add Images
+                          Select Images
                         </Text>
                       </TouchableOpacity>
                     </View>
@@ -242,7 +242,8 @@ const styles = StyleSheet.create({
   },
   postsContainer: {
     paddingHorizontal: width * 0.05,
-    paddingTop: height * 0.08,
+    gap: 15,
+    marginTop: 15
   },
   shareButtonContainer: {
     position: "absolute",
@@ -252,7 +253,7 @@ const styles = StyleSheet.create({
   },
   shareButton: {
     backgroundColor: "green",
-    height: height * 0.045,
+    height: height * 0.06,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 8,
@@ -278,7 +279,7 @@ const styles = StyleSheet.create({
     fontSize: width * 0.05,
     fontWeight: "bold",
     paddingBottom: height * 0.02,
-    marginTop: 10,
+    marginTop: 20,
   },
   textInput: {
     borderWidth: 1,
@@ -328,6 +329,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    marginBottom: height * 0.02,
   },
   postButton: {
     backgroundColor: "green",
