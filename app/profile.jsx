@@ -91,7 +91,7 @@ const Profile = () => {
           <RefreshControl refreshing={refresh} onRefresh={onRefresh} />
         }
       >
-        <View style={{ paddingVertical: 7 }}>
+        <View style={{ paddingVertical: 7, display: "flex", justifyContent: "center", alignItems: "center" }}>
           <Text style={styles.titleText}>Personal Details</Text>
         </View>
         <LabelValue label={"Name"} value={profile?.name || user?.given_name} />
@@ -115,7 +115,7 @@ const Profile = () => {
             <LabelValue label={"Address"} value={profile.address} />
             <LabelValue
               label={"How You Know About Us ?"}
-              value={profile.Ganesh}
+              value={profile.info}
             />
             <LabelValue
               label={"Emergency Contact No"}
@@ -220,21 +220,17 @@ const AdminCard = ({ isAdminAccessEnabled, handleAccessChange, role }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: "100%",
-    alignItems: "center",
-    justifyContent: "center",
   },
   scrollView: {
     width: "100%",
   },
   scrollContent: {
     paddingBottom: height * 0.03,
-    paddingHorizontal: width * 0.04,
+    paddingHorizontal: width * 0.06,
   },
   titleText: {
-    fontSize: width * 0.05,
+    fontSize: width * 0.06,
     fontWeight: "500",
-    marginBottom: height * 0.001,
   },
   detailsContainer: {
     marginTop: height * 0.001,
@@ -281,7 +277,7 @@ const styles = StyleSheet.create({
     width: "100%",
     marginTop: height * 0.002,
     backgroundColor: "transparent",
-    paddingHorizontal: width * 0.05,
+    paddingHorizontal: width * 0.07,
   },
   actionButton: {
     display: "flex",
@@ -308,6 +304,7 @@ const styles = StyleSheet.create({
   },
   memberContainer: {
     marginTop: 16,
+    paddingHorizontal: width * 0.02
   },
   adminButton: {
     backgroundColor: "green",

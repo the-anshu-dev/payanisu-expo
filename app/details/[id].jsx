@@ -328,7 +328,7 @@ const DetailsScreen = () => {
             </View>
           </View>
         </ScrollView>
-        <View style={{ backgroundColor: "transparent" }} className="h-fit mb-5 p-1 flex flex-row justify-center items-center w-full gap-5">
+        <View style={{ backgroundColor: "transparent" }} className="h-fit mb-3 p-1 flex flex-row justify-center items-center w-full gap-5">
           <TouchableOpacity onPress={handleInterested} activeOpacity={0.8}>
             <View style={{ width: width * 0.4 }} className="bg-slate-500 rounded-lg h-12 flex justify-center items-center ">
               {loading ? (
@@ -356,12 +356,13 @@ const DetailsScreen = () => {
         adjustToContentHeight
       >
         <View
-          className={`flex justify-center items-center h-[350px] rounded-t-lg `}
+          style={{ height: height * 0.35 }}
+          className={`flex justify-center items-center rounded-t-lg `}
         >
-          <Text className={`text-xl font-semibold mt-6 px-5 text-center`}>
+          <Text className={`text-xl font-semibold px-5 text-center`}>
             Thanks for showing interest for the tour.
           </Text>
-          <Image source={approve} className=" h-40 w-40 mt-2" />
+          <Image source={approve} style={{ height: height * 0.2, width: width * 0.5 }} className="mt-2" />
           <Text className={`mt-2 text-lg `}>
             Our team will reach out to you.
           </Text>
@@ -374,8 +375,8 @@ const DetailsScreen = () => {
         adjustToContentHeight
       >
         <View className="h-full relative">
-          <View className={`flex px-4 h-[600px] rounded-t-lg `}>
-            <View>
+          <View className={`flex h-[600px] rounded-t-lg `}>
+            <View className={`px-4 pt-4`}>
               <Text className={`text-lg font-semibold mt-6 `}>
                 Select Number of Seats
               </Text>
@@ -391,7 +392,7 @@ const DetailsScreen = () => {
               }}
               style={{ backgroundColor: "#f9f9f9" }}
             >
-              <View className="mt-6 space-y-5">
+              <View className="mt-2 gap-3 px-4">
                 {curatedMembers.map((member) => (
                   <BookingMembers
                     key={member.id}
@@ -400,17 +401,17 @@ const DetailsScreen = () => {
                     handleRemoveMembers={handleRemoveMembers}
                   />
                 ))}
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={() => router.push("/addMember")}
+                  className="bg-green-600 py-3 flex flex-row justify-center items-center rounded-lg mt-3"
+                >
+                  <Ionicons name="add-circle-outline" color="white" size={20} />
+                  <Text className="font-semibold ml-1 text-white">
+                    Add New Member
+                  </Text>
+                </TouchableOpacity>
               </View>
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={() => router.push("/addMember")}
-                className="bg-green-600 w-40 h-10 flex flex-row justify-center items-center rounded-sm mt-5"
-              >
-                <Ionicons name="add-circle-outline" color="white" size={20} />
-                <Text className="font-semibold ml-1 text-white">
-                  Add New Member
-                </Text>
-              </TouchableOpacity>
             </ScrollView>
           </View>
           <View className={`px-4 absolute bottom-0 pb-4 pt-1 bg-white`}>
@@ -421,7 +422,7 @@ const DetailsScreen = () => {
                   }`}</Text>
               </View>
               <TouchableOpacity activeOpacity={0.8} onPress={handlePayNow}>
-                <View className="h-10 w-40 flex justify-center items-center rounded-lg bg-green-700">
+                <View className="h-10 w-40 flex justify-center items-center rounded-lg bg-green-600">
                   <Text className="text-white font-semibold tracking-wider">
                     Pay Now
                   </Text>

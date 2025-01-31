@@ -96,7 +96,7 @@ const Menu = () => {
           {loggingOut ? (
             <ActivityIndicator size={"small"} color={"white"} />
           ) : (
-            <Text style={{ color: "white", fontWeight: "600", fontSize: 16 }}>
+            <Text style={{ color: "black", fontWeight: "600", fontSize: 16 }}>
               Log Out
             </Text>
           )}
@@ -154,7 +154,8 @@ const styles = StyleSheet.create({
     width: width,
     height: "100%",
     backgroundColor: "#fff",
-    padding: 10,
+    paddingVertical: height * 0.02,
+    paddingHorizontal: width * 0.04,
     position: "relative",
   },
   profileButtonContainer: {
@@ -181,7 +182,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   optionsContainer: {
-    marginTop: 20,
+    marginTop: 10,
   },
   optionButtonContainer: {
     width: "100%",
@@ -198,7 +199,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 20,
     width: width,
-    height: height * 0.07,
+    height: height * 0.06,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -210,8 +211,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    borderWidth: 2,
-    backgroundColor: "#a1140a",
+    borderWidth: 1,
     borderColor: "gray",
     borderRadius: 10,
   },

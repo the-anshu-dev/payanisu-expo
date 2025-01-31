@@ -113,7 +113,7 @@ const MyTourInfo = ({ tour }) => {
   }, []);
 
   return (
-    <View className={`pb-14 `}>
+    <View className={`pb-14 pt-5 px-2`}>
       <ScrollView
         className="flex h-full"
         contentContainerStyle={{ paddingBottom: 64 }}
@@ -122,30 +122,30 @@ const MyTourInfo = ({ tour }) => {
           <RefreshControl refreshing={refresh} onRefresh={onRefresh} />
         }
       >
-        <View className="mt-5">
-          <Text className={`text-md font-bold`}>Tour Name</Text>
-          <Text className={`text-base mt-2 tracking-wider`}>
+        <View>
+          <Text className={`text-md font-semibold`}>Tour Name</Text>
+          <Text className={`text-base mt-1 tracking-wider`}>
             {tourDetails.name}
           </Text>
         </View>
-        <View className="mt-4">
-          <Text className={`text-md font-bold`}>Description</Text>
-          <Text className={`text-base mt-2 tracking-wide text-justify`}>
+        <View className="mt-2">
+          <Text className={`text-md font-semibold`}>Description</Text>
+          <Text className={`text-base mt-1 tracking-wide text-justify`}>
             {tourDetails.description}
           </Text>
         </View>
-        <View className="mt-3">
-          <Text className={`text-md font-bold`}>Date</Text>
-          <Text className={`text-base mt-2 tracking-wider`}>{`${formatDate(
+        <View className="mt-2">
+          <Text className={`text-md font-semibold`}>Date</Text>
+          <Text className={`text-base mt-1 tracking-wider`}>{`${formatDate(
             tourDetails.tour_start
           )} - ${formatDate(tourDetails.tour_start)}`}</Text>
         </View>
-        <View className="px-2 mt-5">
-          <View className="flex flex-row justify-left items-center space-x-3">
-            <Ionicons name="thumbs-up-outline" size={24} color={"green"} />
+        <View className="mt-5">
+          <View className="flex flex-row justify-left items-center gap-2 border-b border-gray-300/50 pb-1">
+            <Ionicons name="thumbs-up-outline" size={20} color={"green"} />
             <Text className={`text-md font-semibold`}>What is included ?</Text>
           </View>
-          <View className="px-1 mt-3 space-y-2">
+          <View className="px-1 mt-3 gap-2">
             {includeds &&
               includeds.map((i) => (
                 <ListComponent
@@ -157,9 +157,9 @@ const MyTourInfo = ({ tour }) => {
               ))}
           </View>
         </View>
-        <View className="px-2 mt-6">
-          <View className="flex flex-row justify-left items-center space-x-3">
-            <Ionicons name="thumbs-down-outline" size={24} color={"red"} />
+        <View className="mt-5">
+          <View className="flex flex-row justify-left items-center gap-2 border-b border-gray-300/50 pb-1">
+            <Ionicons name="thumbs-down-outline" size={20} color={"red"} />
             <Text className={`text-md font-semibold`}>
               What is not included ?
             </Text>
@@ -176,12 +176,12 @@ const MyTourInfo = ({ tour }) => {
               ))}
           </View>
         </View>
-        <View className="px-2 mt-6">
-          <View className="flex flex-row justify-left items-center space-x-3">
-            <Ionicons name="bag-check-outline" size={24} color={"green"} />
+        <View className="mt-5">
+          <View className="flex flex-row justify-left items-center gap-2 border-b border-gray-300/50 pb-1">
+            <Ionicons name="bag-check-outline" size={20} color={"green"} />
             <Text className={`text-md font-semibold`}>Bag Pack</Text>
           </View>
-          <View className="px-1 mt-3 space-y-2">
+          <View className="px-1 mt-3 gap-2">
             {backpacks &&
               backpacks.map((i) => (
                 <ListComponent
@@ -193,16 +193,16 @@ const MyTourInfo = ({ tour }) => {
               ))}
           </View>
         </View>
-        <View className="px-2 mt-6">
-          <View className="flex flex-row justify-left items-center space-x-3">
+        <View className="mt-5">
+          <View className="flex flex-row justify-left items-center gap-2 border-b border-gray-300/50 pb-1">
             <Ionicons
               name="checkmark-done-circle-outline"
-              size={24}
+              size={20}
               color={"green"}
             />
             <Text className={`text-md font-semibold`}>Check In Baggage</Text>
           </View>
-          <View className="px-1 mt-3 space-y-2">
+          <View className="px-1 mt-3 gap-2">
             {checkinbagages &&
               checkinbagages.map((i) => (
                 <ListComponent
@@ -214,8 +214,8 @@ const MyTourInfo = ({ tour }) => {
               ))}
           </View>
         </View>
-        <View className="mt-6 px-2">
-          <View className="flex flex-row space-x-2 justify-start items-center my-1 ml-2 ">
+        <View className="mt-5">
+          <View className="flex flex-row gap-2 justify-start items-center py-1">
             <Ionicons name="bus" size={20} color={"green"} />
             <Text className={`font-bold`}>Transport Details</Text>
           </View>
@@ -295,8 +295,8 @@ const MyTourInfo = ({ tour }) => {
             </View>
           )}
         </View>
-        <View className="mt-6 px-2">
-          <View className="flex flex-row space-x-2 justify-start items-center my-1 ml-2 ">
+        <View className="mt-5">
+          <View className="flex flex-row gap-2 justify-start items-center py-1">
             <Ionicons name="bed" size={20} color={"green"} />
             <Text className={`font-bold`}>Accomodation Details</Text>
           </View>

@@ -8,12 +8,14 @@ import {
   Switch,
   TextInput,
   RefreshControl,
+  Dimensions,
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import Animated, {
   useSharedValue,
   withSpring,
   useAnimatedStyle,
+  withTiming,
 } from "react-native-reanimated";
 import { useLocalSearchParams } from "expo-router";
 import { Modalize } from "react-native-modalize";
@@ -21,6 +23,8 @@ import { useSelector } from "react-redux";
 import { formatDate } from "../../../utils/helpers";
 import { Ionicons } from "@expo/vector-icons";
 import { ActivityIndicator, Checkbox } from "react-native-paper";
+
+const { height, width } = Dimensions.get("window");
 
 const GuestsEnrolled = () => {
   const { id } = useLocalSearchParams();
@@ -36,7 +40,6 @@ const GuestsEnrolled = () => {
     useState(false);
 
   const [activeTab, setActiveTab] = useState("interested");
-  const translateX = useSharedValue(-200);
 
   const [interestedMembers, setInterestedMembers] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -59,11 +62,6 @@ const GuestsEnrolled = () => {
     setEnrollingDetails(enrollingUser);
   }, [enrollingId]);
 
-  const handleTabPress = (tab) => {
-    setActiveTab(tab);
-    translateX.value = tab === "interested" ? -200 : 0;
-  };
-
   const springConfig = {
     damping: 20,
     stiffness: 100,
@@ -73,9 +71,19 @@ const GuestsEnrolled = () => {
     restSpeedThreshold: 0.01,
   };
 
+  const translateX = useSharedValue(0);
+  const tabWidth = width * 0.5;
+  const barWidth = width * 0.35;
+
+  const handleTabPress = (tab) => {
+    setActiveTab(tab)
+    translateX.value = withTiming(tab === "requested" ? 0 : -tabWidth);
+  };
+
   const animatedStyles = useAnimatedStyle(() => ({
-    transform: [{ translateX: withSpring(translateX.value, springConfig) }],
+    transform: [{ translateX: translateX.value + (tabWidth - barWidth) / 2 }],
   }));
+
 
   const handleGetInterestedMembers = async () => {
     setLoading(true);
@@ -245,18 +253,18 @@ const GuestsEnrolled = () => {
   return (
     <>
       <View className={`px-3 h-full flex items-center`}>
-        <View className={`px-5 w-full flex justify-center items-center`}>
-          <View className={`flex flex-row justify-between`}>
+        <View className="px-5 w-full flex justify-center items-center">
+          <View className="flex flex-row justify-between">
             <Pressable onPress={() => handleTabPress("interested")}>
-              <View className={`w-[200px] py-2`}>
-                <Text className={`text-center text-base font-semibold`}>
+              <View style={{ width: tabWidth }} className="py-2">
+                <Text className="text-center text-base font-semibold">
                   Interest Requests
                 </Text>
               </View>
             </Pressable>
             <Pressable onPress={() => handleTabPress("requested")}>
-              <View className={`w-[200px] py-2`}>
-                <Text className={`text-center text-base font-semibold`}>
+              <View style={{ width: tabWidth }} className="py-2">
+                <Text className="text-center text-base font-semibold">
                   Reserve Requests
                 </Text>
               </View>
@@ -264,10 +272,12 @@ const GuestsEnrolled = () => {
           </View>
           <Animated.View style={[animatedStyles]}>
             <View
-              className={`bg-green-600 w-[160px] h-1.5 rounded-t-xl absolute bottom-0 left-5`}
+              style={{ width: barWidth }}
+              className="bg-green-600 h-1.5 rounded-t-xl absolute bottom-0"
             />
           </Animated.View>
         </View>
+
         <ScrollView
           showsVerticalScrollIndicator={false}
           refreshControl={
@@ -473,7 +483,7 @@ const ReqCard = ({
       </Text>
       <>
         {reserve && (
-          <View className="flex flex-row items-center justify-center space-x-5">
+          <View className="flex flex-row items-center justify-center gap-2">
             <TouchableOpacity
               onPress={() => handleReserveMembers(bookingId, "accept")}
               activeOpacity={0.5}

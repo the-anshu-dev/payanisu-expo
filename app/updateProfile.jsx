@@ -17,7 +17,7 @@ import { format } from "date-fns";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Picker } from "@react-native-picker/picker";
 
-const { height } = Dimensions.get("window");
+const { height, width } = Dimensions.get("window");
 
 const UpdateProfile = () => {
   const router = useRouter();
@@ -224,30 +224,18 @@ const UpdateProfile = () => {
         style={{
           paddingVertical: 10,
           paddingHorizontal: 24,
+          display: 'flex',
+          flexDirection: "row",
+          justifyContent: 'center',
+          alignItems: "center",
+          gap: 10
         }}
       >
         <TouchableOpacity
-          onPress={handleUpdate}
-          style={{
-            backgroundColor: "#228B22",
-            padding: 12,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            borderRadius: 10,
-          }}
-        >
-          {loading ? (
-            <ActivityIndicator size="small" color="#fff" />
-          ) : (
-            <Text style={{ color: "#fff", fontSize: 16 }}>Update Profile</Text>
-          )}
-        </TouchableOpacity>
-        <TouchableOpacity
           onPress={() => router.back("")}
           style={{
-            marginTop: 10,
-            padding: 8,
+            width: width * 0.4,
+            height: height * 0.05,
             borderRadius: 10,
             borderColor: "#228B22",
             borderWidth: 1,
@@ -259,6 +247,24 @@ const UpdateProfile = () => {
           <Text style={{ fontWeight: "bold", fontSize: 16, color: "#228B22" }}>
             Cancel
           </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={handleUpdate}
+          style={{
+            width: width * 0.4,
+            height: height * 0.05,
+            backgroundColor: "#228B22",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            borderRadius: 10,
+          }}
+        >
+          {loading ? (
+            <ActivityIndicator size="small" color="#fff" />
+          ) : (
+            <Text style={{ color: "#fff", fontSize: 16 }}>Update Profile</Text>
+          )}
         </TouchableOpacity>
       </View>
     </View>

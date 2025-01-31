@@ -27,7 +27,7 @@ const Login = () => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [sessionActive, setSessionActive] = useState(false);
-  const [request, response, promptAsync] = Google.useAuthRequest({
+  const [_, response, promptAsync] = Google.useAuthRequest({
     androidClientId: process.env.EXPO_PUBLIC_ANDROID_CLIENT_ID,
   });
 
@@ -79,13 +79,10 @@ const Login = () => {
           }
         );
 
-        if (!roleResponse.ok) {
-          console.error("Error fetching role data");
-          throw new Error("Failed to fetch role data.");
+        if (roleResponse.ok) {
+          const roleData = await roleResponse.json();
+          dispatch(setRole(roleData));
         }
-
-        const roleData = await roleResponse.json();
-        dispatch(setRole(roleData));
 
         const profileResponse = await fetch(
           `${process.env.EXPO_PUBLIC_BASE_URL}/api/users/getProfile`,
@@ -98,14 +95,11 @@ const Login = () => {
           }
         );
 
-        if (!profileResponse.ok) {
-          console.error("Error fetching profile data");
-          throw new Error("Failed to fetch profile data.");
-        }
-
-        const profileData = await profileResponse.json();
-        if (profileData && !profileData.error) {
-          dispatch(setProfile(profileData));
+        if (profileResponse.ok) {
+          const profileData = await profileResponse.json();
+          if (profileData && !profileData.error) {
+            dispatch(setProfile(profileData));
+          }
         }
       }
     } catch (error) {

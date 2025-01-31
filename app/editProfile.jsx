@@ -84,10 +84,11 @@ const EditProfile = () => {
         age: Number(age),
         gender,
         contact,
-        emergencyContact,
+        emergency_contact: emergencyContact,
         address,
-        idProofType,
-        identityProofNumber
+        id_type: idProofType,
+        id_number: identityProofNumber,
+        info
       })
 
       console.log(body);
@@ -101,10 +102,7 @@ const EditProfile = () => {
         }
       );
 
-      // Read JSON response once and store it
       const result = await response.json();
-
-      console.log("result-->", result);
 
       if (!response.ok) {
         let errorMessage = "Failed to create profile";
@@ -116,10 +114,10 @@ const EditProfile = () => {
         throw new Error(errorMessage);
       }
 
-      dispatch(setProfile(result));
-
+      const { user: { email } } = result;
+      await fetchProfile(email);
       Alert.alert("Success", "Profile Created!");
-      router.push("/profile");
+      router.back();
     } catch (error) {
       if (error instanceof TypeError) {
         setError("Network error. Please check your internet connection.");
@@ -131,6 +129,23 @@ const EditProfile = () => {
     }
   };
 
+  const fetchProfile = async (email) => {
+    try {
+      const profileResponse = await fetch(`${process.env.EXPO_PUBLIC_BASE_URL}/api/users/getProfile`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json", email },
+      })
+
+      if (profileResponse.ok) {
+        const profileData = await profileResponse.json();
+        if (profileData && !profileData.error) {
+          dispatch(setProfile(profileData));
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
 
 
   return (
@@ -218,7 +233,7 @@ const EditProfile = () => {
           />
 
           <TextInput
-            placeholder="How do you know about us?"
+            placeholder="How do you know about us? [ Optional ]"
             onChangeText={setInfo}
             style={styles.input}
             value={info}

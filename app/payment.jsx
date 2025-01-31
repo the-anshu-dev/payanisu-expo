@@ -4,6 +4,7 @@ import {
   Alert,
   ActivityIndicator,
   TouchableOpacity,
+  Dimensions,
 } from "react-native";
 import React, { useState } from "react";
 import { Image } from "expo-image";
@@ -14,6 +15,10 @@ import ShareIcon from "../assets/share.svg";
 import DownloadIcon from "../assets/downloadIcon.svg";
 import { useSelector } from "react-redux";
 import { router, useLocalSearchParams } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { ScrollView } from "react-native-gesture-handler";
+
+const { height, width } = Dimensions.get('window');
 
 const payment = () => {
   const { id } = useLocalSearchParams();
@@ -85,108 +90,115 @@ const payment = () => {
   };
 
   return (
-    <View className="h-full w-full flex justify-between px-3">
-      <View className="w-full">
-        <View className="flex justify-center items-center mt-4">
-          <Text className="text-xl font-semibold">Srishailm Trek</Text>
-        </View>
-        <View className="flex justify-center items-center">
-          <View className="py-5">
-            <Image source={qr} className="h-52 w-52" />
-          </View>
-        </View>
-        <View className="flex flex-row justify-between items-center w-full px-6 mt-2">
-          <View className="flex flex-row justify-center items-center">
-            <ShareIcon height={20} width={20} />
-            <Text className="text-base pl-3">Share QR Code</Text>
-          </View>
-          <View className="flex flex-row justify-center items-center">
-            <Image source={download} className="h-5 w-5" />
-            <Text className="text-base pl-3">Download QR Code</Text>
-          </View>
-        </View>
-        <View className="flex flex-row justify-between items-center mt-4 px-3 py-5">
-          <Text>Total Expense</Text>
-          <Text>{`x ${tourMembers?.length} seats`}</Text>
-          <Text className="font-semibold text-lg">{`₹ ${totalCost}`}</Text>
-        </View>
-        <View className="flex justify-center items-center mt-4 w-full">
-          <Text>Please Upload screenshot post payment</Text>
-          {image ? (
-            <View className="h-32 w-full py-2 rounded-xl overflow-hidden">
+    <SafeAreaView style={{ flex: 1 }} edges={["bottom", "left", "right"]}>
+      <View className="h-full w-full flex justify-between px-3">
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 20, paddingHorizontal: 15 }}>
+          <View className="w-full">
+            <View className="flex justify-center items-center mt-4">
+              <Text className="text-xl font-semibold">Srishailm Trek</Text>
+            </View>
+            <View className="flex justify-center items-center p-2">
               <Image
-                source={{ uri: image.uri }}
-                className="h-full w-full rounded-xl"
+                source={qr}
+                style={{ width: width * 0.7, height: height * 0.3 }}
+                contentFit="contain"
               />
             </View>
-          ) : (
-            <TouchableOpacity
-              activeOpacity={0.6}
-              onPress={pickImage}
-              containerStyle={{ flexGrow: 1 }}
-              style={{ width: "100%" }}
-            >
-              <View className="border h-32 w-full rounded-xl mt-1 border-green-600 flex justify-center items-center">
-                <Text className="text-green-800">
-                  Upload your payment proof
-                </Text>
+            <View className="flex flex-row justify-between items-center w-full px-6 mt-2">
+              <View className="flex flex-row justify-center items-center">
+                <ShareIcon height={20} width={20} />
+                <Text className="text-base pl-3">Share QR Code</Text>
               </View>
-            </TouchableOpacity>
-          )}
-        </View>
-        <View className="flex flex-row w-full mt-4 justify-center items-center">
-          <View className="w-[10%]">
-            <Checkbox
-              onPress={() => setAgree(!agree)}
-              status={agree ? "checked" : "unchecked"}
-              color="green"
-            />
+              <View className="flex flex-row justify-center items-center">
+                <DownloadIcon height={25} width={20} />
+                <Text className="text-base pl-3">Download QR Code</Text>
+              </View>
+            </View>
+            <View className="flex flex-row justify-between items-center mt-4 px-3 py-5">
+              <Text>Total Expense</Text>
+              <Text>{`x ${tourMembers?.length} seats`}</Text>
+              <Text className="font-semibold text-lg">{`₹ ${totalCost}`}</Text>
+            </View>
+            <View className="flex justify-center items-center mt-4 w-full">
+              <Text>Please Upload screenshot post payment</Text>
+              {image ? (
+                <View style={{ height: height * 0.4, width: "100%" }} className="rounded-xl overflow-hidden border-2 border-green-600 mt-3">
+                  <Image
+                    style={{ height: '100%', width: "100%" }}
+                    source={{ uri: image.uri }}
+                    contentFit="contain"
+                  />
+                </View>
+              ) : (
+                <TouchableOpacity
+                  activeOpacity={0.6}
+                  onPress={pickImage}
+                  containerStyle={{ flexGrow: 1 }}
+                  style={{ width: "100%" }}
+                >
+                  <View style={{ height: height * 0.2, width: "100%" }} className="border-2 h-32 rounded-xl mt-3 border-green-600 flex justify-center items-center">
+                    <Text className="text-green-800">
+                      Upload your payment proof
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              )}
+            </View>
+            <View className="flex flex-row w-full mt-4 justify-start gap-5 items-start">
+              <View className="w-[10%]">
+                <Checkbox
+                  onPress={() => setAgree(!agree)}
+                  status={agree ? "checked" : "unchecked"}
+                  color="green"
+                />
+              </View>
+              <Text className="w-[90%] tracking-wide text-base text-justify">
+                I hereby agree to sign digital consent and agrees to all Terms and
+                Conditions,
+              </Text>
+            </View>
+            <View className="flex flex-row mt-4 justify-start items-center pl-3">
+              <DownloadIcon height={25} width={20} />
+              <Text className="pl-3 text-base text-green-700">
+                View and download consent form.
+              </Text>
+            </View>
           </View>
-          <Text className="w-[90%] tracking-wide text-base text-justify">
-            I hereby agree to sign digital consent and agrees to all Terms and
-            Conditions,
-          </Text>
-        </View>
-        <View className="flex flex-row mt-4 justify-start items-center pl-3">
-          <DownloadIcon height={25} width={20} />
-          <Text className="pl-3 text-base text-green-700">
-            View and download consent form.
-          </Text>
+        </ScrollView>
+        <View className="w-full flex flex-row justify-center gap-5 items-center h-16 bg-transparent">
+          <TouchableOpacity
+            activeOpacity={0.8}
+            style={{
+              width: width * 0.4,
+              backgroundColor: "#414141",
+              paddingVertical: 12,
+              borderRadius: 8,
+            }}
+          >
+            <Text style={{ textAlign: "center", color: "#fff" }}>Cancel</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={handleReserveSeats}
+            style={{
+              width: width * 0.4,
+              paddingVertical: 12,
+              borderRadius: 8,
+              borderWidth: 1,
+              borderColor: "green",
+            }}
+          >
+            {loading ? (
+              <ActivityIndicator size={"small"} color={"green"} />
+            ) : (
+              <Text style={{ textAlign: "center", color: "green" }}>
+                Reserve Seat
+              </Text>
+            )}
+          </TouchableOpacity>
         </View>
       </View>
-      <View className="w-full flex flex-row justify-between items-center h-16 bg-transparent">
-        <TouchableOpacity
-          activeOpacity={0.8}
-          style={{
-            width: 165,
-            backgroundColor: "#414141",
-            paddingVertical: 12,
-            borderRadius: 8,
-          }}
-        >
-          <Text style={{ textAlign: "center", color: "#fff" }}>Cancel</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          activeOpacity={0.8}
-          onPress={handleReserveSeats}
-          style={{
-            width: 165,
-            paddingVertical: 12,
-            borderRadius: 8,
-            borderWidth: 1,
-            borderColor: "green",
-          }}
-        >
-          {loading ? (
-            <ActivityIndicator size={"small"} color={"green"} />
-          ) : (
-            <Text style={{ textAlign: "center", color: "green" }}>
-              Reserve Seat
-            </Text>
-          )}
-        </TouchableOpacity>
-      </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

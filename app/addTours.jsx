@@ -42,6 +42,8 @@ const addTours = () => {
   const [paymentGatewayEnabled, setPaymentGatewayEnabled] = useState(false);
   const [image, setImage] = useState([]);
 
+  const [consentForm, setConsentForm] = useState({})
+
   // date range picker
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -55,22 +57,15 @@ const addTours = () => {
       const result = await DocumentPicker.getDocumentAsync({
         type: 'application/pdf',
       });
-  
-      if (result.type === 'success') {
-        console.log('PDF selected:', result.uri);
-        return result;
+      if (!result.canceled) {
+        setConsentForm(result.assets[0])
       }
     } catch (error) {
       console.error('Error picking PDF:', error);
     }
   };
 
-  const handleUpload = async () => {
-    const pdf = await pickPdf();
-    if (pdf) {
-      await uploadPdf(pdf.uri);
-    }
-  };
+  console.log(consentForm);
 
   const onChangeStart = (event, selectedDate) => {
     const currentDate = selectedDate || startDate;
@@ -360,33 +355,50 @@ const addTours = () => {
               ios_backgroundColor="gray"
             />
           </View>
-          {image.length > 0 ? (
-            <View style={styles.imageContainer}>
-              {image.map((img, idx) => (
-                <View key={idx} style={styles.imageWrapper}>
-                  <Image source={{ uri: img.uri }} style={styles.image} />
-                  <TouchableOpacity
-                    onPress={() => handleCancelImage(img.fileName)}
-                    style={styles.closeButton}
-                  >
-                    <Ionicons name="close-outline" size={16} color="white" />
+          <View className="w-full">
+            {
+              consentForm ?
+                <View className="flex flex-row justify-between item-center border border-green-700 w-full rounded-lg px-4 py-2">
+                  <View className="flex flex-row justify-center items-center gap-5">
+                    <Ionicons name="document-text-outline" color={"green"} size={24} />
+                    <Text style={{ color: "green", fontWeight: "400" }}>{consentForm?.name}</Text>
+                  </View>
+                  <TouchableOpacity onPress={() => setConsentForm(null)}>
+                    <Ionicons name="close-outline" size={24} color="red" />
                   </TouchableOpacity>
                 </View>
-              ))}
-            </View>
-          ) : (
-            <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
-              <Ionicons name="add-circle" size={20} color="green" />
-              <Text style={styles.imagePickerText}>
-                Upload tour images here
-              </Text>
-            </TouchableOpacity>
-          )}
-          <View>
-            <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
-              <Ionicons name="add-circle" size={20} color="green" />
-              <Text style={styles.imagePickerText}>Add Consent Form</Text>
-            </TouchableOpacity>
+                :
+                <View className="w-full">
+                  <TouchableOpacity onPress={pickPdf} style={styles.imagePicker}>
+                    <Ionicons name="add-circle" size={20} color="green" />
+                    <Text style={styles.imagePickerText}>Add Consent Form</Text>
+                  </TouchableOpacity>
+                </View>
+            }
+          </View>
+          <View className="w-full mt-3">
+            {image.length > 0 ? (
+              <View style={{ width: "100%" }}>
+                {image.map((img, idx) => (
+                  <View key={idx} style={styles.imageWrapper}>
+                    <Image source={{ uri: img.uri }} style={styles.image} />
+                    <TouchableOpacity
+                      onPress={() => handleCancelImage(img.fileName)}
+                      style={styles.closeButton}
+                    >
+                      <Ionicons name="close-outline" size={16} color="white" />
+                    </TouchableOpacity>
+                  </View>
+                ))}
+              </View>
+            ) : (
+              <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
+                <Ionicons name="add-circle" size={20} color="green" />
+                <Text style={styles.imagePickerText}>
+                  Add tour images
+                </Text>
+              </TouchableOpacity>
+            )}
           </View>
         </View>
       </ScrollView>
@@ -469,10 +481,6 @@ const styles = StyleSheet.create({
   switchLabel: {
     fontSize: width * 0.04,
   },
-  imageContainer: {
-    width: "100%",
-    marginTop: height * 0.015,
-  },
   imageWrapper: {
     position: "relative",
     width: "100%",
@@ -501,7 +509,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "row",
-    marginBottom: height * 0.015,
   },
   imagePickerText: {
     fontSize: width * 0.04,

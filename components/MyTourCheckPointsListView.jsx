@@ -158,10 +158,9 @@ const MyTourCheckPointsListView = ({
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{
         paddingBottom: 120,
-        paddingHorizontal: 5,
       }}
     >
-      <View>
+      <View className="px-3">
         {checkPoints && checkPoints.length > 0 ? (
           checkPoints.map((points, index) => (
             <CheckPointElement

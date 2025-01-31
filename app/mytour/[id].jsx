@@ -20,6 +20,8 @@ import { Ionicons } from "@expo/vector-icons";
 import MyTourCheckPointsListView from "../../components/MyTourCheckPointsListView";
 import { useSelector } from "react-redux";
 
+const { width, height } = Dimensions.get("window")
+
 const MyTourDetails = () => {
   const { id } = useLocalSearchParams();
   const { user } = useSelector((state) => state.user);
@@ -33,15 +35,9 @@ const MyTourDetails = () => {
 
   const tour = bookedTour?.find((t) => t.tourDetails._id === id);
 
-  const translateX = useSharedValue(-200);
-
   const [activeTab, setActiveTab] = useState("tourInfo");
   const [listView, setListView] = useState(true);
 
-  const handleTabPress = (tabIndex) => {
-    setActiveTab(tabIndex);
-    translateX.value = tabIndex === "tourInfo" ? -200 : 0;
-  };
 
   const handleGetCheckPoints = async () => {
     setLoading(true);
@@ -66,17 +62,17 @@ const MyTourDetails = () => {
     }
   };
 
-  const springConfig = {
-    damping: 20,
-    stiffness: 100,
-    mass: 1,
-    overshootClamping: true,
-    restDisplacementThreshold: 0.01,
-    restSpeedThreshold: 0.01,
+  const translateX = useSharedValue(0);
+  const tabWidth = width * 0.5;
+  const barWidth = width * 0.35;
+
+  const handleTabPress = (tab) => {
+    setActiveTab(tab)
+    translateX.value = withSpring(tab === "checkPoints" ? 0 : -tabWidth);
   };
 
   const animatedStyles = useAnimatedStyle(() => ({
-    transform: [{ translateX: withSpring(translateX.value, springConfig) }],
+    transform: [{ translateX: translateX.value + (tabWidth - barWidth) / 2 }],
   }));
 
   useEffect(() => {
@@ -85,25 +81,23 @@ const MyTourDetails = () => {
 
   return (
     <View className={`px-3 relative h-full flex items-center`}>
-      <View className={`px-5 w-full flex justify-center items-center`}>
-        <View className={`flex flex-row justify-between`}>
+      <View className="px-5 w-full flex justify-center items-center">
+        <View className="flex flex-row justify-between">
           <Pressable onPress={() => handleTabPress("tourInfo")}>
-            <View className={`w-[200px] py-2`}>
-              <Text className={`text-center text-[15px] font-semibold `}>
+            <View style={{ width: tabWidth }} className="py-2">
+              <Text className="text-center text-[15px] font-semibold">
                 Tour Information
               </Text>
             </View>
           </Pressable>
           <Pressable onPress={() => handleTabPress("checkPoints")}>
-            <View className={`w-[200px] py-2`}>
-              <Text className={`text-center font-semibold `}>Checkpoints</Text>
+            <View style={{ width: tabWidth }} className="py-2">
+              <Text className="text-center font-semibold">Checkpoints</Text>
             </View>
           </Pressable>
         </View>
         <Animated.View style={[animatedStyles]}>
-          <View
-            className={`bg-green-600 w-[160px] h-1.5 rounded-t-xl absolute bottom-0 left-5`}
-          />
+          <View style={{ width: barWidth }} className="bg-green-600 h-1.5 rounded-t-xl absolute bottom-0" />
         </Animated.View>
       </View>
       <View className={`w-full`}>
@@ -121,7 +115,7 @@ const MyTourDetails = () => {
         )}
       </View>
       <View
-        className={`absolute bottom-0 w-full py-2 px-2 flex flex-row justify-between bg-transparent`}
+        className={`absolute bottom-0 w-full py-2 flex flex-row justify-center gap-4 bg-transparent`}
       >
         {activeTab === "tourInfo" ? (
           <TouchableOpacity
@@ -129,14 +123,15 @@ const MyTourDetails = () => {
             activeOpacity={0.8}
           >
             <View
-              className={`flex flex-row justify-center items-center bg-gray-500 w-[170px] h-12 space-x-4 rounded-lg`}
+              style={{ width: width * 0.45 }}
+              className={`flex flex-row justify-center items-center bg-gray-500 h-12 gap-2 rounded-lg`}
             >
               <Ionicons
                 name={"checkmark-circle-outline"}
                 size={20}
                 color="white"
               />
-              <Text className={` font-semibold`}>Check Points</Text>
+              <Text className={`font-semibold text-white`}>Check Points</Text>
             </View>
           </TouchableOpacity>
         ) : (
@@ -145,14 +140,15 @@ const MyTourDetails = () => {
             activeOpacity={0.8}
           >
             <View
-              className={`flex flex-row justify-center items-center bg-gray-500 w-[170px] h-12 space-x-4 rounded-lg`}
+              style={{ width: width * 0.45 }}
+              className={`flex flex-row justify-center items-center bg-gray-500 h-12 gap-2 rounded-lg`}
             >
               <Ionicons
                 name={listView ? "compass" : "list"}
                 size={20}
                 color="white"
               />
-              <Text className={` font-semibold`}>
+              <Text className={`font-semibold text-white`}>
                 {listView ? "Map View" : "List View"}
               </Text>
             </View>
@@ -160,10 +156,11 @@ const MyTourDetails = () => {
         )}
         <TouchableOpacity activeOpacity={0.8}>
           <View
-            className={`flex flex-row justify-center items-center bg-green-700 w-[170px] h-12 space-x-4 rounded-lg`}
+            style={{ width: width * 0.4 }}
+            className={`flex flex-row justify-center items-center bg-green-700 h-12 gap-2 rounded-lg`}
           >
             <Ionicons name="qr-code-outline" size={20} color="white" />
-            <Text className={` font-semibold`}>Check-In</Text>
+            <Text className={`font-semibold text-white`}>Check-In</Text>
           </View>
         </TouchableOpacity>
       </View>

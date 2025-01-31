@@ -11,9 +11,9 @@ import * as SplashScreen from "expo-splash-screen";
 SplashScreen.preventAutoHideAsync();
 
 const Index = () => {
-  const [loading, setLoading] = useState(true);
-  const [showLoader, setShowLoader] = useState(false);
+  const [showLoader, setShowLoader] = useState(true);
   const [authenticated, setAuthenticated] = useState(false);
+  const [redirect, setRedirect] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -30,6 +30,7 @@ const Index = () => {
           headers: { "Content-Type": "application/json", email },
         }),
       ]);
+
 
       if (roleResponse.ok) {
         const roleData = await roleResponse.json();
@@ -53,20 +54,18 @@ const Index = () => {
       if (storedUser) {
         const userData = JSON.parse(storedUser);
         dispatch(setUser(userData));
-        setAuthenticated(true);
         if (userData?.email) {
           await fetchUserData(userData.email);
         }
-      } else {
-        setAuthenticated(false);
+
+        setAuthenticated(true);
       }
     } catch (error) {
       Alert.alert("Oops", "Something went wrong. Please try again.");
+      console.error("Error loading user data:", error);
     } finally {
-      setLoading(false);
       await SplashScreen.hideAsync();
-      setShowLoader(true);
-      setTimeout(() => setShowLoader(false), 1000);
+      setShowLoader(false);
     }
   };
 
@@ -87,16 +86,19 @@ const Index = () => {
   };
 
   useEffect(() => {
-    const initApp = async () => {
-      await loadUserData();
-      await getAllTours();
-    };
-    initApp();
+    loadUserData();
+    getAllTours();
   }, []);
 
-  if (showLoader) return <Loader />;
+  useEffect(() => {
+    if (authenticated) {
+      setRedirect(true);
+    }
+  }, [authenticated]);
 
-  return <Redirect href={authenticated ? "/(tabs)" : "/login"} />;
+  if (showLoader) return <Loader />;
+  if (redirect) return <Redirect href="/(tabs)" />;
+  return <Redirect href="/login" />;
 };
 
 export default Index;
