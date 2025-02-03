@@ -5,6 +5,7 @@ import {
   Text,
   RefreshControl,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import React, { useEffect, useState, useCallback } from "react";
 import { ScrollView } from "react-native-gesture-handler";
@@ -27,6 +28,7 @@ const MyTours = () => {
 
   const getAllBookedTours = useCallback(async () => {
     if (!user) return;
+
     setLoading(true);
     try {
       const response = await fetch(
@@ -35,17 +37,20 @@ const MyTours = () => {
 
       if (!response.ok) {
         console.error("Failed to fetch tours", response);
-        throw new Error("Failed to fetch booked tours");
+        throw new Error("Failed to fetch booked tours.");
       }
 
       const data = await response.json();
       dispatch(setBookedTour(data.data));
     } catch (error) {
       console.error("Error fetching booked tours:", error);
+
+      Alert.alert("Error", error.message || "Failed to fetch booked tours. Please check your network connection.");
     } finally {
       setLoading(false);
     }
   }, [user, dispatch]);
+
 
   useEffect(() => {
     getAllBookedTours();

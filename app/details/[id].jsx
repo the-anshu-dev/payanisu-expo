@@ -234,7 +234,7 @@ const DetailsScreen = () => {
                 {tourData?.description}
               </Text>
             </View>
-            <View className={`px-2 space-y-2 mt-3 `}>
+            <View className={`px-2 space-y-2 mt-3`}>
               <Text className={`font-semibold text-md `}>Dates</Text>
               <Text
                 className={`text-justify tracking-wider text-md font-semibold `}
@@ -244,7 +244,7 @@ const DetailsScreen = () => {
                 )}`}
               </Text>
             </View>
-            <View className="px-2 mt-5">
+            <View className="px-2 mt-8">
               <View className="flex flex-row justify-left items-center gap-3 border-b border-gray-300 pb-1 px-1">
                 <Ionicons name="thumbs-up-outline" size={24} color={"green"} />
                 <Text className={`text-base  font-semibold`}>
@@ -264,7 +264,7 @@ const DetailsScreen = () => {
                 })}
               </View>
             </View>
-            <View className="px-2 mt-6">
+            <View className="px-2 mt-8">
               <View className="flex flex-row justify-left items-center gap-3 border-b border-gray-300 pb-1 px-1">
                 <Ionicons name="thumbs-down-outline" size={24} color={"red"} />
                 <Text className={`text-base  font-semibold`}>
@@ -284,7 +284,7 @@ const DetailsScreen = () => {
                 })}
               </View>
             </View>
-            <View className="px-2 mt-6">
+            <View className="px-2 mt-8">
               <View className="flex flex-row justify-left items-center gap-3 border-b border-gray-300 pb-1 px-1">
                 <Ionicons name="bag-check-outline" size={24} color={"green"} />
                 <Text className={`text-base  font-semibold`}>Bag Pack</Text>
@@ -302,7 +302,7 @@ const DetailsScreen = () => {
                 })}
               </View>
             </View>
-            <View className="px-2 mt-6">
+            <View className="px-2 mt-8">
               <View className="flex flex-row justify-left items-center gap-3 border-b border-gray-300 pb-1 px-1">
                 <Ionicons
                   name="checkmark-done-circle-outline"

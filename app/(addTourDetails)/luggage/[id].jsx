@@ -33,15 +33,18 @@ const Luggage = () => {
 
   const handleAddItem = async () => {
     setLoading(true);
+  
     try {
+      if (!user?.email) {
+        throw new Error("User email is missing. Please log in again.");
+      }
+  
       const url = isBackpack
         ? `${process.env.EXPO_PUBLIC_BASE_URL}/api/backpack/add`
         : `${process.env.EXPO_PUBLIC_BASE_URL}/api/baggage/add`;
-      const body = {
-        tourId: id,
-        item: newItem,
-      };
-
+  
+      const body = { tourId: id, item: newItem };
+  
       const response = await fetch(url, {
         method: "POST",
         headers: {
@@ -50,42 +53,68 @@ const Luggage = () => {
         },
         body: JSON.stringify(body),
       });
-
-      if (response.status !== 201) {
-        throw new Error("Failed to add.");
+  
+      if (response.status === 401) {
+        throw new Error("Unauthorized! Please log in again.");
       }
-
-      Alert.alert("Success", "Item added successfully...");
+      if (response.status === 403) {
+        throw new Error("You do not have permission to add items.");
+      }
+  
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || "Failed to add item.");
+      }
+  
+      Alert.alert("Success", "Item added successfully.");
       handleGet();
       setNewItem("");
     } catch (error) {
-      Alert.alert("Oops!", "Something went wrong...\n\nPlease try again.");
-      console.log("Error:", error);
+      console.error("Error adding item:", error);
+      Alert.alert("Error", error.message || "Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
   };
+  
 
   const handleDelete = async (itemId) => {
     try {
+      if (!user?.email) {
+        throw new Error("User email is missing. Please log in again.");
+      }
+  
       const url = isBackpack
         ? `${process.env.EXPO_PUBLIC_BASE_URL}/api/backpack/delete?id=${itemId}`
         : `${process.env.EXPO_PUBLIC_BASE_URL}/api/baggage/delete?id=${itemId}`;
+  
       const response = await fetch(url, {
         method: "DELETE",
         headers: {
           "x-user-email": user.email,
         },
       });
-      if (response.status !== 200) {
-        throw new Error("Failed to delete luggage item");
+  
+      if (response.status === 401) {
+        throw new Error("Unauthorized! Please log in again.");
       }
+      if (response.status === 403) {
+        throw new Error("You do not have permission to delete this item.");
+      }
+  
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || "Failed to delete item.");
+      }
+  
+      Alert.alert("Success", "Item deleted successfully.");
       handleGet();
     } catch (error) {
-      Alert.alert("Oops!", "Something went wrong\n\nPlease try again..");
-      console.log("Error:", error);
+      console.error("Error deleting item:", error);
+      Alert.alert("Error", error.message || "Something went wrong. Please try again.");
     }
   };
+  
 
   const handleGet = async () => {
     setGetLoading(true);

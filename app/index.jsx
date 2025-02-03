@@ -57,11 +57,10 @@ const Index = () => {
         if (userData?.email) {
           await fetchUserData(userData.email);
         }
-
         setAuthenticated(true);
       }
     } catch (error) {
-      Alert.alert("Oops", "Something went wrong. Please try again.");
+      Alert.alert("Error", error.message || "Something went wrong. Please try again.");
       console.error("Error loading user data:", error);
     } finally {
       await SplashScreen.hideAsync();
@@ -75,13 +74,13 @@ const Index = () => {
         `${process.env.EXPO_PUBLIC_BASE_URL}/api/tour/get-alltours`
       );
       if (!response.ok) {
-        throw new Error("Failed to fetch tours");
+        throw new Error("Failed to fetch tours due to server error.");
       }
       const tour = await response.json();
       dispatch(setTour(tour));
     } catch (error) {
-      Alert.alert("Oops", "Something went wrong.");
-      console.error("Error fetching tours:", error);
+      Alert.alert("Error", error.message || "Something went wrong.");
+      console.log("Error fetching tours:", error);
     }
   };
 

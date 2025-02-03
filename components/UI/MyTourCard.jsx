@@ -9,6 +9,7 @@ import { calculateDuration, formatDate } from "../../utils/helpers";
 const { width, height } = Dimensions.get("window")
 
 const MyTourCard = ({ tour, status }) => {
+
   const images = tour.images.filter((i) => !i.type).map((i) => i.url);
 
   const onClickHandler = () => {
@@ -43,7 +44,7 @@ const MyTourCard = ({ tour, status }) => {
             renderItem={CarouselImageRender}
           />
         </View>
-        <View className="flex flex-row justify-between px-3">
+        <View className="flex flex-row justify-between px-3 mt-3">
           <View>
             <Text className={`text-xl font-semibold`}>{tour?.name}</Text>
             <Text >{calculateDuration(tour?.tour_start, tour?.tour_end)}</Text>
@@ -71,7 +72,7 @@ const MyTourCard = ({ tour, status }) => {
             </Text>
           </View>
         </View>
-        <View className="p-3 gap-3">
+        <View className="p-3 gap-3 mt-2 mb-2">
           <View className="flex flex-row gap-3">
             <Ionicons name="calendar-outline" size={16} color="green" />
             <Text>{`${formatDate(tour?.tour_start)} - ${formatDate(

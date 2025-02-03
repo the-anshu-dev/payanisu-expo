@@ -56,6 +56,7 @@ const Community = () => {
       setAllPosts(posts.data);
     } catch (error) {
       console.log("Failed to get posts", error);
+      Alert.alert("Error", error.message || "Failed to get posts. Please try again later.");
     } finally {
       setRefresh(false);
     }
