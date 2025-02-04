@@ -23,6 +23,7 @@ import { useSelector } from "react-redux";
 import { formatDate } from "../../../utils/helpers";
 import { Ionicons } from "@expo/vector-icons";
 import { ActivityIndicator, Checkbox } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const { height, width } = Dimensions.get("window");
 
@@ -43,6 +44,9 @@ const GuestsEnrolled = () => {
 
   const [interestedMembers, setInterestedMembers] = useState(null);
   const [loading, setLoading] = useState(false);
+
+
+  const [reservedMembers, setReservedMembers] = useState([]);
 
   const enrollRef = useRef(null);
 
@@ -71,9 +75,9 @@ const GuestsEnrolled = () => {
     restSpeedThreshold: 0.01,
   };
 
-  const translateX = useSharedValue(0);
   const tabWidth = width * 0.5;
   const barWidth = width * 0.35;
+  const translateX = useSharedValue(-tabWidth);
 
   const handleTabPress = (tab) => {
     setActiveTab(tab)
@@ -120,7 +124,9 @@ const GuestsEnrolled = () => {
 
       const result = await response.json();
       const data = result.data?.filter((i) => i.status === 2);
+      const reservedData = result.data?.filter((i) => i.status === 1);
       setPendingApproval(data);
+      setReservedMembers(reservedData);
     } catch (error) {
       console.log("Error", error);
       Alert.alert("Oops", "Something went wrong");
@@ -248,11 +254,12 @@ const GuestsEnrolled = () => {
   useEffect(() => {
     handleGetInterestedMembers();
     getPendingApprovals();
+    translateX.value = withSpring(activeTab === "requested" ? 0 : -tabWidth);
   }, []);
 
   return (
-    <>
-      <View className={`px-3 h-full flex items-center`}>
+    <SafeAreaView style={{ flex: 1 }} edges={["bottom", "left", "right"]}>
+      <View className={`h-full flex items-center`}>
         <View className="px-5 w-full flex justify-center items-center">
           <View className="flex flex-row justify-between">
             <Pressable onPress={() => handleTabPress("interested")}>
@@ -277,19 +284,18 @@ const GuestsEnrolled = () => {
             />
           </Animated.View>
         </View>
-
         <ScrollView
+          style={{ flex: 1 }}
           showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+          contentContainerStyle={{ paddingBottom: height * 0.15 }}
         >
-          <View className={`w-full mt-1`}>
+          <View className="w-full px-4">
             {activeTab === "interested" ? (
               <>
                 {interestedMembers?.length > 0 ? (
-                  <View className={`p-2`}>
-                    {interestedMembers?.map((i) => (
+                  <View className="p-2 flex justify-center items-center">
+                    {interestedMembers.map((i) => (
                       <ReqCard
                         key={i._id}
                         enrollId={i._id}
@@ -301,35 +307,47 @@ const GuestsEnrolled = () => {
                         enrollRef={enrollRef}
                         tourId={i.tourId}
                         bookingId={i._id}
-                        enrollingId={setEnrollingId}
                         setEnrollingId={setEnrollingId}
                       />
                     ))}
                   </View>
                 ) : (
-                  <View className="h-full w-full flex justify-center items-center py-24">
-                    <Ionicons
-                      size={28}
-                      color={"green"}
-                      name="trash-bin-outline"
-                    />
-                    <Text className="py-4 text-base font-medium text-green-700">
-                      No Interested Members
-                    </Text>
-                  </View>
+                  <NoDataMessage message="No Interested Members" />
                 )}
               </>
             ) : (
               <>
-                {pendingApproval.length > 0 ? (
-                  <View className={`p-2`}>
-                    {pendingApproval?.map((i) => (
+                {reservedMembers.length > 0 ? (
+                  <View className="p-2 flex justify-center items-center">
+                    <Text className="text-center text-lg font-semibold text-green-700">
+                      Reserved Members
+                    </Text>
+                    {reservedMembers.map((i) => (
                       <ReqCard
                         key={i._id}
                         bookingId={i._id}
-                        name={`${i.name}`}
-                        age={`${i.age}`}
-                        gender={`${i.gender}`}
+                        name={i.name}
+                        age={i.age}
+                        gender={i.gender}
+                      />
+                    ))}
+                  </View>
+                ) : (
+                  <NoDataMessage message="No Reserved Members" />
+                )}
+
+                {pendingApproval.length > 0 ? (
+                  <View className="p-2 flex justify-center items-center">
+                    <Text className="text-center text-lg font-semibold text-yellow-700">
+                      Pending Approvals
+                    </Text>
+                    {pendingApproval.map((i) => (
+                      <ReqCard
+                        key={i._id}
+                        bookingId={i._id}
+                        name={i.name}
+                        age={i.age}
+                        gender={i.gender}
                         interest={false}
                         reserve={true}
                         tourId={i.tourId}
@@ -338,16 +356,7 @@ const GuestsEnrolled = () => {
                     ))}
                   </View>
                 ) : (
-                  <View className="h-full w-full flex justify-center items-center py-24">
-                    <Ionicons
-                      size={28}
-                      color={"green"}
-                      name="trash-bin-outline"
-                    />
-                    <Text className="py-4 text-base font-medium text-green-700">
-                      No Reserve Requests
-                    </Text>
-                  </View>
+                  <NoDataMessage message="No Reserve Requests" />
                 )}
               </>
             )}
@@ -453,9 +462,16 @@ const GuestsEnrolled = () => {
           </View>
         </View>
       </Modalize>
-    </>
+    </SafeAreaView>
   );
 };
+
+const NoDataMessage = ({ message }) => (
+  <View className="h-60 w-full flex justify-center items-center">
+    <Ionicons size={30} color={"gray"} name="trash-bin-outline" />
+    <Text className="py-4 text-lg font-medium text-gray-700">{message}</Text>
+  </View>
+);
 
 const ReqCard = ({
   enrollId,
@@ -476,10 +492,10 @@ const ReqCard = ({
   };
 
   return (
-    <View className="flex flex-row w-full justify-between items-center bg-white p-1 rounded-lg px-3 shadow-xl shadow-black/50 mt-2 py-2">
+    <View style={{ width: width * 0.9 }} className="flex flex-row justify-between items-center bg-white p-1 rounded-lg px-3 shadow-xl shadow-black/50 mt-2 py-2">
       <Text className="w-[35%]">{name}</Text>
       <Text>
-        {age} Yrs, {gender.charAt(0)}
+        {age} Yrs, {gender?.charAt(0)}
       </Text>
       <>
         {reserve && (

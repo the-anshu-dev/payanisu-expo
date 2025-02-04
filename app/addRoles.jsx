@@ -61,6 +61,7 @@ const AddRoles = () => {
             </View>
           )}
           <DropDownPicker
+            placeholder="Select Role"
             open={open}
             value={value}
             items={roles}

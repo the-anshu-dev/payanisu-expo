@@ -25,10 +25,10 @@ const MemberCard = ({ data }) => {
 
   
   return (
-    <View className="h-48 w-full mt-4 bg-white shadow-xl shadow-black/70 rounded-lg justify-start items-center ">
+    <View className="h-48 w-full mt-4 bg-white shadow-xl shadow-black/70 rounded-lg justify-start items-center px-2 ">
       <View className="flex flex-row w-full justify-between items-center pr-3 ">
-        <View className="shadow-sm rounded-md py-2 px-2 space-y-1 ">
-          <Text className=" text-xs text-gray-600  ">Name</Text>
+        <View className="py-2 px-2 gap-1">
+          <Text className="text-xs text-gray-600  ">Name</Text>
           <Text className="text-lg">{data.name}</Text>
         </View>
         <TouchableOpacity activeOpacity={0.8} onPress={handleDeleteMember}>

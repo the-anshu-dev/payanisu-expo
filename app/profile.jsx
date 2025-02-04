@@ -95,6 +95,7 @@ const Profile = () => {
           <Text style={styles.titleText}>Personal Details</Text>
         </View>
         <LabelValue label={"Name"} value={profile?.name || user?.given_name} />
+        <LabelValue label={"Email"} value={profile?.email || user?.email} />
         <View style={styles.detailsContainer}>
           <View>
             <LabelValue
@@ -185,13 +186,13 @@ const AdminCard = ({ isAdminAccessEnabled, handleAccessChange, role }) => {
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 0 }}
       colors={["rgba(240, 101, 2, 0.2)", "rgba(0, 174, 255, 0.2)"]}
-      className="rounded-lg"
+      style={{ borderRadius: 10 }}
     >
-      <View className="w-full rounded-lg p-3 flex justify-center items-center py-5 space-y-4">
+      <View className="w-full rounded-lg p-3 flex justify-center items-center py-5 gap-4">
         <Text className="text-lg font-semibold text-yellow-600">
           You have {role} Access
         </Text>
-        <View className="w-full space-y-4">
+        <View className="w-full gap-4">
           <View className="flex flex-row w-full justify-between items-center px-2 border border-slate-400 py-2 rounded-lg">
             <Text className={"text-base font-semibold text-green-700"}>
               Turn on {role} Access
@@ -226,7 +227,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingBottom: height * 0.03,
-    paddingHorizontal: width * 0.06,
+    paddingHorizontal: width * 0.03,
   },
   titleText: {
     fontSize: width * 0.06,
@@ -250,7 +251,7 @@ const styles = StyleSheet.create({
   createProfileButton: {
     backgroundColor: "red",
     paddingVertical: height * 0.015,
-    paddingHorizontal: width * 0.2,
+    paddingHorizontal: width * 0.1,
     marginTop: height * 0.02,
     borderRadius: 10,
     alignItems: "center",
@@ -304,7 +305,7 @@ const styles = StyleSheet.create({
   },
   memberContainer: {
     marginTop: 16,
-    paddingHorizontal: width * 0.02
+    paddingHorizontal: width * 0.01
   },
   adminButton: {
     backgroundColor: "green",

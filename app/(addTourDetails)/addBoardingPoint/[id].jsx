@@ -57,7 +57,7 @@ const Page = () => {
   });
 
   const reverseGeocode = async (latitude, longitude) => {
-    const apiKey = "AIzaSyB_EhOLUePnuFPSOSSjRyAWZRUb2jWcQ8s";
+    const apiKey = "AIzaSyAWiZa_f1BStr9sDkGGJdDvmOV76-SVoFo";
     const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`;
 
     try {
@@ -237,7 +237,7 @@ const Page = () => {
                     handleLocationSelect(details)
                   }
                   query={{
-                    key: "AIzaSyB_EhOLUePnuFPSOSSjRyAWZRUb2jWcQ8s",
+                    key: "AIzaSyAWiZa_f1BStr9sDkGGJdDvmOV76-SVoFo",
                     language: "en",
                   }}
                   styles={{

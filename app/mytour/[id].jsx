@@ -62,9 +62,9 @@ const MyTourDetails = () => {
     }
   };
 
-  const translateX = useSharedValue(0);
   const tabWidth = width * 0.5;
   const barWidth = width * 0.35;
+  const translateX = useSharedValue(-tabWidth);
 
   const handleTabPress = (tab) => {
     setActiveTab(tab)
@@ -77,6 +77,7 @@ const MyTourDetails = () => {
 
   useEffect(() => {
     handleGetCheckPoints();
+    translateX.value = withSpring(activeTab === "checkPoints" ? 0 : -tabWidth);
   }, []);
 
   return (
@@ -86,7 +87,7 @@ const MyTourDetails = () => {
           <Pressable onPress={() => handleTabPress("tourInfo")}>
             <View style={{ width: tabWidth }} className="py-2">
               <Text className="text-center text-[15px] font-semibold">
-                Tour Information
+                Tour Details
               </Text>
             </View>
           </Pressable>
@@ -111,7 +112,7 @@ const MyTourDetails = () => {
             handleGetCheckPoints={handleGetCheckPoints}
           />
         ) : (
-          <MyTourCheckPoints />
+          <MyTourCheckPoints checkPoints={checkPoints} />
         )}
       </View>
       <View

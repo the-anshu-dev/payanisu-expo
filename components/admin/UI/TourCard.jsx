@@ -12,11 +12,11 @@ const TourCard = ({ tour }) => {
   return (
     <TouchableOpacity
       activeOpacity={0.9}
-      className={`w-full flex flex-1 justify-center items-center ${tour.status === false ? "bg-slate-300" : "bg-white"}  rounded-lg overflow-hidden shadow-xl shadow-black`}
+      className={`w-full flex flex-1 justify-center items-center ${tour.status === false ? "bg-slate-300" : "bg-white"}  rounded-lg overflow-hidden shadow-xl shadow-black `}
       onPress={() => router.push(`/tour/${tour?._id}`)}
     >
-      <View style={{ height: height * 0.18, width:"100%" }} className="flex flex-row justify-between p-2 ">
-        <View>
+      <View style={{ height: height * 0.16, width:"100%" }} className="flex flex-row justify-between p-3">
+        <View >
           <Text className="text-xl font-medium text-gray-700">
             {shorten(tour?.name, 20)}
           </Text>

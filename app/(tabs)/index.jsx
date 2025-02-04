@@ -13,6 +13,8 @@ import { useEffect, useState } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import { setTour } from "../../redux/slices/tourSlice";
 import { useDispatch } from "react-redux";
+import { useIsFocused } from "@react-navigation/native";
+import { setAdminAccessEnabled } from "../../redux/slices/userSlice";
 
 const { width, height } = Dimensions.get("window");
 
@@ -25,6 +27,12 @@ export default function HomeScreen() {
     const response = await fetch("https://www.google.com", { method: "HEAD" });
     setIsConnected(response.ok);
   };
+
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    dispatch(setAdminAccessEnabled(false));
+  }, [isFocused]);
 
   const getAllTours = async () => {
     try {

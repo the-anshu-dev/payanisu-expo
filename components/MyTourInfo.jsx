@@ -249,10 +249,10 @@ const MyTourInfo = ({ tour }) => {
                   className={`mt-1 font-semibold`}
                 >{`${boardingPointDate && format(new Date(boardingPointDate), "dd MMM yyyy")} - ${boardingPointTime && format(new Date(boardingPointTime), "hh:mm a")}`}</Text>
               </View>
-              <View className="flex flex-row justify-start space-x-4 items-center mt-2">
+              <View className="flex flex-row justify-between items-center mt-2">
                 <TouchableOpacity
                   activeOpacity={0.7}
-                  className="mt-3 flex flex-row justify-start items-center space-x-2"
+                  className="mt-3 flex flex-row justify-start items-center gap-2"
                 >
                   <Ionicons name="images" size={12} color={"green"} />
                   <Text className={`font-semibold text-xs text-green-600`}>
@@ -261,7 +261,7 @@ const MyTourInfo = ({ tour }) => {
                 </TouchableOpacity>
                 <TouchableOpacity
                   activeOpacity={0.7}
-                  className="mt-3 flex flex-row justify-start items-center space-x-2"
+                  className="mt-3 flex flex-row justify-start items-center gap-2"
                 >
                   <Ionicons name="compass" size={12} color={"green"} />
                   <Text className={`font-semibold text-xs text-green-600`}>
@@ -271,7 +271,7 @@ const MyTourInfo = ({ tour }) => {
                 <TouchableOpacity
                   onPress={() => router.push(`/bus-mates/${transportId}`)}
                   activeOpacity={0.7}
-                  className="mt-3 flex flex-row justify-start items-center space-x-2"
+                  className="mt-3 flex flex-row justify-start items-center gap-2"
                 >
                   <Ionicons name="compass" size={12} color={"green"} />
                   <Text className={`font-semibold text-xs text-green-600`}>

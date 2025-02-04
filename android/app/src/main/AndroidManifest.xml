@@ -23,7 +23,7 @@
     </intent>
   </queries>
   <application android:name=".MainApplication" android:label="@string/app_name" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher_round" android:allowBackup="true" android:usesCleartextTraffic="true" android:theme="@style/AppTheme" android:requestLegacyExternalStorage="true">
-    <meta-data android:name="com.mapbox.token" android:value="sk.eyJ1IjoiZGV2LXByaW5jZSIsImEiOiJjbTQ0azdpcWMwaHBsMmpxeGs3aGJkazVhIn0.TqNHhd71lV3U_dTX89-PTg"/>
+    <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyAWiZa_f1BStr9sDkGGJdDvmOV76-SVoFo"/>
     <meta-data android:name="expo.modules.updates.ENABLED" android:value="false"/>
     <meta-data android:name="expo.modules.updates.EXPO_UPDATES_CHECK_ON_LAUNCH" android:value="ALWAYS"/>
     <meta-data android:name="expo.modules.updates.EXPO_UPDATES_LAUNCH_WAIT_MS" android:value="0"/>
