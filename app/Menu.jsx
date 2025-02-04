@@ -113,16 +113,6 @@ const options = [
     route: "/updateProfile",
   },
   {
-    id: "pp",
-    name: "Privacy Policy",
-    route: "/privacyPolicy",
-  },
-  {
-    id: "tc",
-    name: "Terms and Conditions",
-    route: "/terms",
-  },
-  {
     id: "contact",
     name: "Contact Us",
     route: "/contact",
@@ -133,20 +123,25 @@ const options = [
     route: "/about",
   },
   {
-    id: "ntf",
-    name: "Notification",
-    route: "/notification",
+    id: "pp",
+    name: "Privacy Policy",
+    route: "/privacyPolicy",
   },
   {
-    id: "olh",
-    name: "Offline Location",
-    route: "/offline",
+    id: "tc",
+    name: "Terms and Conditions",
+    route: "/terms",
   },
-  {
-    id: "adm",
-    name: "Admin",
-    route: "/(admin)/tours",
-  },
+  // {
+  //   id: "ntf",
+  //   name: "Notification",
+  //   route: "/notification",
+  // },
+  // {
+  //   id: "olh",
+  //   name: "Offline Location",
+  //   route: "/offline",
+  // },
 ];
 
 const styles = StyleSheet.create({

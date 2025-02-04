@@ -12,14 +12,15 @@ import CarouselComponent from "@/components/CarouselComponent";
 import { useEffect, useState } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import { setTour } from "../../redux/slices/tourSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useIsFocused } from "@react-navigation/native";
-import { setAdminAccessEnabled } from "../../redux/slices/userSlice";
+import { setAdminAccessEnabled, setMembers } from "../../redux/slices/userSlice";
 
 const { width, height } = Dimensions.get("window");
 
 export default function HomeScreen() {
   const [isConnected, setIsConnected] = useState(true);
+  const { user } = useSelector((state) => state.user);
 
   const dispatch = useDispatch();
 
@@ -29,6 +30,32 @@ export default function HomeScreen() {
   };
 
   const isFocused = useIsFocused();
+
+  const handleGetMembers = async () => {
+    if (!user?.email) {
+      console.error("User email is not available.");
+      return;
+    }
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_BASE_URL}/api/member/get-member?email=${user.email}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.status !== 200) {
+        const text = await response.text();
+        throw new Error("Failed to fetch members.");
+      }
+      const data = await response.json();
+      dispatch(setMembers(data));
+    } catch (error) {
+      console.log("Error fetching members:", error);
+    }
+  };
 
   useEffect(() => {
     dispatch(setAdminAccessEnabled(false));
@@ -53,6 +80,7 @@ export default function HomeScreen() {
   useEffect(() => {
     checkNetworkStatus()
     getAllTours();
+    handleGetMembers();
   }, []);
 
   if (!isConnected) {

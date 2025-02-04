@@ -41,36 +41,47 @@ const DetailsScreen = () => {
 
   const { backpacks, checkinbagages, includeds, notincludeds } = tourData;
 
-  const [curatedMembers, setCuratedMembers] = useState(() => {
-    if (profile && user && id) {
-      return [
-        {
-          id: profile._id,
-          name: user?.given_name,
-          age: profile?.age,
-          gender: profile?.gender,
-          email: user.email,
-          tourId: id,
-          isTrekker: false,
-          noAccommodation: false,
-        },
-      ];
-    }
-    return [];
-  });
+  const [memberPreferences, setMemberPreferences] = useState({});
+
+  const handleCheckboxChange = (id, field) => {
+    setMemberPreferences((prev) => ({
+      ...prev,
+      [id]: { ...prev[id], [field]: !prev[id]?.[field] },
+    }));
+  };
+
+  const curatedMembers = useMemo(() => {
+    const existingMembers = members?.map((member) => ({
+      id: member._id,
+      name: member.name,
+      age: member.age,
+      gender: member.gender,
+      email: member.email,
+      tourId: id,
+      isTrekker: memberPreferences[member._id]?.isTrekker || false,
+      noAccommodation: memberPreferences[member._id]?.noAccommodation || false,
+    })) || [];
+
+    const selfMember = profile && user && id ? [{
+      id: profile._id,
+      name: user?.given_name,
+      age: profile?.age,
+      gender: profile?.gender,
+      email: user.email,
+      tourId: id,
+      isTrekker: memberPreferences[profile._id]?.isTrekker || false,
+      noAccommodation: memberPreferences[profile._id]?.noAccommodation || false,
+    }] : [];
+
+    const uniqueMembers = [...new Map([...selfMember, ...existingMembers].map(m => [m.id, m])).values()];
+
+    return uniqueMembers;
+  }, [members, profile, user, id, memberPreferences]);
 
   const reserveRef = useRef(null);
   const interestedRef = useRef(null);
 
   const dispatch = useDispatch();
-
-  const handleCheckboxChange = (id, field) => {
-    setCuratedMembers((prevData) =>
-      prevData.map((member) =>
-        member.id === id ? { ...member, [field]: !member[field] } : member
-      )
-    );
-  };
 
   const handleInterested = async () => {
     const body = {
@@ -103,31 +114,12 @@ const DetailsScreen = () => {
     }
   };
 
-  useEffect(() => {
-    if (members?.length > 0) {
-      const initialData = members.map((member) => ({
-        id: member._id,
-        name: member.name,
-        age: member.age,
-        gender: member.gender,
-        email: member.email,
-        tourId: id,
-        isTrekker: false,
-        noAccommodation: false,
-      }));
-      setCuratedMembers((prevMembers) => [...prevMembers, ...initialData]);
-    }
-  }, [members, id]);
-
   const handlePayNow = async () => {
     if (!tourData) return;
-
     const totalCost = curatedMembers.length * tourData.tour_cost;
-
     dispatch(setTourMembers(curatedMembers));
     dispatch(setTotalCost(totalCost));
-
-    router.push(`/payment?${id}`);
+    router.push(`/payment?id=${id}`);
   };
 
   const handleReserveButton = () => {
@@ -149,7 +141,6 @@ const DetailsScreen = () => {
       );
       return;
     }
-
     reserveRef.current.open();
   };
 
@@ -389,6 +380,7 @@ const DetailsScreen = () => {
               contentContainerStyle={{
                 paddingBottom: 150,
                 backgroundColor: "#f9f9f9",
+                paddingTop: 10,
               }}
               style={{ backgroundColor: "#f9f9f9" }}
             >
@@ -483,7 +475,6 @@ const styles = StyleSheet.create({
   },
   memberCardStyle: {
     padding: 10,
-    marginVertical: 10,
     borderRadius: 10,
     backgroundColor: "#fff",
     elevation: 5,
