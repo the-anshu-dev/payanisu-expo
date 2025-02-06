@@ -6,14 +6,12 @@ import {
   TouchableOpacity,
   Dimensions,
   Modal,
+  Share,
 } from "react-native";
-import React, { useState } from "react";
-import { Image } from "expo-image";
+import React, { useState, useRef } from "react";
 import { Checkbox } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 import * as Sharing from "expo-sharing";
-import * as FileSystem from "expo-file-system";
-import qr from "../assets/qr.png";
 import ShareIcon from "../assets/share.svg";
 import DownloadIcon from "../assets/downloadIcon.svg";
 import { useSelector } from "react-redux";
@@ -21,21 +19,26 @@ import { router, useLocalSearchParams } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
+import * as MediaLibrary from "expo-media-library";
+import QRCodeGenerator from "../components/admin/components/QRCodeGenerator";
+import ViewShot from "react-native-view-shot";
+import * as FileSystem from "expo-file-system";
+
 
 const { height, width } = Dimensions.get("window");
 
 const Payment = () => {
   const { id } = useLocalSearchParams();
   const { tourMembers, totalCost } = useSelector((state) => state.booking);
-
   const { tour } = useSelector((state) => state.tour);
-
   const bookingTour = tour?.find((t) => t._id === id);
 
   const [image, setImage] = useState(null);
   const [agree, setAgree] = useState(false);
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+
+  const qrRef = useRef();
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -44,6 +47,57 @@ const Payment = () => {
       quality: 1,
     });
     if (!result.canceled) setImage(result.assets[0]);
+  };
+
+  const upiLink = `upi://pay?pa=8090900602@ptyes&pn=Prince%20Chaurasia&am=${totalCost}.00&cu=INR&tn=Payment%20for%20services`;
+
+  const handleDownloadQr = async () => {
+    try {
+      const { status } = await MediaLibrary.requestPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert(
+          "Permission required",
+          "We need access to your media library to save the image."
+        );
+        return;
+      }
+  
+      const uri = await qrRef.current.capture();
+  
+      const filename = `${bookingTour?.name}_QRCode_${Date.now()}.png`;
+      const fileUri = FileSystem.documentDirectory + filename;
+  
+      await FileSystem.copyAsync({ from: uri, to: fileUri });
+  
+      const asset = await MediaLibrary.createAssetAsync(fileUri);
+      const album = await MediaLibrary.getAlbumAsync("Download");
+  
+      if (album == null) {
+        await MediaLibrary.createAlbumAsync("Download", asset, false);
+      } else {
+        await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
+      }
+  
+      Alert.alert("Success", `QR code saved as ${filename}`);
+    } catch (error) {
+      console.log("Failed to download image", error);
+      Alert.alert("Error", "Failed to download the image.");
+    }
+  };
+
+  const handleShareQr = async () => {
+    try {
+      const uri = await qrRef.current.capture();
+      const isAvailable = await Sharing.isAvailableAsync();
+      if (isAvailable) {
+        await Sharing.shareAsync(uri);
+      } else {
+        Alert.alert("Sharing not available", "Unable to share the QR code.");
+      }
+    } catch (error) {
+      console.log("Sharing failed", error);
+      Alert.alert("Error", "Failed to share the QR code.");
+    }
   };
 
   const handleReserveSeats = async () => {
@@ -82,13 +136,6 @@ const Payment = () => {
     }
   };
 
-  const handleDownloadQR = async () => {
-    return
-    // const fileUri = FileSystem.documentDirectory + "qr_code.png";
-    // await FileSystem.downloadAsync(qr, fileUri);
-    // Alert.alert("Downloaded!", "QR Code saved to your device.");
-  };
-
   return (
     <SafeAreaView style={{ flex: 1 }} edges={["bottom", "left", "right"]}>
       <View className="h-full w-full flex justify-between px-3">
@@ -96,15 +143,17 @@ const Payment = () => {
           <View className="w-full flex justify-center items-center py-6">
             <Text className="text-xl font-semibold">{bookingTour?.name}</Text>
           </View>
-          <View className="flex justify-center items-center p-2">
-            <Image source={qr} style={{ width: width * 0.7, height: height * 0.3 }} contentFit="contain" />
-          </View>
+          <ViewShot ref={qrRef} options={{ format: "png", quality: 0.9 }}>
+            <View className="flex justify-center items-center w-full">
+              <QRCodeGenerator upiLink={upiLink} />
+            </View>
+          </ViewShot>
           <View className="flex flex-row justify-between items-center w-full px-6 mt-4">
-            <TouchableOpacity onPress={() => setModalVisible(true)} className="flex flex-row items-center">
+            <TouchableOpacity onPress={handleShareQr} className="flex flex-row items-center">
               <ShareIcon height={20} width={20} />
               <Text className="text-base pl-3">Share QR Code</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={handleDownloadQR} className="flex flex-row items-center">
+            <TouchableOpacity onPress={handleDownloadQr} className="flex flex-row items-center">
               <DownloadIcon height={25} width={20} />
               <Text className="text-base pl-3">Download QR Code</Text>
             </TouchableOpacity>
@@ -122,7 +171,7 @@ const Payment = () => {
               </View>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity onPress={handleDownloadQR} className="flex flex-row items-center mt-2 px-3 py-1">
+          <TouchableOpacity onPress={handleDownloadQr} className="flex flex-row items-center mt-2 px-3 py-1">
             <DownloadIcon height={25} width={20} />
             <Text className="text-base pl-3">Download Consent Form</Text>
           </TouchableOpacity>

@@ -1,12 +1,11 @@
-import { View, Text } from "react-native";
 import React from "react";
-import QRCode from "react-native-qrcode";
+import { View } from "react-native";
+import QRCode from "react-native-qrcode-svg";
 
-const QRCodeGenerator = ({ id }) => {
+const QRCodeGenerator = ({upiLink}) => {
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text style={{ marginBottom: 10 }}>Scan this QR code:</Text>
-      <QRCode value={id} size={200} />
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#fff", borderWidth:1, padding:10, borderRadius:10 }}>
+      <QRCode value={upiLink} size={200} />
     </View>
   );
 };
