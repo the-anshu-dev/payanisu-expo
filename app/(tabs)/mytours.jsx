@@ -46,7 +46,6 @@ const MyTours = () => {
       dispatch(setBookedTour(data.data));
     } catch (error) {
       console.error("Error fetching booked tours:", error);
-
       Alert.alert("Error", error.message || "Failed to fetch booked tours. Please check your network connection.");
     } finally {
       setLoading(false);

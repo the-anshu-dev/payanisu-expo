@@ -12,85 +12,81 @@ const Map = () => {
     const [isOffline, setIsOffline] = useState(false);
     const [countdown, setCountdown] = useState(10);
 
-    const requestLocationPermissions = async () => {
-        const { status } = await Location.requestForegroundPermissionsAsync();
-        return status === 'granted';
-    };
-
-    const checkGPSEnabled = async () => {
-        const isGPSEnabled = await Location.hasServicesEnabledAsync();
-        return isGPSEnabled;
-    };
-
-    const ensureGPSEnabled = async () => {
-        const isGPSEnabled = await checkGPSEnabled();
-        if (!isGPSEnabled) {
-            Alert.alert(
-                'Location Services Disabled',
-                'Please enable GPS to continue using this feature.',
-                [
-                    {
-                        text: 'Cancel',
-                        style: 'cancel',
-                    },
-                    {
-                        text: 'Open Settings',
-                        onPress: () => {
-                            if (Platform.OS === 'android') {
-                                Linking.openSettings();
-                            } else {
-                                Alert.alert(
-                                    'Manual Action Required',
-                                    'Go to Settings > Privacy > Location Services to enable GPS.'
-                                );
-                            }
-                        },
-                    },
-                ]
-            );
-        }
-        return isGPSEnabled;
-    };
-
-    const checkNetworkStatus = async () => {
-        try {
-            const networkState = await Network.getNetworkStateAsync();
-            setIsOffline(!networkState.isConnected);
-        } catch (error) {
-            console.log('Network status check failed', error);
-            setIsOffline(true);
-        }
-    };
-
-    const getCurrentLocation = async () => {
-        const hasPermission = await requestLocationPermissions();
-        if (!hasPermission) return;
-
-        const isGPSEnabled = await ensureGPSEnabled();
-        if (!isGPSEnabled) return;
-
-        try {
-            const location = await Location.getCurrentPositionAsync({});
-            const { latitude, longitude } = location.coords;
-            setLocation({ latitude, longitude, timestamp: new Date().toISOString() });
-        } catch (error) {
-            console.error('Location tracking error', error);
-        }
-    };
-
     useEffect(() => {
-        const locationTracker = setInterval(() => {
-            checkNetworkStatus();
-            getCurrentLocation();
-            setCountdown(10);
-        }, 10000);
+        let locationSubscription;
+        let countdownTimer;
 
-        const countdownTimer = setInterval(() => {
-            setCountdown((prev) => (prev > 0 ? prev - 1 : 0));
+        const requestLocationPermissions = async () => {
+            const { status } = await Location.requestForegroundPermissionsAsync();
+            return status === 'granted';
+        };
+
+        const ensureGPSEnabled = async () => {
+            const isGPSEnabled = await Location.hasServicesEnabledAsync();
+            if (!isGPSEnabled) {
+                Alert.alert(
+                    'Location Services Disabled',
+                    'Please enable GPS to continue using this feature.',
+                    [
+                        { text: 'Cancel', style: 'cancel' },
+                        {
+                            text: 'Open Settings',
+                            onPress: () => {
+                                if (Platform.OS === 'android') {
+                                    Linking.openSettings();
+                                } else {
+                                    Alert.alert(
+                                        'Manual Action Required',
+                                        'Go to Settings > Privacy > Location Services to enable GPS.'
+                                    );
+                                }
+                            },
+                        },
+                    ]
+                );
+            }
+            return isGPSEnabled;
+        };
+
+        const checkNetworkStatus = async () => {
+            try {
+                const networkState = await Network.getNetworkStateAsync();
+                setIsOffline(!networkState.isConnected);
+            } catch (error) {
+                console.log('Network status check failed', error);
+                setIsOffline(true);
+            }
+        };
+
+        const startLocationTracking = async () => {
+            const hasPermission = await requestLocationPermissions();
+            if (!hasPermission) return;
+
+            const isGPSEnabled = await ensureGPSEnabled();
+            if (!isGPSEnabled) return;
+
+            locationSubscription = await Location.watchPositionAsync(
+                {
+                    accuracy: Location.Accuracy.High,
+                    timeInterval: 10000, 
+                    distanceInterval: 5,
+                },
+                (location) => {
+                    const { latitude, longitude } = location.coords;
+                    setLocation({ latitude, longitude, timestamp: new Date().toISOString() });
+                }
+            );
+        };
+
+        startLocationTracking();
+        checkNetworkStatus();
+
+        countdownTimer = setInterval(() => {
+            setCountdown((prev) => (prev > 0 ? prev - 1 : 10));
         }, 1000);
 
         return () => {
-            clearInterval(locationTracker);
+            if (locationSubscription) locationSubscription.remove();
             clearInterval(countdownTimer);
         };
     }, []);
@@ -103,17 +99,17 @@ const Map = () => {
                         <View className="rounded-md overflow-hidden h-full">
                             <MapView
                                 style={styles.map}
-                                initialRegion={{
+                                region={{
                                     latitude: location.latitude,
                                     longitude: location.longitude,
-                                    latitudeDelta: 0.0922,
-                                    longitudeDelta: 0.0421,
+                                    latitudeDelta: 0.01,
+                                    longitudeDelta: 0.01,
                                 }}
                             >
                                 <Marker
                                     coordinate={{
                                         latitude: location.latitude,
-                                        longitude: location.longitude
+                                        longitude: location.longitude,
                                     }}
                                     title="Current Location"
                                     description={`Status: ${isOffline ? 'Offline' : 'Online'}`}
@@ -123,17 +119,18 @@ const Map = () => {
                     </View>
                 )}
                 <View style={styles.timerContainer}>
-                    <Text style={styles.timerText}>
-                        Location updates in : {countdown}
-                    </Text>
+                    <Text style={styles.timerText}>Location updates in: {countdown}s</Text>
                 </View>
                 <View style={styles.infoContainer}>
-                    <View style={{ elevation: 1 }} className="flex flex-row justify-between items-center px-5 w-full py-2 bg-white rounded-lg">
+                    <View style={styles.infoBox}>
                         <Text className="font-semibold">
-                            Latitude : {location?.latitude.toFixed(4) || 'N/A'}
+                            Latitude: {location?.latitude.toFixed(4) || 'N/A'}
                         </Text>
                         <Text className="font-semibold">
-                            Longitude : {location?.longitude.toFixed(4) || 'N/A'}
+                            Longitude: {location?.longitude.toFixed(4) || 'N/A'}
+                        </Text>
+                        <Text className="font-semibold">
+                            Network Status: {isOffline ? 'Offline' : 'Online'}
                         </Text>
                     </View>
                 </View>
@@ -149,7 +146,7 @@ const styles = StyleSheet.create({
     map: {
         width: '100%',
         height: '100%',
-        borderRadius: 10
+        borderRadius: 10,
     },
     timerContainer: {
         width: width,
@@ -170,9 +167,20 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    infoBox: {
+        elevation: 1,
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: 10,
+        width: '90%',
+        backgroundColor: 'white',
+        borderRadius: 10,
+    },
 });
 
 export default Map;
+
 
 // import React, { useState, useEffect } from 'react';
 // import { View, Text, StyleSheet, Dimensions } from 'react-native';

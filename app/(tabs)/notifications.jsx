@@ -26,7 +26,7 @@ const NotificationsScreen = () => {
       );
       setData(newData);
     } catch (error) {
-      console.error("Notification Fetch Error:", error);
+      console.log("Notification Fetch Error:", error);
       Alert.alert("Oops", "Something went wrong. Please try again later.");
     } finally {
       setRefreshing(false);

@@ -6,7 +6,6 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Alert,
 } from "react-native";
 import CarouselComponent from "@/components/CarouselComponent";
 import { useEffect, useState } from "react";
@@ -74,8 +73,7 @@ export default function HomeScreen() {
       const tour = await response.json();
       dispatch(setTour(tour));
     } catch (error) {
-      Alert.alert("Oops", "Something went wrong.");
-      console.error("Error fetching tours:", error);
+      console.log("Error fetching tours:", error);
     }
   };
 
@@ -83,7 +81,13 @@ export default function HomeScreen() {
     checkNetworkStatus()
     getAllTours();
     handleGetMembers();
+    const interval = setInterval(() => {
+      checkNetworkConnection();
+    }, 5000);
+
+    return () => clearInterval(interval);
   }, []);
+
 
   if (!isConnected) {
     return (
@@ -106,7 +110,7 @@ export default function HomeScreen() {
               <TouchableOpacity
                 activeOpacity={0.7}
                 style={styles.retryButton}
-                onPress={()=>router.push("/(offlinemode)/mytours")}
+                onPress={() => router.push("/(offlinemode)/mytours")}
               >
                 <Text style={styles.retryButtonText}>Offline Mode</Text>
               </TouchableOpacity>
