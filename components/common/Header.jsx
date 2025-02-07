@@ -21,14 +21,20 @@ const Header = () => {
         <View
           className={`h-full flex justify-between items-center flex-row px-5 py-2`}
         >
-          <TouchableOpacity
-            onPress={() => router.push(route)}
-            activeOpacity={0.7}
-            className="flex flex-row gap-2 justify-center items-center h-full w-[50%]"
-          >
-            <FontAwesome6 name="bars" size={28} color="green" />
-            <Logo width={width * 0.35} height={height * 0.04} />
-          </TouchableOpacity>
+          <View className="flex flex-row gap-3 w-[50%] justify-center items-center">
+            <TouchableOpacity
+              onPress={() => router.push(route)}
+              activeOpacity={0.7}
+            >
+              <FontAwesome6 name="bars" size={28} color="green" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => router.push("/(tabs)")}
+              activeOpacity={0.7}
+            >
+              <Logo width={width * 0.35} height={height * 0.04} />
+            </TouchableOpacity>
+          </View>
           <View>
             <View className="h-12 w-12 rounded-full border-2 border-green-700 p-0.5 overflow-hidden">
               <Image source={user?.picture} style={{ height: "100%", width: "100%", borderRadius: 50 }} />

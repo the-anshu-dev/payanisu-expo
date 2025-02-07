@@ -132,16 +132,16 @@ const options = [
     name: "Terms and Conditions",
     route: "/terms",
   },
-  // {
-  //   id: "ntf",
-  //   name: "Notification",
-  //   route: "/notification",
-  // },
-  // {
-  //   id: "olh",
-  //   name: "Offline Location",
-  //   route: "/offline",
-  // },
+  {
+    id: "ntf",
+    name: "Notification",
+    route: "/notification",
+  },
+  {
+    id: "olh",
+    name: "Offline Mode",
+    route: "/(offlinemode)/mytours",
+  },
 ];
 
 const styles = StyleSheet.create({

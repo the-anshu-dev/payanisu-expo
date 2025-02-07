@@ -6,7 +6,7 @@ import walk from "../assets/walk.gif";
 
 export default function NotFoundScreen() {
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }} edges={["bottom", "left", "right", "top"]}>
       <View className="h-screen w-full items-center justify-center">
         <Image source={walk} style={{ height: 200, width: 200 }} />
       </View>

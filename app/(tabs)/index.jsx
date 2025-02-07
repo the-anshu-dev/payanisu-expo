@@ -15,6 +15,8 @@ import { setTour } from "../../redux/slices/tourSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useIsFocused } from "@react-navigation/native";
 import { setAdminAccessEnabled, setMembers } from "../../redux/slices/userSlice";
+import { checkNetworkStatus } from "../../utils/offlineLocationHelper";
+import { router } from "expo-router";
 
 const { width, height } = Dimensions.get("window");
 
@@ -24,12 +26,12 @@ export default function HomeScreen() {
 
   const dispatch = useDispatch();
 
-  const checkNetworkStatus = async () => {
-    const response = await fetch("https://www.google.com", { method: "HEAD" });
-    setIsConnected(response.ok);
-  };
-
   const isFocused = useIsFocused();
+
+  const checkNetworkConnection = async () => {
+    const status = await checkNetworkStatus();
+    setIsConnected(status);
+  };
 
   const handleGetMembers = async () => {
     if (!user?.email) {
@@ -93,12 +95,22 @@ export default function HomeScreen() {
             <Text style={styles.modalSubText}>
               Please check your network connection
             </Text>
-            <TouchableOpacity
-              style={styles.retryButton}
-              onPress={checkNetworkConnection}
-            >
-              <Text style={styles.retryButtonText}>Retry</Text>
-            </TouchableOpacity>
+            <View className="flex flex-row justify-between w-full items-center gap-4 mt-4">
+              <TouchableOpacity
+                activeOpacity={0.7}
+                style={styles.retryButton}
+                onPress={checkNetworkConnection}
+              >
+                <Text style={styles.retryButtonText}>Retry</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                style={styles.retryButton}
+                onPress={()=>router.push("/(offlinemode)/mytours")}
+              >
+                <Text style={styles.retryButtonText}>Offline Mode</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </SafeAreaView>
@@ -173,7 +185,7 @@ const styles = StyleSheet.create({
   modalText: {
     fontSize: 24,
     fontWeight: "bold",
-    color: "red",
+    color: "green",
     marginTop: 10,
   },
   modalSubText: {
@@ -183,11 +195,13 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   retryButton: {
-    backgroundColor: "blue",
+    backgroundColor: "green",
+    width: "45%",
     paddingVertical: 10,
-    paddingHorizontal: 20,
     borderRadius: 5,
-    marginTop: 20,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
   retryButtonText: {
     color: "white",

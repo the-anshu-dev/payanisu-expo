@@ -15,6 +15,7 @@ import { setBookedTour } from "../../redux/slices/tourSlice";
 import MyTourCard from "../../components/UI/MyTourCard";
 import LoginReqCard from "../../components/UI/LoginReqCard.jsx";
 import { SafeAreaView } from "react-native-safe-area-context";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const { width, height } = Dimensions.get("window");
 
@@ -41,6 +42,7 @@ const MyTours = () => {
       }
 
       const data = await response.json();
+      await AsyncStorage.setItem("bookedTours", JSON.stringify(data.data));
       dispatch(setBookedTour(data.data));
     } catch (error) {
       console.error("Error fetching booked tours:", error);
@@ -50,7 +52,6 @@ const MyTours = () => {
       setLoading(false);
     }
   }, [user, dispatch]);
-
 
   useEffect(() => {
     getAllBookedTours();

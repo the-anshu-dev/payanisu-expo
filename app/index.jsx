@@ -5,7 +5,7 @@ import { setProfile, setRole, setUser } from "../redux/slices/userSlice";
 import Loader from "../components/common/Loader";
 import { Redirect } from "expo-router";
 import { Alert } from "react-native";
-import { setTour } from "../redux/slices/tourSlice";
+import { setBookedTour, setTour } from "../redux/slices/tourSlice";
 import * as SplashScreen from "expo-splash-screen";
 
 SplashScreen.preventAutoHideAsync();
@@ -31,7 +31,6 @@ const Index = () => {
         }),
       ]);
 
-
       if (roleResponse.ok) {
         const roleData = await roleResponse.json();
         dispatch(setRole(roleData));
@@ -43,6 +42,7 @@ const Index = () => {
           dispatch(setProfile(profileData));
         }
       }
+      getAllBookedTours(email);
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
@@ -77,10 +77,29 @@ const Index = () => {
         throw new Error("Failed to fetch tours due to server error.");
       }
       const tour = await response.json();
+      await AsyncStorage.setItem("tours", JSON.stringify(tour));
       dispatch(setTour(tour));
     } catch (error) {
       Alert.alert("Error", error.message || "Something went wrong.");
       console.log("Error fetching tours:", error);
+    }
+  };
+
+  const getAllBookedTours = async (email) => {
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_BASE_URL}/api/booking/get-my-tour?email=${email}`
+      );
+      if (!response.ok) {
+        console.error("Failed to fetch booked tours", response);
+        throw new Error("Failed to fetch booked tours.");
+      }
+      const data = await response.json();
+      await AsyncStorage.setItem("bookedTours", JSON.stringify(data.data));
+      dispatch(setBookedTour(data.data));
+    } catch (error) {
+      console.error("Error fetching booked tours:", error);
+      Alert.alert("Error", error.message || "Failed to fetch booked tours. Please check your network connection.");
     }
   };
 

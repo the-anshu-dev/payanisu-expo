@@ -10,11 +10,10 @@ const { width, height } = Dimensions.get("window")
 
 const MyTourCard = ({ tour, status }) => {
 
-  const images = tour.images.filter((i) => !i.type).map((i) => i.url);
+  const images = tour?.images?.filter((i) => !i.type).map((i) => i.url);
 
   const onClickHandler = () => {
     const clickEnabled = status === 1 ? true : false;
-
     if (clickEnabled) {
       router.push(`/mytour/${tour?._id}`);
     } else {

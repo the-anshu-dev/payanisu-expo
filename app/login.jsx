@@ -116,11 +116,13 @@ const Login = () => {
         const { accessToken } = response.authentication;
         await getUserProfile(accessToken);
         router.replace("(tabs)");
+      } else if (response?.type === "dismiss") {
+        setSessionActive(false);
       }
     };
     fetchProfile();
   }, [response]);
-
+  
   const handleLogin = () => {
     if (!sessionActive) {
       setSessionActive(true);
