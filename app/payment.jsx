@@ -23,6 +23,7 @@ import * as MediaLibrary from "expo-media-library";
 import QRCodeGenerator from "../components/admin/components/QRCodeGenerator";
 import ViewShot from "react-native-view-shot";
 import * as FileSystem from "expo-file-system";
+import { Image } from "expo-image";
 
 
 const { height, width } = Dimensions.get("window");
@@ -61,23 +62,23 @@ const Payment = () => {
         );
         return;
       }
-  
+
       const uri = await qrRef.current.capture();
-  
+
       const filename = `${bookingTour?.name}_QRCode_${Date.now()}.png`;
       const fileUri = FileSystem.documentDirectory + filename;
-  
+
       await FileSystem.copyAsync({ from: uri, to: fileUri });
-  
+
       const asset = await MediaLibrary.createAssetAsync(fileUri);
       const album = await MediaLibrary.getAlbumAsync("Download");
-  
+
       if (album == null) {
         await MediaLibrary.createAlbumAsync("Download", asset, false);
       } else {
         await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
       }
-  
+
       Alert.alert("Success", `QR code saved as ${filename}`);
     } catch (error) {
       console.log("Failed to download image", error);
@@ -165,11 +166,24 @@ const Payment = () => {
           </View>
           <View className="flex justify-center items-center mt-4 w-full">
             <Text>Please Upload screenshot post payment</Text>
-            <TouchableOpacity activeOpacity={0.6} onPress={pickImage} style={{ width: "100%" }}>
-              <View className="border-2 h-32 rounded-xl mt-3 border-green-600 flex justify-center items-center">
-                <Text className="text-green-800">Upload your payment proof</Text>
-              </View>
-            </TouchableOpacity>
+            {
+              image ? (
+                <View className="w-full flex justify-center items-center mt-2 border border-green-600 rounded-lg p-2 relative">
+                  <Image
+                    contentFit="contain"
+                    source={{ uri: image.uri }}
+                    style={{ width: width - 40, height: 200 }}
+                  />
+                  <TouchableOpacity activeOpacity={0.8} onPress={() => setImage(null)} className="absolute top-2 right-2 flex justify-center items-center">
+                    <Ionicons name="close-circle" size={28} color="red" />
+                  </TouchableOpacity>
+                </View>
+              ) : <TouchableOpacity activeOpacity={0.6} onPress={pickImage} style={{ width: "100%" }}>
+                <View className="border-2 h-36 rounded-xl mt-3 border-green-600 flex justify-center items-center">
+                  <Text className="text-green-800">Upload your payment proof</Text>
+                </View>
+              </TouchableOpacity>
+            }
           </View>
           <TouchableOpacity onPress={handleDownloadQr} className="flex flex-row items-center mt-2 px-3 py-1">
             <DownloadIcon height={25} width={20} />
@@ -203,7 +217,7 @@ const Payment = () => {
                 <Text className="text-green-700 font-semibold text-base">Email</Text>
               </TouchableOpacity>
             </View>
-            <TouchableOpacity className="mt-4 flex justify-end items-end px-2 mt-8" onPress={() => setModalVisible(false)}>
+            <TouchableOpacity className="mt-8 flex justify-end items-end px-2" onPress={() => setModalVisible(false)}>
               <Text className="text-red-600 text-center text-base">Close</Text>
             </TouchableOpacity>
           </View>

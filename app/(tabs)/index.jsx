@@ -6,6 +6,7 @@ import {
   View,
   Text,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import CarouselComponent from "@/components/CarouselComponent";
 import { useEffect, useState } from "react";
@@ -16,6 +17,7 @@ import { useIsFocused } from "@react-navigation/native";
 import { setAdminAccessEnabled, setMembers } from "../../redux/slices/userSlice";
 import { checkNetworkStatus } from "../../utils/offlineLocationHelper";
 import { router } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const { width, height } = Dimensions.get("window");
 
@@ -58,24 +60,26 @@ export default function HomeScreen() {
     }
   };
 
-  useEffect(() => {
-    dispatch(setAdminAccessEnabled(false));
-  }, [isFocused]);
-
   const getAllTours = async () => {
     try {
       const response = await fetch(
         `${process.env.EXPO_PUBLIC_BASE_URL}/api/tour/get-alltours`
       );
       if (!response.ok) {
-        throw new Error("Failed to fetch tours");
+        throw new Error("Failed to fetch tours due to server error.");
       }
       const tour = await response.json();
+      await AsyncStorage.setItem("tours", JSON.stringify(tour));
       dispatch(setTour(tour));
     } catch (error) {
+      Alert.alert("Error", error.message || "Something went wrong.");
       console.log("Error fetching tours:", error);
     }
   };
+
+  useEffect(() => {
+    dispatch(setAdminAccessEnabled(false));
+  }, [isFocused]);
 
   useEffect(() => {
     checkNetworkStatus()

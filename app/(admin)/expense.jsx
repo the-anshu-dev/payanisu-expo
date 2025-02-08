@@ -14,7 +14,7 @@ import { Modalize } from "react-native-modalize";
 import { Ionicons } from "@expo/vector-icons";
 import { shorten } from "../../components/UI/PostComponent";
 import DropDownPicker from "react-native-dropdown-picker";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import * as ImagePicker from "expo-image-picker";
 import { exportDataToExcel, formatDate } from "../../utils/helpers.js";
 import { Image } from "expo-image";
@@ -23,8 +23,10 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { format as formatDateFns } from "date-fns";
 import LabelValue from "../../components/UI/LabelValue.jsx";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { setTour } from "../../redux/slices/tourSlice.js";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const { width, height } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 
 const expense = () => {
   const { tour } = useSelector((state) => state.tour);
@@ -33,6 +35,8 @@ const expense = () => {
   const toursDataForDropdown = tour.map((t) => {
     return { label: t.name, value: t._id };
   });
+
+  const dispatch = useDispatch();
 
   const addExpenseDetailRef = useRef(null);
   const showExpenseDetailRef = useRef(null);
@@ -62,6 +66,23 @@ const expense = () => {
   const [tours, setTours] = useState(toursDataForDropdown);
 
   const [refresh, setRefresh] = useState(false);
+
+  const getAllTours = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_BASE_URL}/api/tour/get-alltours`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch tours due to server error.");
+      }
+      const tour = await response.json();
+      await AsyncStorage.setItem("tours", JSON.stringify(tour));
+      dispatch(setTour(tour));
+    } catch (error) {
+      Alert.alert("Error", error.message || "Something went wrong.");
+      console.log("Error fetching tours:", error);
+    }
+  };
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -130,12 +151,6 @@ const expense = () => {
       setDate(formatDateFns(selectedDate, "yyyy-MM-dd"));
     }
   };
-
-  useEffect(() => {
-    if (currentTour) {
-      fetchExpense();
-    }
-  }, [currentTour]);
 
   const fetchExpense = async () => {
     const url = `${process.env.EXPO_PUBLIC_BASE_URL}/api/expanse/get-expanses?id=${currentTour}`;
@@ -216,10 +231,21 @@ const expense = () => {
       if (currentTour) {
         fetchExpense();
       }
+      await getAllTours();
     } finally {
       setRefresh(false);
     }
   };
+
+  useEffect(() => {
+    getAllTours();
+  }, [])
+
+  useEffect(() => {
+    if (currentTour) {
+      fetchExpense();
+    }
+  }, [currentTour]);
 
   return (
     <SafeAreaView edges={["left", "right", "bottom"]} style={{ flex: 1 }}>

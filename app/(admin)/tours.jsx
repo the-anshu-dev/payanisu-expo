@@ -6,12 +6,15 @@ import {
   Dimensions,
   StyleSheet,
   RefreshControl,
+  Alert,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TourCard from "../../components/admin/UI/TourCard";
 import { router } from "expo-router";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { SafeAreaView } from "react-native-safe-area-context";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { setTour } from "../../redux/slices/tourSlice";
 
 const { width, height } = Dimensions.get("window");
 
@@ -20,13 +23,37 @@ const Tours = () => {
 
   const [refresh, setRefresh] = useState(false);
 
-  const onRefresh = () => {
+  const dispatch = useDispatch();
+
+  const getAllTours = async () => {
     try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_BASE_URL}/api/tour/get-alltours`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch tours due to server error.");
+      }
+      const tour = await response.json();
+      await AsyncStorage.setItem("tours", JSON.stringify(tour));
+      dispatch(setTour(tour));
+    } catch (error) {
+      Alert.alert("Error", error.message || "Something went wrong.");
+      console.log("Error fetching tours:", error);
+    }
+  };
+
+  const onRefresh = async () => {
+    try {
+      await getAllTours();
       setRefresh(true);
     } finally {
       setRefresh(false);
     }
   };
+
+  useEffect(() => {
+    getAllTours();
+  }, []);
 
   return (
     <SafeAreaView style={{ flex: 1 }} edges={["left", "right", "bottom"]}>
@@ -76,7 +103,7 @@ const styles = StyleSheet.create({
     width: width,
     paddingHorizontal: 15,
     paddingVertical: 10,
-    gap:15,
+    gap: 15,
   },
   noToursCard: {
     paddingVertical: height * 0.02,

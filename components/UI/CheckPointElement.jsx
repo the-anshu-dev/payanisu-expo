@@ -118,28 +118,13 @@ const CheckPointElement = ({ points, index, handleGetCheckPoints }) => {
           <View style={styles.qrIconContainer}>
             {checkInLoading ? (
               <ActivityIndicator color="green" size={"small"} />
-            ) : (
-              <>
-                {points.checked ? (
-                  <Ionicons
-                    name="checkmark-circle-outline"
-                    size={32}
-                    color={"green"}
-                  />
-                ) : (
-                  <TouchableOpacity
-                    activeOpacity={0.6}
-                    onPress={handleQRCodePress}
-                  >
-                    <Ionicons
-                      name="qr-code-outline"
-                      size={32}
-                      color={"green"}
-                    />
-                  </TouchableOpacity>
-                )}
-              </>
-            )}
+            ) : points.checked ? (
+              <Ionicons name="checkmark-circle-outline" size={32} color={"green"} />
+            ) : points.activated ? (
+              <TouchableOpacity activeOpacity={0.6} onPress={handleQRCodePress} className="border-2 border-green-700 rounded-full px-2 ">
+                <Text className="font-semibold text-green-700 text-xl">Scan QR</Text>
+              </TouchableOpacity>
+            ) : <Text className="text-red-400 font-semibold border px-2 py-1 rounded-full border-red-400">In-active</Text>}
           </View>
         </View>
         <View style={styles.descriptionContainer}>
@@ -203,7 +188,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   checkpointInfo: {
-    width: "80%",
+    width: "70%",
   },
   checkpointText: {
     paddingVertical: 4,
@@ -214,7 +199,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   qrIconContainer: {
-    width: "20%",
+    width: "30%",
     justifyContent: "center",
     alignItems: "center",
   },

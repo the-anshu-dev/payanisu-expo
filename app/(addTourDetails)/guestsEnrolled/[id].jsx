@@ -66,15 +66,6 @@ const GuestsEnrolled = () => {
     setEnrollingDetails(enrollingUser);
   }, [enrollingId]);
 
-  const springConfig = {
-    damping: 20,
-    stiffness: 100,
-    mass: 1,
-    overshootClamping: true,
-    restDisplacementThreshold: 0.01,
-    restSpeedThreshold: 0.01,
-  };
-
   const tabWidth = width * 0.5;
   const barWidth = width * 0.35;
   const translateX = useSharedValue(-tabWidth);
@@ -373,7 +364,7 @@ const GuestsEnrolled = () => {
         }}
       >
         <View className="flex justify-center items-center px-4">
-          <Text className="text-lg font-medium py-3">Onboarding Trekkers</Text>
+          <Text className="text-xl font-bold py-5">Onboarding Trekkers</Text>
           <View className="w-full border border-gray-500 p-1 rounded-lg">
             <Text className="text-sm text-gray-600">Tour</Text>
             <Text className="text-base">
@@ -381,25 +372,25 @@ const GuestsEnrolled = () => {
               {formatDate(currentTour.tour_end)} ]
             </Text>
           </View>
-          <View className="w-full border border-gray-500 p-1 rounded-lg mt-3">
+          <View className="w-full border border-gray-500 p-2 rounded-lg mt-3">
             <Text className="text-sm text-gray-600">Name</Text>
             <Text className="text-base">
               {enrollingDetails?.profileData?.name}
             </Text>
           </View>
-          <View className="w-full border border-gray-500 p-1 rounded-lg mt-3">
+          <View className="w-full border border-gray-500 p-2 rounded-lg mt-3">
             <Text className="text-sm text-gray-600">Age</Text>
             <Text className="text-base">
               {enrollingDetails?.profileData?.age}
             </Text>
           </View>
-          <View className="w-full border border-gray-500 p-1 rounded-lg mt-3">
+          <View className="w-full border border-gray-500 p-2 rounded-lg mt-3">
             <Text className="text-sm text-gray-600">Gender</Text>
             <Text className="text-base">
               {enrollingDetails?.profileData?.gender}
             </Text>
           </View>
-          <View className="w-full border border-gray-500 p-1 rounded-lg mt-3">
+          <View className="w-full border border-gray-500 p-2 rounded-lg mt-3">
             <Text className="text-sm text-gray-600">Contact</Text>
             <Text className="text-base">
               {enrollingDetails?.profileData?.contact}
@@ -433,7 +424,7 @@ const GuestsEnrolled = () => {
             />
           </View>
           {isPaymentRecieved && (
-            <View className="w-full border border-gray-500 p-1 rounded-lg mt-3">
+            <View className="w-full border border-gray-500 p-2 rounded-lg mt-3">
               <Text className="text-sm text-gray-600">Amount</Text>
               <TextInput
                 onChangeText={setAmount}

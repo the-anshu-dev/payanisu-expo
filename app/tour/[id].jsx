@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { formatDate } from "../../utils/helpers";
 import { ActivityIndicator } from "react-native-paper";
 import { setTour } from "../../redux/slices/tourSlice";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const { height, width } = Dimensions.get("window");
 
@@ -28,13 +29,15 @@ const tourDetails = () => {
       const response = await fetch(
         `${process.env.EXPO_PUBLIC_BASE_URL}/api/tour/get-alltours`
       );
-      if (!response.ok || response.status !== 200) {
-        throw new Error("Failed to fetch tours");
+      if (!response.ok) {
+        throw new Error("Failed to fetch tours due to server error.");
       }
       const tour = await response.json();
+      await AsyncStorage.setItem("tours", JSON.stringify(tour));
       dispatch(setTour(tour));
     } catch (error) {
-      console.error("Error fetching tours:", error);
+      Alert.alert("Error", error.message || "Something went wrong.");
+      console.log("Error fetching tours:", error);
     }
   };
 

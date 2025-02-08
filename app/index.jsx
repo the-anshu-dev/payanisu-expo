@@ -68,23 +68,6 @@ const Index = () => {
     }
   };
 
-  const getAllTours = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.EXPO_PUBLIC_BASE_URL}/api/tour/get-alltours`
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch tours due to server error.");
-      }
-      const tour = await response.json();
-      await AsyncStorage.setItem("tours", JSON.stringify(tour));
-      dispatch(setTour(tour));
-    } catch (error) {
-      Alert.alert("Error", error.message || "Something went wrong.");
-      console.log("Error fetching tours:", error);
-    }
-  };
-
   const getAllBookedTours = async (email) => {
     try {
       const response = await fetch(
@@ -100,6 +83,23 @@ const Index = () => {
     } catch (error) {
       console.error("Error fetching booked tours:", error);
       Alert.alert("Error", error.message || "Failed to fetch booked tours. Please check your network connection.");
+    }
+  };
+
+  const getAllTours = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_BASE_URL}/api/tour/get-alltours`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch tours due to server error.");
+      }
+      const tour = await response.json();
+      await AsyncStorage.setItem("tours", JSON.stringify(tour));
+      dispatch(setTour(tour));
+    } catch (error) {
+      Alert.alert("Error", error.message || "Something went wrong.");
+      console.log("Error fetching tours:", error);
     }
   };
 
