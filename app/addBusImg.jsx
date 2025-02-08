@@ -37,7 +37,7 @@ const addBusImg = () => {
     setLoading(true);
     try {
       const res = await uploadFilesToS3(image, id, "bus");
-      router.push(`/addHotelImg?id=${id}`);
+      router.replace(`/addHotelImg?id=${id}`);
     } catch (error) {
       console.log(error);
     } finally {

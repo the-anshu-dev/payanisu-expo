@@ -26,9 +26,7 @@ const CarouselCard = ({ tour }) => {
               loop
               width={width * 0.75}
               height={height * 0.25}
-              autoPlay
               data={images}
-              autoPlayInterval={2500}
               scrollAnimationDuration={1000}
               renderItem={({ item }) => <CarouselImageRender item={item} />}
             />

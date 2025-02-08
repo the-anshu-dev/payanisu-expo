@@ -86,14 +86,14 @@ const MyTourDetails = () => {
         <View className="flex flex-row justify-between">
           <Pressable onPress={() => handleTabPress("tourInfo")}>
             <View style={{ width: tabWidth }} className="py-2">
-              <Text className="text-center text-[15px] font-semibold">
+              <Text className="text-center text-xl font-semibold">
                 Tour Details
               </Text>
             </View>
           </Pressable>
           <Pressable onPress={() => handleTabPress("checkPoints")}>
             <View style={{ width: tabWidth }} className="py-2">
-              <Text className="text-center font-semibold">Checkpoints</Text>
+              <Text className="text-center text-xl font-semibold">Checkpoints</Text>
             </View>
           </Pressable>
         </View>

@@ -121,12 +121,15 @@ const Page = () => {
       !id ||
       !title ||
       !description ||
-      !locationType ||
-      !longitude ||
-      !latitude
+      !locationType
     ) {
-      Alert.alert("Value not found", "All fields required!");
+      Alert.alert("Empty field", "Please fill all the fields.");
       return;
+    }
+
+    if(locationType === "Geo Tagging" && (!latitude || !longitude)) {
+      Alert.alert("Empty field", "Please select location.");
+      return; 
     }
 
     setLoading(true);
@@ -141,8 +144,6 @@ const Page = () => {
     };
 
     try {
-      console.log("Saving checkpoint with data:", body);
-
       const res = await apiRequest(
         `${process.env.EXPO_PUBLIC_BASE_URL}/api/create-point`,
         "POST",
@@ -151,10 +152,10 @@ const Page = () => {
 
       if (res) {
         console.log("Checkpoint created successfully:", res);
-        router.push(`/(addTourDetails)/checkPoints/${id}`);
+        router.replace(`/(addTourDetails)/checkPoints/${id}`);
       }
     } catch (error) {
-      console.error("Failed to create checkpoint:", error.message);
+      console.log("Failed to create checkpoint:", error.message);
     } finally {
       setLoading(false);
     }
@@ -172,8 +173,8 @@ const Page = () => {
         keyboardShouldPersistTaps="handled"
       >
         <View className="px-3 h-full w-full flex justify-between items-center pb-12">
-          <View className="w-full flex justify-start items-center">
-            <View className="border mt-3 border-gray-500/50 p-2 rounded-lg w-full">
+          <View className="w-full flex justify-start items-center gap-3">
+            <View className="mt-3 p-2 rounded-lg w-full bg-white shadow-lg shadow-black/50">
               <Text className="text-xs text-gray-500/70">Title</Text>
               <TextInput
                 placeholder="Enter Title"
@@ -182,7 +183,7 @@ const Page = () => {
                 onChangeText={setTitle}
               />
             </View>
-            <View className="border mt-2 border-gray-500/50 p-2 rounded-lg w-full">
+            <View className="p-2 rounded-lg w-full bg-white shadow-lg shadow-black/50">
               <Text className="text-xs text-gray-500/70">Description</Text>
               <TextInput
                 multiline={true}
@@ -194,8 +195,8 @@ const Page = () => {
                 className="text-black text-base mt-1"
               />
             </View>
-            <View className="w-full mt-2">
-              <View className="border border-gray-500/50 rounded-lg w-full">
+            <View className="w-full">
+              <View className="rounded-lg w-full bg-white shadow-lg shadow-black/50">
                 <Picker
                   selectedValue={locationType}
                   onValueChange={setLocationType}
@@ -206,7 +207,8 @@ const Page = () => {
                 </Picker>
               </View>
             </View>
-            <View className="w-full flex justify-start items-center mt-2">
+            {
+              locationType === "Geo Tagging" && (<View className="w-full flex justify-start items-center">
               <View className="w-full">
                 <GooglePlacesAutocomplete
                   ref={googlePlacesRef}
@@ -229,7 +231,6 @@ const Page = () => {
                       height: 44,
                       paddingHorizontal: 10,
                       backgroundColor: "#FFFFFF",
-                      borderRadius: 5,
                       color: "black",
                       zIndex: 1000,
                     },
@@ -238,7 +239,7 @@ const Page = () => {
               </View>
               <View className="h-fit w-full rounded-xl overflow-hidden mt-2 border border-gray-500/50">
                 <MapView
-                  style={{ height: height * 0.5, width: "100%" }}
+                  style={{ height: height * 0.45, width: "100%" }}
                   className="rounded-xl"
                   region={region}
                   onPress={handleMapPress}
@@ -246,7 +247,8 @@ const Page = () => {
                   <Marker coordinate={markerPosition} />
                 </MapView>
               </View>
-            </View>
+            </View>)
+            }
           </View>
         </View>
       </ScrollView>
@@ -255,7 +257,7 @@ const Page = () => {
           activeOpacity={0.8}
           onPress={handleAddCheckPoint}
           style={{
-            width: width * 0.7,
+            width: width * 0.9,
             backgroundColor: "green",
             paddingVertical: 12,
             borderRadius: 8,

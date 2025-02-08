@@ -95,7 +95,7 @@ const Map = () => {
         <SafeAreaView style={{ flex: 1 }} edges={['bottom', 'left', 'right']}>
             <View style={styles.container}>
                 {location && (
-                    <View style={{ height: height * 0.7 }} className="p-2">
+                    <View style={{ height: height * 0.6 }} className="p-2">
                         <View className="rounded-md overflow-hidden h-full">
                             <MapView
                                 style={styles.map}

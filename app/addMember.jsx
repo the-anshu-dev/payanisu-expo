@@ -58,7 +58,7 @@ const AddMember = () => {
       const data = await response.json();
       if (response.ok) {
         Alert.alert("Success", "Member added successfully");
-        router.push("/profile");
+        router.replace("/profile");
       } else {
         throw new Error(data.message || "An error occurred");
       }

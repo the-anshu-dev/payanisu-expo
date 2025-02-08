@@ -129,7 +129,7 @@ const Payment = () => {
         if (res.status !== 201) throw new Error("Failed to book tour.");
       }
       Alert.alert("Success", "Tour booked successfully for all members.");
-      router.push("/(tabs)/mytours");
+      router.replace("/(tabs)/mytours");
     } catch (error) {
       Alert.alert("Oops!", "Something went wrong!\nPlease try again...");
     } finally {

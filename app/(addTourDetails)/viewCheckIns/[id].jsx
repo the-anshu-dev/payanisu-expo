@@ -13,9 +13,10 @@ import { useLocalSearchParams } from "expo-router";
 import { useSelector } from "react-redux";
 import LinearGradient from "react-native-linear-gradient";
 import { Modalize } from "react-native-modalize";
-import { MaterialIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { format } from "date-fns";
 import { ActivityIndicator } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const { width, height } = Dimensions.get("window");
 
@@ -47,6 +48,19 @@ const ViewCheckIns = () => {
   const [reseting, setReseting] = useState(false);
 
   const checkedInEmails = checkedInMembers?.map((i) => i.email);
+
+  const getCheckedInMember = (email) =>
+    checkedInMembers.find((member) => member.email === email);
+
+  const getMembersWithPlaceholders = (members) => {
+    const remainder = members.length % 4;
+    const placeholdersNeeded = remainder > 0 ? 4 - remainder : 0;
+
+    return [
+      ...members,
+      ...Array(placeholdersNeeded).fill({ _id: `placeholder`, placeholder: true }),
+    ];
+  };
 
   const getBookedUsers = async () => {
     try {
@@ -185,107 +199,113 @@ const ViewCheckIns = () => {
   }, []);
 
   return (
-    <>
-      <View className="p-2 mt-2 h-full relative flex justify-center items-center">
-        <View className="mb-3 w-full">
-          <LinearGradient
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            colors={["rgba(240, 101, 2, 0.2)", "rgba(0, 174, 255, 0.2)"]}
-            className="rounded-lg"
-          >
-            <View
-              className={`flex flex-row justify-between py-3 px-4 rounded-xl`}
+    <SafeAreaView style={{ flex: 1 }} edges={["bottom", "left", "right"]}>
+      {checkedInMembersLoading ?
+        <View className="h-full w-full flex justify-center items-center">
+          <ActivityIndicator size={"large"} color="green" />
+        </View> :
+        <View className="p-2 mt-2 h-full relative flex justify-center items-center">
+          <View className="mb-3 w-full px-2">
+            <LinearGradient
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              colors={["rgba(240, 101, 2, 0.2)", "rgba(0, 174, 255, 0.2)"]}
+              style={{ borderRadius: 10 }}
             >
-              <View className="space-y-2">
-                <Text>Check Point</Text>
-                <Text
-                  className={`text-base font-medium `}
-                >{`${checkPointData.name}`}</Text>
+              <View
+                className={`flex flex-row justify-between py-3 px-4 rounded-xl`}
+              >
+                <View className="gap-2">
+                  <Text className="text-sm">Check Point</Text>
+                  <Text
+                    className={`text-lg font-medium `}
+                  >{`${checkPointData.name}`}</Text>
+                </View>
+                <View className="gap-2">
+                  <Text>Checked In Members</Text>
+                  <Text
+                    className={`text-xl text-green-700 font-medium text-right`}
+                  >
+                    {checkedInMembers?.length}
+                  </Text>
+                </View>
               </View>
-              <View className="space-y-2">
-                <Text>Checked In Members</Text>
-                <Text
-                  className={`text-xl text-green-700 font-medium text-right`}
-                >
-                  {checkedInMembers?.length}
-                </Text>
-              </View>
-            </View>
-          </LinearGradient>
-        </View>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{
-            paddingBottom: 120,
-            flexGrow: 1,
-            display: "flex",
-            justifyContent: "start",
-            alignItems: "center",
-          }}
-          style={{ width: "100%" }}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-        >
-          <View style={styles.cardContainer}>
-            {allMembers.map((i) => (
-              <CheckedInUserCard
-                key={i._id}
-                name={i?.ProfileData[0]?.name}
-                email={i?.ProfileData[0]?.email}
-                age={i?.ProfileData[0]?.age}
-                gender={i?.ProfileData[0]?.gender}
-                contact={i?.ProfileData[0]?.contact}
-                emergency_contact={i?.ProfileData[0]?.emergency_contact}
-                checkInTime={
-                  checkedInMembers.find(
-                    (member) => member.email === i?.ProfileData[0]?.email
-                  )?.createdAt
-                }
-                checkInId={
-                  checkedInMembers.find(
-                    (member) => member.email === i?.ProfileData[0]?.email
-                  )?._id
-                }
-                checkedIn={true}
-                checkedInEmails={checkedInEmails}
-                manualCheckInRef={manualCheckInRef}
-                setAlreadyCheckedIn={setAlreadyCheckedIn}
-                setCheckedInId={setCheckedInId}
-                setModalDetails={setModalDetails}
-              />
-            ))}
+            </LinearGradient>
           </View>
-        </ScrollView>
-        <View className="absolute bottom-6 h-16 flex justify-center items-center w-full ">
-          <TouchableOpacity
-            activeOpacity={0.7}
-            onPress={() => resetAllRef.current?.open()}
-            className="w-[300px] py-4 flex justify-center items-center rounded-lg border border-red-700"
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{
+              paddingBottom: 120,
+              paddingHorizontal: 10,
+              paddingTop: 10,
+              flexGrow: 1,
+            }}
+            style={{ width: "100%", borderRadius: 10 }}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
           >
-            <Text>Reset All Check-Ins</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+            <View style={styles.cardContainer}>
+              {getMembersWithPlaceholders(allMembers).map((member) => {
+                if (member.placeholder) {
+                  return <View key={member._id} style={[styles.card, { opacity: 0 }]} />;
+                }
+
+                const profile = member?.ProfileData?.[0] || {};
+                const checkedInMember = getCheckedInMember(profile.email);
+
+                return (
+                  <CheckedInUserCard
+                    key={member._id}
+                    name={profile.name}
+                    email={profile.email}
+                    age={profile.age}
+                    gender={profile.gender}
+                    contact={profile.contact}
+                    emergency_contact={profile.emergency_contact}
+                    checkInTime={checkedInMember?.createdAt}
+                    checkInId={checkedInMember?._id}
+                    checkedInEmails={checkedInEmails}
+                    manualCheckInRef={manualCheckInRef}
+                    setAlreadyCheckedIn={setAlreadyCheckedIn}
+                    setCheckedInId={setCheckedInId}
+                    setModalDetails={setModalDetails}
+                  />
+                );
+              })}
+            </View>
+          </ScrollView>
+          <View className="absolute bottom-6 h-16 flex justify-center items-center w-full px-5">
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => resetAllRef.current?.open()}
+              className="w-full py-4 flex justify-center items-center rounded-lg border border-red-700"
+            >
+              <Text>Reset All Check-Ins</Text>
+            </TouchableOpacity>
+          </View>
+        </View>}
       <Modalize ref={resetAllRef} adjustToContentHeight>
-        <View style={{ padding: 20, alignItems: "center", paddingBottom: 30 }}>
-          <MaterialIcons name="warning" size={48} color="red" />
+        <View style={{ padding: 20, alignItems: "center", paddingBottom: 20 }}>
+          <Ionicons name="warning" size={48} color="red" />
           <Text
             style={{ fontSize: 18, fontWeight: "bold", marginVertical: 10 }}
           >
             Are you sure?
           </Text>
-          <Text style={{ textAlign: "center", color: "#555" }}>
+          <Text style={{ textAlign: "center", color: "#555", paddingHorizontal: 30, fontWeight: "500" }}>
             Once you reset this, all your current data will be lost and cannot
             be recovered.
           </Text>
           <View
             style={{
+              display: "flex",
               flexDirection: "row",
               marginTop: 20,
               width: "100%",
               justifyContent: "space-between",
+              alignItems: "center",
+              gap: 10,
             }}
           >
             <TouchableOpacity
@@ -293,7 +313,7 @@ const ViewCheckIns = () => {
               style={{
                 backgroundColor: "#ccc",
                 height: height * 0.05,
-                width: width * 0.4,
+                width: width * 0.42,
                 borderRadius: 5,
                 display: "flex",
                 justifyContent: "center",
@@ -307,7 +327,7 @@ const ViewCheckIns = () => {
               style={{
                 backgroundColor: "red",
                 height: height * 0.05,
-                width: width * 0.4,
+                width: width * 0.42,
                 borderRadius: 5,
                 display: "flex",
                 justifyContent: "center",
@@ -333,12 +353,12 @@ const ViewCheckIns = () => {
           setCheckedInId("");
         }}
       >
-        <View className="w-full justify-center items-center py-4">
-          <Text className="text-lg">Guest Check-in</Text>
+        <View className="w-full justify-center items-center pt-4">
+          <Text className="text-2xl font-bold">Guest Check-in</Text>
         </View>
         <View className="h-48 w-full justify-start items-center px-2">
           <View className="flex flex-row w-full justify-between items-center pr-3 ">
-            <View className="shadow-sm rounded-md py-2 px-2 space-y-1 ">
+            <View className="py-2 px-2 gap-1">
               <Text className=" text-xs text-gray-600  ">Name</Text>
               <Text className="text-lg">{modalDetails?.name}</Text>
             </View>
@@ -424,7 +444,7 @@ const ViewCheckIns = () => {
           </TouchableOpacity>
         </View>
       </Modalize>
-    </>
+    </SafeAreaView>
   );
 };
 
@@ -481,7 +501,7 @@ const CheckedInUserCard = ({
         >
           {name?.split(" ")[0]}
         </Text>
-        <View className="flex justify-center items-center flex-row space-x-1 mt-2 mb-1">
+        <View className="flex justify-center items-center flex-row gap-1 mt-2 mb-1">
           <Text style={styles.text}>{age} Yrs</Text>
           <Text style={styles.text}>({gender?.charAt(0)})</Text>
         </View>
@@ -495,13 +515,11 @@ const CheckedInUserCard = ({
 
 const styles = StyleSheet.create({
   card: {
-    width: width * 0.21,
+    width: width * 0.20,
     height: 80,
-    borderRadius: 10,
+    borderRadius: 5,
     padding: 10,
     justifyContent: "center",
-    marginBottom: 10,
-    marginRight: 10,
     alignItems: "center",
   },
   text: {
@@ -509,10 +527,12 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   cardContainer: {
+    display: "flex",
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "flex-start",
-    alignItems: "center",
+    justifyContent: "space-between",
+    alignItems: "start",
+    gap: 15
   },
 });
 

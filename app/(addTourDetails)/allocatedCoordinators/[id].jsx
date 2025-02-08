@@ -73,7 +73,7 @@ const AllocatedCoordinators = () => {
       setFilteredCoordinators(result);
     } catch (error) {
       Alert.alert("Oops!", "Something went wrong...\n\nPlease try again");
-      router.push("/(addTourDetails)/tourDetails");
+      router.replace("/(addTourDetails)/tourDetails");
     } finally {
       setCoordinatorLoading(false);
     }
@@ -132,8 +132,8 @@ const AllocatedCoordinators = () => {
               ))
             ) : (
               <View className="h-44 w-full flex justify-center items-center mt-10">
-                <Ionicons name="document-outline" size={48} color="green" />
-                <Text className="text-xl font-semibold mt-4">
+                <Ionicons name="document-outline" size={48} color="gray" />
+                <Text className="text-xl font-semibold mt-4 text-gray-500">
                   No coordinators added yet
                 </Text>
               </View>

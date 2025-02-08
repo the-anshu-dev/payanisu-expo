@@ -38,7 +38,7 @@ const addHotelImg = () => {
     setLoading(true);
     try {
       await uploadFilesToS3(image, id, "hotel");
-      router.push(`/(admin)/tour`);
+      router.replace(`/(admin)/tour`);
     } catch (error) {
       console.log(error);
     } finally {

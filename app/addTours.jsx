@@ -9,7 +9,7 @@ import {
   Dimensions,
   StyleSheet,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useSelector } from "react-redux";
@@ -27,7 +27,7 @@ const { width, height } = Dimensions.get("window");
 const addTours = () => {
   const { user } = useSelector((state) => state.user);
 
-  const [error, setError] = useState("");
+  const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [tourName, setTourName] = useState("");
   const [location, setLocation] = useState("");
@@ -42,7 +42,7 @@ const addTours = () => {
   const [paymentGatewayEnabled, setPaymentGatewayEnabled] = useState(false);
   const [image, setImage] = useState([]);
 
-  const [consentForm, setConsentForm] = useState({})
+  const [consentForm, setConsentForm] = useState(null)
 
   // date range picker
   const [startDate, setStartDate] = useState(null);
@@ -189,6 +189,17 @@ const addTours = () => {
     }
   };
 
+  useEffect(()=>{
+    if(startDate && endDate && bookingCloseDate){
+      if(startDate > endDate){
+        setError("Start date should be less than end date")
+      }
+      if(bookingCloseDate > startDate){
+        setError("Booking close date should be less than start date")
+      }
+    }
+  },[startDate, endDate, bookingCloseDate])
+
   return (
     <View style={styles.container}>
       <ScrollView
@@ -198,7 +209,7 @@ const addTours = () => {
         <View style={styles.innerContainer}>
           {error && (
             <View style={styles.errorContainer}>
-              <Ionicons name="warning" size={24} color="red" />
+              <Ionicons name="warning" size={28} color="red" />
               <Text style={styles.errorText}>{error}</Text>
             </View>
           )}
@@ -436,7 +447,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   errorContainer: {
-    flexDirection: "row",
+    display: "flex",
+    justifyContent: "center",
     alignItems: "center",
     marginBottom: height * 0.02,
   },
@@ -444,6 +456,9 @@ const styles = StyleSheet.create({
     color: "red",
     fontSize: width * 0.04,
     marginLeft: width * 0.02,
+    textAlign: "center",
+    fontWeight: "bold",
+    gap: 5,
   },
   input: {
     width: "100%",

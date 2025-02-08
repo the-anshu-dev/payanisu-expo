@@ -34,7 +34,6 @@ const Checkpoints = () => {
   const [allCheckPoints, setAllCheckPoints] = useState([]);
   const [loading, setLoading] = useState(false);
   const [qrLoading, setQrLoading] = useState(false);
-  const [activationLoading, setActivationLoading] = useState(false);
 
   const editCheckPointRef = useRef(null);
   const viewMapRef = useRef(null);
@@ -129,8 +128,6 @@ const Checkpoints = () => {
   });
 
   const handleCheckpointActive = async (id) => {
-    setActivationLoading(true);
-
     try {
       const response = await fetch(
         `${process.env.EXPO_PUBLIC_BASE_URL}/api/update-point?id=${id}`,
@@ -142,17 +139,13 @@ const Checkpoints = () => {
           body: JSON.stringify({ activated: true }),
         }
       );
-
       if (response.status !== 200) {
         throw new Error("Failed to update checkpoint");
       }
-
       Alert.alert("Acivated", "Checkpoint Activated.");
     } catch (error) {
       console.log("Error:", error);
       Alert.alert("Failed to activate", "Please try again.");
-    } finally {
-      setActivationLoading(false);
     }
   };
 
@@ -176,9 +169,9 @@ const Checkpoints = () => {
             <Ionicons
               name="navigate-circle-outline"
               size={48}
-              color={"green"}
+              color={"gray"}
             />
-            <Text className="text-xl font-semibold mt-4">
+            <Text className="text-xl font-semibold mt-4 text-gray-400">
               No checkpoints added yet
             </Text>
           </View>
@@ -195,17 +188,16 @@ const Checkpoints = () => {
                 editRef={editCheckPointRef}
                 mapRef={viewMapRef}
                 handleCheckpointActive={handleCheckpointActive}
-                activationLoading={activationLoading}
               />
             ))}
           </ScrollView>
         )}
-        <View style={{ width: width }} className="w-full absolute bottom-0 flex flex-row justify-center items-center gap-5 h-16 bg-transparent">
+        <View style={{ width: width }} className="w-full absolute bottom-0 flex flex-row justify-between items-center h-16 bg-transparent px-4">
           <TouchableOpacity
             activeOpacity={0.8}
             onPress={handleQrModal}
             style={{
-              width: width * 0.4,
+              width: width * 0.43,
               backgroundColor: "gray",
               paddingVertical: 12,
               borderRadius: 8,
@@ -224,7 +216,7 @@ const Checkpoints = () => {
             activeOpacity={0.8}
             onPress={() => router.push(`/createCheckpoints/${id}`)}
             style={{
-              width: width * 0.4,
+              width: width * 0.43,
               backgroundColor: "green",
               paddingVertical: 12,
               borderRadius: 8,
@@ -237,9 +229,9 @@ const Checkpoints = () => {
         </View>
       </View>
       <Modalize ref={editCheckPointRef} adjustToContentHeight snapPoint={500}>
-        <View className="h-96 px-6 py-4 flex justify-center gap-3 items-center">
+        <View className="h-fit px-6 py-4 flex justify-center gap-3 items-center">
           <View className="w-full flex justify-start items-center">
-            <Text className="mt-3 text-xl font-semibold">Edit Check Point</Text>
+            <Text className="mt-1 text-2xl font-semibold">Edit Check Point</Text>
             <View className="border mt-3 border-gray-500/50 p-1 px-2 rounded-lg w-full">
               <Text className="text-xs text-gray-500/70">Title</Text>
               <TextInput
@@ -263,7 +255,7 @@ const Checkpoints = () => {
               activeOpacity={0.8}
               onPress={() => addNotesRef.current?.open()}
               style={{
-                width: width * 0.8,
+                width: width * 0.9,
                 backgroundColor: "green",
                 paddingVertical: 12,
                 borderRadius: 8,
@@ -288,7 +280,7 @@ const Checkpoints = () => {
           <View className="w-full flex justify-start items-center">
             <View className="h-[500px] w-full rounded-xl overflow-hidden mt-2 border border-gray-500/50 ">
               <MapView
-                className="h-[500px] w-full rounded-xl"
+                style={{ height: "100%", width: "100%" }}
                 region={region}
                 showsUserLocation={true}
                 showsMyLocationButton={true}
@@ -339,44 +331,55 @@ const CheckPointCard = ({
   idx,
   point,
   handleCheckpointActive,
-  activationLoading,
 }) => {
+  const [loading, setLoading] = useState(false);
+
+  const handleActivation = async () => {
+    setLoading(true);
+    try {
+      await handleCheckpointActive(point._id);
+    } catch (error) {
+      console.log("Error:", error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
-    <View className="border border-gray-500/50 rounded-lg py-2 px-2 mt-3 w-full">
+    <View className="border border-gray-500/50 rounded-lg py-3 px-2 mt-3 w-full bg-white">
       <View className="flex flex-row justify-between ">
         <View>
           <Text className="text-xs">{`Check Point ${idx + 1}`}</Text>
-          <Text className="text-base font-medium">{point.name}</Text>
+          <Text className="text-lg font-medium">{point.name}</Text>
         </View>
         <View>
           <TouchableOpacity activeOpacity={0.6}>
-            <Ionicons name="ellipsis-vertical" size={24} />
+            <Ionicons name="ellipsis-vertical" size={20} />
           </TouchableOpacity>
         </View>
       </View>
-      <View className="flex flex-row justify-between  mt-1 py-1">
+      <View className="flex flex-row justify-between  mt-2 py-1">
         <View className="w-[80%]">
           <Text className="text-gray-500 tracking-wide text-justify">
             {shorten(point.description, 100)}
           </Text>
         </View>
         <View className="w-[20%] flex justify-center items-center">
-          {activationLoading ? (
+          {loading ? (
             <ActivityIndicator color="green" size={"small"} />
           ) : (
             <>
-              {point.activated ? (
+              {!point.activated ? (
                 <Text className="text-xl font-semibold text-green-700">
                   {point.allCheckedCount}
                 </Text>
               ) : (
                 <TouchableOpacity
-                  onPress={() => handleCheckpointActive(point._id)}
-                  activeOpacity={0.6}
-                  className=" flex justify-center items-center"
+                  onPress={handleActivation}
+                  activeOpacity={0.8}
+                  className=" flex justify-center items-center border px-2 py-0.5 rounded-full border-green-700"
                 >
-                  <Ionicons name="qr-code-outline" color={"green"} size={24} />
-                  <Text className="text-xs text-green-700 mt-1">Activate</Text>
+                  <Text className="text-sm font-semibold text-green-700">Activate</Text>
                 </TouchableOpacity>
               )}
             </>
@@ -385,13 +388,13 @@ const CheckPointCard = ({
       </View>
       <View className="flex flex-row justify-between items-center mt-2 px-2">
         <TouchableOpacity onPress={() => mapRef.current?.open()}>
-          <View className="flex flex-row gap-1 justify-center items-center">
+          <View className="flex flex-row gap-2 justify-center items-center">
             <MarkerIcon height={20} width={12} />
             <Text className="text-xs text-green-700">Show On Map</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => editRef.current?.open()}>
-          <View className="flex flex-row gap-1 justify-center items-center">
+          <View className="flex flex-row gap-2 justify-center items-center">
             <EditIcon height={20} width={12} />
             <Text className="text-xs text-green-700">Edit</Text>
           </View>
@@ -401,7 +404,7 @@ const CheckPointCard = ({
             router.push(`(addTourDetails)/viewCheckIns/${point._id}`)
           }
         >
-          <View className="flex flex-row gap-1 justify-center items-center">
+          <View className="flex flex-row gap-2 justify-center items-center">
             <UserIcon height={20} width={12} />
             <Text className="text-xs text-green-700">View Check-Ins</Text>
           </View>

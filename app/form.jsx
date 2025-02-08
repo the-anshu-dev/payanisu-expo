@@ -100,7 +100,7 @@ const form = () => {
             )}
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => router.push("/login")}
+            onPress={() => router.replace("/login")}
             className="w-full py-2 px-2 rounded-[10px] border-2 border-[#228B22] mt-5 text-white"
           >
             <Text className="text-white text-center font-bold text-lg">

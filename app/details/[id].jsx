@@ -37,6 +37,8 @@ const DetailsScreen = () => {
 
   const [loading, setLoading] = useState(false);
 
+  const [filteredMembers, setFilteredMembers] = useState([]);
+
   const tourData = tour.find((tourData) => tourData._id === id);
 
   const { backpacks, checkinbagages, includeds, notincludeds } = tourData;
@@ -119,7 +121,7 @@ const DetailsScreen = () => {
     const totalCost = curatedMembers.length * tourData.tour_cost;
     dispatch(setTourMembers(curatedMembers));
     dispatch(setTotalCost(totalCost));
-    router.push(`/payment?id=${id}`);
+    router.replace(`/payment?id=${id}`);
   };
 
   const handleReserveButton = () => {
@@ -149,10 +151,12 @@ const DetailsScreen = () => {
       Alert.alert("Cannot remove!", "You cannot remove yourself");
       return;
     }
-    setCuratedMembers((prevData) =>
-      prevData.filter((member) => member.id !== id)
-    );
+    setFilteredMembers((prev) => prev.filter((member) => member.id !== id));
   };
+
+  useEffect(() => {
+    setFilteredMembers(curatedMembers);
+  }, [curatedMembers]);
 
   const images = useMemo(
     () => tourData?.images.filter((i) => !i.type).map((i) => i.url),
@@ -179,7 +183,7 @@ const DetailsScreen = () => {
             scrollAnimationDuration={1000}
             renderItem={CarouselImageRender}
           />
-          <View className="px-4 mt-4 pb-8 relative">
+          <View className="px-4 mt-4 pb-8 relative flex gap-4">
             <LinearGradient
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
@@ -203,39 +207,41 @@ const DetailsScreen = () => {
                 </View>
               </View>
             </LinearGradient>
-            <View
-              className={`flex flex-row justify-between py-3 px-2 rounded-xl mt-4`}
-            >
-              <View className="space-y-2">
-                <Text className={`font-medium `}>Tour Name</Text>
-                <Text
-                  className={`text-lg font-semibold `}
-                >{`${tourData?.name}`}</Text>
+            <View className="p-2 rounded-lg shadow-lg shadow-black/50 bg-white py-4">
+              <View
+                className={`flex flex-row justify-between py-3 px-2 rounded-xl`}
+              >
+                <View className="space-y-2">
+                  <Text className={`font-medium `}>Tour Name</Text>
+                  <Text
+                    className={`text-lg font-semibold `}
+                  >{`${tourData?.name}`}</Text>
+                </View>
+                <View className="space-y-2">
+                  <Text className={`font-medium `}>Booking Close</Text>
+                  <Text className={`text-lg font-semibold  text-right`}>
+                    {`${formatDate(tourData?.booking_close)}`}
+                  </Text>
+                </View>
               </View>
-              <View className="space-y-2">
-                <Text className={`font-medium `}>Booking Close</Text>
-                <Text className={`text-lg font-semibold  text-right`}>
-                  {`${formatDate(tourData?.booking_close)}`}
+              <View className={`px-2 space-y-2 mt-3 `}>
+                <Text className={`font-semibold text-md `}>Description</Text>
+                <Text className={`text-justify tracking-wider text-md `}>
+                  {tourData?.description}
+                </Text>
+              </View>
+              <View className={`px-2 space-y-2 mt-3`}>
+                <Text className={`font-semibold text-md `}>Dates</Text>
+                <Text
+                  className={`text-justify tracking-wider text-md font-semibold `}
+                >
+                  {`${formatDate(tourData?.tour_start)} to ${formatDate(
+                    tourData?.tour_end
+                  )}`}
                 </Text>
               </View>
             </View>
-            <View className={`px-2 space-y-2 mt-3 `}>
-              <Text className={`font-semibold text-md `}>Description</Text>
-              <Text className={`text-justify tracking-wider text-md `}>
-                {tourData?.description}
-              </Text>
-            </View>
-            <View className={`px-2 space-y-2 mt-3`}>
-              <Text className={`font-semibold text-md `}>Dates</Text>
-              <Text
-                className={`text-justify tracking-wider text-md font-semibold `}
-              >
-                {`${formatDate(tourData?.tour_start)} to ${formatDate(
-                  tourData?.tour_end
-                )}`}
-              </Text>
-            </View>
-            <View className="px-2 mt-8">
+            <View className="p-2 rounded-lg shadow-lg shadow-black/50 bg-white">
               <View className="flex flex-row justify-left items-center gap-3 border-b border-gray-300 pb-1 px-1">
                 <Ionicons name="thumbs-up-outline" size={24} color={"green"} />
                 <Text className={`text-base  font-semibold`}>
@@ -255,7 +261,7 @@ const DetailsScreen = () => {
                 })}
               </View>
             </View>
-            <View className="px-2 mt-8">
+            <View className="p-2 rounded-lg shadow-lg shadow-black/50 bg-white">
               <View className="flex flex-row justify-left items-center gap-3 border-b border-gray-300 pb-1 px-1">
                 <Ionicons name="thumbs-down-outline" size={24} color={"red"} />
                 <Text className={`text-base  font-semibold`}>
@@ -275,7 +281,7 @@ const DetailsScreen = () => {
                 })}
               </View>
             </View>
-            <View className="px-2 mt-8">
+            <View className="p-2 rounded-lg shadow-lg shadow-black/50 bg-white">
               <View className="flex flex-row justify-left items-center gap-3 border-b border-gray-300 pb-1 px-1">
                 <Ionicons name="bag-check-outline" size={24} color={"green"} />
                 <Text className={`text-base  font-semibold`}>Bag Pack</Text>
@@ -293,7 +299,7 @@ const DetailsScreen = () => {
                 })}
               </View>
             </View>
-            <View className="px-2 mt-8">
+            <View className="p-2 rounded-lg shadow-lg shadow-black/50 bg-white">
               <View className="flex flex-row justify-left items-center gap-3 border-b border-gray-300 pb-1 px-1">
                 <Ionicons
                   name="checkmark-done-circle-outline"
@@ -385,7 +391,7 @@ const DetailsScreen = () => {
               style={{ backgroundColor: "#f9f9f9" }}
             >
               <View className="mt-2 gap-3 px-4">
-                {curatedMembers.map((member) => (
+                {filteredMembers?.map((member) => (
                   <BookingMembers
                     key={member.id}
                     member={member}

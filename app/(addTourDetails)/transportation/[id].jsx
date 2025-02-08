@@ -114,15 +114,16 @@ const Transportation = () => {
                 alignItems: "center",
                 paddingVertical: 50,
                 backgroundColor: "white",
+                borderRadius:10
               }}
             >
-              <Ionicons name="trash-bin-outline" color={"green"} size={28} />
+              <Ionicons name="trash-bin-outline" color={"gray"} size={28} />
               <Text
                 style={{
                   marginTop: 20,
                   fontSize: 16,
                   fontWeight: "600",
-                  color: "green",
+                  color: "gray",
                 }}
               >
                 No Transportation Added Yet

@@ -13,11 +13,11 @@ const MyTourCard = ({ tour, status }) => {
   const images = tour?.images?.filter((i) => !i.type).map((i) => i.url);
 
   const onClickHandler = () => {
-    const clickEnabled = status === 1 ? true : false;
+    const clickEnabled = status === 1 || 2 ? true : false;
     if (clickEnabled) {
       router.push(`/mytour/${tour?._id}`);
     } else {
-      Alert.alert("Sorry..", "Booking rejected or not accepted yet.");
+      Alert.alert("Booking Rejected", "Your booking request has been rejected.");
     }
   };
 
@@ -36,7 +36,7 @@ const MyTourCard = ({ tour, status }) => {
             loop
             width={width * 0.9}
             height={height / 4}
-            autoPlay={true}
+            autoPlay
             data={images}
             autoPlayInterval={2000}
             scrollAnimationDuration={1000}

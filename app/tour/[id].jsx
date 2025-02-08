@@ -60,7 +60,7 @@ const tourDetails = () => {
 
       await getAllTours();
       Alert.alert("Success", "Tour deleted.");
-      router.push("/(admin)/tours");
+      router.replace("/(admin)/tours");
     } catch (error) {
       Alert.alert("Oops!", "Something went wrong...\n\nPlease try again.");
       console.log("error:", error);

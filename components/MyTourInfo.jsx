@@ -6,15 +6,22 @@ import {
   ScrollView,
   RefreshControl,
   Alert,
+  Dimensions,
 } from "react-native";
 import ListComponent from "./UI/ListComponent";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { formatDate } from "../utils/helpers.js";
 import { format } from "date-fns";
+import CarouselImageRender from "./UI/CarouselImageRender.jsx";
+import Carousel from "react-native-reanimated-carousel";
+
+const { width, height } = Dimensions.get("window");
 
 const MyTourInfo = ({ tour }) => {
+
   const {
+    _id,
     tourDetails,
     backpacks,
     notincludeds,
@@ -22,8 +29,9 @@ const MyTourInfo = ({ tour }) => {
     checkinbagages,
     allocatedAccommodation,
     allocatedTransport,
-    accommodation,
   } = tour;
+
+  const images = tourDetails?.images.map((i) => i.url);
 
   const [refresh, setRefresh] = useState(false);
 
@@ -113,40 +121,64 @@ const MyTourInfo = ({ tour }) => {
   }, []);
 
   return (
-    <View className={`pb-14 pt-5 px-2`}>
+    <View className={`pb-14`}>
       <ScrollView
         className="flex h-full"
-        contentContainerStyle={{ paddingBottom: 64 }}
+        contentContainerStyle={{ paddingBottom: 64, paddingHorizontal: 10, paddingTop: 10, gap: 10 }}
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl refreshing={refresh} onRefresh={onRefresh} />
         }
       >
-        <View>
-          <Text className={`text-md font-semibold`}>Tour Name</Text>
-          <Text className={`text-base mt-1 tracking-wider`}>
-            {tourDetails.name}
-          </Text>
+        <View className="bg-white rounded-lg shadow-lg shadow-black overflow-hidden">
+          <Carousel
+            loop
+            width={width}
+            height={200}
+            autoPlay={true}
+            data={images}
+            autoPlayInterval={2000}
+            scrollAnimationDuration={1000}
+            renderItem={CarouselImageRender}
+          />
         </View>
-        <View className="mt-2">
-          <Text className={`text-md font-semibold`}>Description</Text>
-          <Text className={`text-base mt-1 tracking-wide text-justify`}>
-            {tourDetails.description}
-          </Text>
+        <View className="flex flex-row justify-between items-center gap-2 bg-green-700 rounded-lg p-2 py-4 shadow-lg shadow-black px-4">
+          <View className="flex justify-center items-start gap-1">
+            <Text className="text-white text-xs font-semibold">Booking Status :</Text>
+            <Text className="text-white font-semibold text-lg">Confirmed</Text>
+          </View>
+          <View className="flex justify-center items-end gap-1">
+            <Text className="text-white text-xs font-semibold">Booking ID :</Text>
+            <Text className="text-white font-semibold text-lg uppercase">{_id.substr(0, 7)}</Text>
+          </View>
         </View>
-        <View className="mt-2">
-          <Text className={`text-md font-semibold`}>Date</Text>
-          <Text className={`text-base mt-1 tracking-wider`}>{`${formatDate(
-            tourDetails.tour_start
-          )} - ${formatDate(tourDetails.tour_start)}`}</Text>
+        <View className="bg-white p-2 rounded-lg shadow-lg shadow-black">
+          <View>
+            <Text className={`text-md font-semibold`}>Tour Name</Text>
+            <Text className={`text-base mt-1 tracking-wider`}>
+              {tourDetails.name}
+            </Text>
+          </View>
+          <View className="mt-2">
+            <Text className={`text-md font-semibold`}>Description</Text>
+            <Text className={`text-base mt-1 tracking-wide text-justify`}>
+              {tourDetails.description}
+            </Text>
+          </View>
+          <View className="mt-2">
+            <Text className={`text-md font-semibold`}>Date</Text>
+            <Text className={`text-base mt-1 tracking-wider`}>{`${formatDate(
+              tourDetails.tour_start
+            )} - ${formatDate(tourDetails.tour_start)}`}</Text>
+          </View>
         </View>
-        <View className="mt-5">
+        <View className="p-2 shadow-lg shadow-black bg-white rounded-lg">
           <View className="flex flex-row justify-left items-center gap-2 border-b border-gray-300/50 pb-1">
             <Ionicons name="thumbs-up-outline" size={20} color={"green"} />
             <Text className={`text-md font-semibold`}>What is included ?</Text>
           </View>
           <View className="px-1 mt-3 gap-2">
-            {includeds &&
+            {includeds.length > 0 ?
               includeds.map((i) => (
                 <ListComponent
                   key={i._id}
@@ -154,18 +186,19 @@ const MyTourInfo = ({ tour }) => {
                   text={i.item}
                   color={"#0e9c02"}
                 />
-              ))}
+              )) : <Text className="text-center">No items included</Text>
+            }
           </View>
         </View>
-        <View className="mt-5">
+        <View className="p-2 shadow-lg shadow-black bg-white rounded-lg">
           <View className="flex flex-row justify-left items-center gap-2 border-b border-gray-300/50 pb-1">
             <Ionicons name="thumbs-down-outline" size={20} color={"red"} />
             <Text className={`text-md font-semibold`}>
               What is not included ?
             </Text>
           </View>
-          <View className="px-1 mt-3 space-y-2">
-            {notincludeds &&
+          <View className="px-1 mt-3 gap-2">
+            {notincludeds.length > 0 ?
               notincludeds.map((i) => (
                 <ListComponent
                   key={i._id}
@@ -173,16 +206,16 @@ const MyTourInfo = ({ tour }) => {
                   text={i.item}
                   color={"red"}
                 />
-              ))}
+              )) : <Text className="text-center">No items not included</Text>}
           </View>
         </View>
-        <View className="mt-5">
+        <View className="p-2 shadow-lg shadow-black bg-white rounded-lg">
           <View className="flex flex-row justify-left items-center gap-2 border-b border-gray-300/50 pb-1">
             <Ionicons name="bag-check-outline" size={20} color={"green"} />
             <Text className={`text-md font-semibold`}>Bag Pack</Text>
           </View>
           <View className="px-1 mt-3 gap-2">
-            {backpacks &&
+            {backpacks.length > 0 ?
               backpacks.map((i) => (
                 <ListComponent
                   key={i._id}
@@ -190,10 +223,10 @@ const MyTourInfo = ({ tour }) => {
                   text={i.item}
                   color={"gray"}
                 />
-              ))}
+              )) : <Text className="text-center">No items in bag pack</Text>}
           </View>
         </View>
-        <View className="mt-5">
+        <View className="p-2 shadow-lg shadow-black bg-white rounded-lg">
           <View className="flex flex-row justify-left items-center gap-2 border-b border-gray-300/50 pb-1">
             <Ionicons
               name="checkmark-done-circle-outline"
@@ -203,7 +236,7 @@ const MyTourInfo = ({ tour }) => {
             <Text className={`text-md font-semibold`}>Check In Baggage</Text>
           </View>
           <View className="px-1 mt-3 gap-2">
-            {checkinbagages &&
+            {checkinbagages.length > 0 ?
               checkinbagages.map((i) => (
                 <ListComponent
                   key={i._id}
@@ -211,17 +244,17 @@ const MyTourInfo = ({ tour }) => {
                   text={i.item}
                   color={"gray"}
                 />
-              ))}
+              )) : <Text className="text-center">No items in check in baggage</Text>}
           </View>
         </View>
-        <View className="mt-5">
-          <View className="flex flex-row gap-2 justify-start items-center py-1">
+        <View className="p-2 shadow-lg shadow-black bg-white rounded-lg">
+          <View className="flex flex-row gap-2 justify-start items-center py-1 border-b border-gray-300/50">
             <Ionicons name="bus" size={20} color={"green"} />
             <Text className={`font-bold`}>Transport Details</Text>
           </View>
           {allocatedTransport && allocatedTransport.length > 0 ? (
             <View className="ml-2 mt-2">
-              <View className="mt-2">
+              <View>
                 <Text className={` mt-2 font-semibold`}>{busName}</Text>
                 <Text
                   className={`mt-1 font-semibold`}
@@ -295,14 +328,14 @@ const MyTourInfo = ({ tour }) => {
             </View>
           )}
         </View>
-        <View className="mt-5">
-          <View className="flex flex-row gap-2 justify-start items-center py-1">
+        <View className="p-2 shadow-lg shadow-black bg-white rounded-lg">
+          <View className="flex flex-row gap-2 justify-start items-center py-1 border-b border-gray-300/50">
             <Ionicons name="bed" size={20} color={"green"} />
             <Text className={`font-bold`}>Accomodation Details</Text>
           </View>
           {Object.keys(accomodationDetails).length > 0 ? (
-            <View className="">
-              <View className="mt-4 space-y-2 pl-2">
+            <View className="mt-2">
+              <View className="gap-2 pl-2">
                 <View>
                   <Text>Place</Text>
                   <Text
@@ -328,7 +361,7 @@ const MyTourInfo = ({ tour }) => {
                   >{`${allocatedAccommodation[0]?.occupancy}`}</Text>
                 </View>
                 {allocatedAccommodation[0]?.occupancy !== "Single" && (
-                  <View className="flex flex-row justify-center space-x-4 items-center mt-2">
+                  <View className="flex flex-row justify-start items-center mt-2 border rounded-lg w-full border-green-600/50">
                     <TouchableOpacity
                       onPress={() =>
                         router.push(
@@ -336,12 +369,15 @@ const MyTourInfo = ({ tour }) => {
                         )
                       }
                       activeOpacity={0.7}
-                      className="mt-3 flex flex-row justify-start items-center space-x-2"
+                      className="flex flex-row justify-between items-center py-1 px-2 gap-2 w-full"
                     >
-                      <Ionicons name="compass" size={12} color={"green"} />
-                      <Text className={`font-semibold text-xs text-green-600`}>
-                        Your Room Mates
-                      </Text>
+                      <View className="flex flex-row justify-start items-center gap-2">
+                        <Ionicons name="compass" size={20} color={"green"} />
+                        <Text className={`font-semibold text-base text-green-600`}>
+                          Your Room Mates
+                        </Text>
+                      </View>
+                      <Ionicons name="chevron-forward" color={"green"} size={20} />
                     </TouchableOpacity>
                   </View>
                 )}

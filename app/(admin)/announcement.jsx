@@ -47,7 +47,6 @@ const AnnouncementScreen = () => {
 
     try {
       const response = await sendNotificaton(body);
-      console.log(response);
     } catch (error) {
       console.log(error);
     } finally {

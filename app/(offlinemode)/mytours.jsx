@@ -31,9 +31,9 @@ const MyTours = () => {
 
     useEffect(() => {
         getData();
-        // if(isConnected){
-        //     router.push("/(tabs)");
-        // }
+        if(isConnected){
+            router.push("/(tabs)");
+        }
         const interval = setInterval(checkConnection, 5000);
         return () => clearInterval(interval);
     }, []);

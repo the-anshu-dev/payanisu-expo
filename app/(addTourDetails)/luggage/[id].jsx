@@ -181,8 +181,8 @@ const Luggage = () => {
         <ScrollView style={styles.listContainer}>
           {(isBackpack ? backpackItems : checkInItems).length === 0 ? (
             <View className="h-44 w-full flex justify-center items-center mt-10">
-              <Ionicons name="document-outline" size={48} color="green" />
-              <Text className="text-xl font-semibold mt-4">
+              <Ionicons name="document-outline" size={48} color="gray" />
+              <Text className="text-xl font-semibold mt-4 text-gray-400">
                 No items added yet
               </Text>
             </View>
