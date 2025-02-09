@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Text,
   View,
@@ -7,21 +7,25 @@ import {
   RefreshControl,
   Alert,
   Dimensions,
+  Modal,
+  StyleSheet,
 } from "react-native";
 import ListComponent from "./UI/ListComponent";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { formatDate } from "../utils/helpers.js";
-import { format } from "date-fns";
+import { format, set } from "date-fns";
 import CarouselImageRender from "./UI/CarouselImageRender.jsx";
 import Carousel from "react-native-reanimated-carousel";
+import * as Location from "expo-location";
+import MapScreen from "./MapWithDirection.jsx";
 
 const { width, height } = Dimensions.get("window");
 
 const MyTourInfo = ({ tour }) => {
-
   const {
     _id,
+    status,
     tourDetails,
     backpacks,
     notincludeds,
@@ -32,12 +36,22 @@ const MyTourInfo = ({ tour }) => {
   } = tour;
 
   const images = tourDetails?.images.map((i) => i.url);
+  const busImages = tourDetails?.images
+    .filter((i) => i.type === "bus")
+    .map((i) => i.url);
 
   const [refresh, setRefresh] = useState(false);
 
   const [transport, setTransport] = useState({});
   const [boardingPoints, setBoardingPoints] = useState([]);
   const [accomodationDetails, setAccomodationDetails] = useState([]);
+
+  // modal
+
+  const [isModalVisible, setIsModalVisible] = useState({
+    busImageModal: false,
+    directionModal: false,
+  });
 
   const { transportId } = allocatedTransport[0] || {};
   const { accommodationId } = allocatedAccommodation[0] || [];
@@ -116,6 +130,34 @@ const MyTourInfo = ({ tour }) => {
     }
   };
 
+  const handleCancelBooking = async () => {
+    return;
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_BASE_URL}/api/booking/cancel?id=${_id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (!response.ok || response.status !== 200) {
+        throw new Error("Failed to cancel booking.");
+      }
+      Alert.alert("Success", "Booking has been cancelled successfully.");
+      router.push("/my-tours");
+    } catch (error) {
+      Alert.alert("Oops!", "Something went wrong. Please try again later.");
+      console.log("Error:", error);
+    }
+  };
+
+  const [destination, setDestination] = useState({
+    latitude: boardingPoints[0]?.latitude || 12.9716,
+    longitude: boardingPoints[0]?.longitude || 77.5946,
+  });
+
   useEffect(() => {
     onRefresh();
   }, []);
@@ -124,7 +166,12 @@ const MyTourInfo = ({ tour }) => {
     <View className={`pb-14`}>
       <ScrollView
         className="flex h-full"
-        contentContainerStyle={{ paddingBottom: 64, paddingHorizontal: 10, paddingTop: 10, gap: 10 }}
+        contentContainerStyle={{
+          paddingBottom: 64,
+          paddingHorizontal: 10,
+          paddingTop: 10,
+          gap: 10,
+        }}
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl refreshing={refresh} onRefresh={onRefresh} />
@@ -144,12 +191,24 @@ const MyTourInfo = ({ tour }) => {
         </View>
         <View className="flex flex-row justify-between items-center gap-2 bg-green-700 rounded-lg p-2 py-4 shadow-lg shadow-black px-4">
           <View className="flex justify-center items-start gap-1">
-            <Text className="text-white text-xs font-semibold">Booking Status :</Text>
-            <Text className="text-white font-semibold text-lg">Confirmed</Text>
+            <Text className="text-white text-xs font-semibold">
+              Booking Status :
+            </Text>
+            <Text className="text-white font-semibold text-lg">
+              {status === 1
+                ? "Confirmed"
+                : status === 2
+                  ? "Pending"
+                  : "Rejected"}
+            </Text>
           </View>
           <View className="flex justify-center items-end gap-1">
-            <Text className="text-white text-xs font-semibold">Booking ID :</Text>
-            <Text className="text-white font-semibold text-lg uppercase">{_id.substr(0, 7)}</Text>
+            <Text className="text-white text-xs font-semibold">
+              Booking ID :
+            </Text>
+            <Text className="text-white font-semibold text-lg uppercase">
+              {_id.substr(0, 7)}
+            </Text>
           </View>
         </View>
         <View className="bg-white p-2 rounded-lg shadow-lg shadow-black">
@@ -178,7 +237,7 @@ const MyTourInfo = ({ tour }) => {
             <Text className={`text-md font-semibold`}>What is included ?</Text>
           </View>
           <View className="px-1 mt-3 gap-2">
-            {includeds.length > 0 ?
+            {includeds.length > 0 ? (
               includeds.map((i) => (
                 <ListComponent
                   key={i._id}
@@ -186,8 +245,10 @@ const MyTourInfo = ({ tour }) => {
                   text={i.item}
                   color={"#0e9c02"}
                 />
-              )) : <Text className="text-center">No items included</Text>
-            }
+              ))
+            ) : (
+              <Text className="text-center">No items included</Text>
+            )}
           </View>
         </View>
         <View className="p-2 shadow-lg shadow-black bg-white rounded-lg">
@@ -198,7 +259,7 @@ const MyTourInfo = ({ tour }) => {
             </Text>
           </View>
           <View className="px-1 mt-3 gap-2">
-            {notincludeds.length > 0 ?
+            {notincludeds.length > 0 ? (
               notincludeds.map((i) => (
                 <ListComponent
                   key={i._id}
@@ -206,7 +267,10 @@ const MyTourInfo = ({ tour }) => {
                   text={i.item}
                   color={"red"}
                 />
-              )) : <Text className="text-center">No items not included</Text>}
+              ))
+            ) : (
+              <Text className="text-center">No items not included</Text>
+            )}
           </View>
         </View>
         <View className="p-2 shadow-lg shadow-black bg-white rounded-lg">
@@ -215,7 +279,7 @@ const MyTourInfo = ({ tour }) => {
             <Text className={`text-md font-semibold`}>Bag Pack</Text>
           </View>
           <View className="px-1 mt-3 gap-2">
-            {backpacks.length > 0 ?
+            {backpacks.length > 0 ? (
               backpacks.map((i) => (
                 <ListComponent
                   key={i._id}
@@ -223,7 +287,10 @@ const MyTourInfo = ({ tour }) => {
                   text={i.item}
                   color={"gray"}
                 />
-              )) : <Text className="text-center">No items in bag pack</Text>}
+              ))
+            ) : (
+              <Text className="text-center">No items in bag pack</Text>
+            )}
           </View>
         </View>
         <View className="p-2 shadow-lg shadow-black bg-white rounded-lg">
@@ -236,7 +303,7 @@ const MyTourInfo = ({ tour }) => {
             <Text className={`text-md font-semibold`}>Check In Baggage</Text>
           </View>
           <View className="px-1 mt-3 gap-2">
-            {checkinbagages.length > 0 ?
+            {checkinbagages.length > 0 ? (
               checkinbagages.map((i) => (
                 <ListComponent
                   key={i._id}
@@ -244,7 +311,10 @@ const MyTourInfo = ({ tour }) => {
                   text={i.item}
                   color={"gray"}
                 />
-              )) : <Text className="text-center">No items in check in baggage</Text>}
+              ))
+            ) : (
+              <Text className="text-center">No items in check in baggage</Text>
+            )}
           </View>
         </View>
         <View className="p-2 shadow-lg shadow-black bg-white rounded-lg">
@@ -284,6 +354,12 @@ const MyTourInfo = ({ tour }) => {
               </View>
               <View className="flex flex-row justify-between items-center mt-2">
                 <TouchableOpacity
+                  onPress={() =>
+                    setIsModalVisible((prev) => ({
+                      ...prev,
+                      busImageModal: true,
+                    }))
+                  }
                   activeOpacity={0.7}
                   className="mt-3 flex flex-row justify-start items-center gap-2"
                 >
@@ -294,6 +370,12 @@ const MyTourInfo = ({ tour }) => {
                 </TouchableOpacity>
                 <TouchableOpacity
                   activeOpacity={0.7}
+                  onPress={() =>
+                    setIsModalVisible((prev) => ({
+                      ...prev,
+                      directionModal: true,
+                    }))
+                  }
                   className="mt-3 flex flex-row justify-start items-center gap-2"
                 >
                   <Ionicons name="compass" size={12} color={"green"} />
@@ -373,11 +455,17 @@ const MyTourInfo = ({ tour }) => {
                     >
                       <View className="flex flex-row justify-start items-center gap-2">
                         <Ionicons name="compass" size={20} color={"green"} />
-                        <Text className={`font-semibold text-base text-green-600`}>
+                        <Text
+                          className={`font-semibold text-base text-green-600`}
+                        >
                           Your Room Mates
                         </Text>
                       </View>
-                      <Ionicons name="chevron-forward" color={"green"} size={20} />
+                      <Ionicons
+                        name="chevron-forward"
+                        color={"green"}
+                        size={20}
+                      />
                     </TouchableOpacity>
                   </View>
                 )}
@@ -397,9 +485,111 @@ const MyTourInfo = ({ tour }) => {
             </View>
           )}
         </View>
+        {status === 1 && (
+          <TouchableOpacity
+            onPress={handleCancelBooking}
+            activeOpacity={0.8}
+            className="flex w-full flex-row justify-center items-center bg-white rounded-lg p-2 py-3 shadow-lg shadow-black"
+          >
+            <Text className="text-red-700 text-lg font-semibold">
+              Cancel Booking
+            </Text>
+          </TouchableOpacity>
+        )}
       </ScrollView>
+      <Modal
+        visible={isModalVisible.busImageModal}
+        onRequestClose={() =>
+          setIsModalVisible((prev) => ({ ...prev, busImageModal: false }))
+        }
+        transparent={true}
+        animationType="fade"
+      >
+        <View style={styles.overLay}>
+          <View style={styles.modal}>
+            <View style={{ height: "90%", width: "100%" }}>
+              <Carousel
+                loop
+                width={width * 0.9}
+                height={height * 0.45}
+                data={busImages}
+                renderItem={CarouselImageRender}
+              />
+            </View>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() =>
+                setIsModalVisible((prev) => ({
+                  ...prev,
+                  busImageModal: false,
+                }))
+              }
+            >
+              <Text style={{ color: "white", fontWeight: "500" }}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+      <Modal
+        visible={isModalVisible.directionModal}
+        onRequestClose={() =>
+          setIsModalVisible((prev) => ({ ...prev, directionModal: false }))
+        }
+        transparent={true}
+        animationType="fade"
+      >
+        <View style={styles.overLay}>
+          <View style={styles.modal}>
+            <View style={{ height: "90%", width: "100%" }}>
+              <MapScreen destination={destination} />
+            </View>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() =>
+                setIsModalVisible((prev) => ({
+                  ...prev,
+                  directionModal: false,
+                }))
+              }
+            >
+              <Text style={{ color: "white", fontWeight: "500" }}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  overLay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.8)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modal: {
+    height: height * 0.5,
+    width: width * 0.9,
+    backgroundColor: "white",
+    borderRadius: 10,
+    zIndex: 100,
+    overflow: "hidden",
+    display: "flex",
+    justifyContent: "start",
+    alignItems: "center",
+    gap: 8,
+  },
+  closeButton: {
+    backgroundColor: "green",
+    borderRadius: 5,
+    padding: 5,
+    width: "80%",
+    marginHorizontal: 10,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});
 
 export default MyTourInfo;

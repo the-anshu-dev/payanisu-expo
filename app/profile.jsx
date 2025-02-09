@@ -91,7 +91,14 @@ const Profile = () => {
           <RefreshControl refreshing={refresh} onRefresh={onRefresh} />
         }
       >
-        <View style={{ paddingVertical: 7, display: "flex", justifyContent: "center", alignItems: "center" }}>
+        <View
+          style={{
+            paddingVertical: 7,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
           <Text style={styles.titleText}>Personal Details</Text>
         </View>
         <LabelValue label={"Name"} value={profile?.name || user?.given_name} />
@@ -105,10 +112,7 @@ const Profile = () => {
             <LabelValue label={"Age"} value={profile.age} />
             <LabelValue label={"Gender"} value={profile.gender} />
             <LabelValue label={"Contact No"} value={profile.contact} />
-            <LabelValue
-              label={"Identity Proof Type"}
-              value={profile.id_type}
-            />
+            <LabelValue label={"Identity Proof Type"} value={profile.id_type} />
             <LabelValue
               label={"Identity Proof Number"}
               value={profile.id_number}
@@ -231,7 +235,8 @@ const styles = StyleSheet.create({
   },
   titleText: {
     fontSize: width * 0.06,
-    fontWeight: "500",
+    fontWeight: "600",
+    color: "green",
   },
   detailsContainer: {
     marginTop: height * 0.001,
@@ -305,7 +310,7 @@ const styles = StyleSheet.create({
   },
   memberContainer: {
     marginTop: 16,
-    paddingHorizontal: width * 0.01
+    paddingHorizontal: width * 0.01,
   },
   adminButton: {
     backgroundColor: "green",

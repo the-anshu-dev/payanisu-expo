@@ -1,4 +1,9 @@
-import { View, TouchableOpacity, Dimensions, useWindowDimensions } from "react-native";
+import {
+  View,
+  TouchableOpacity,
+  Dimensions,
+  useWindowDimensions,
+} from "react-native";
 import React from "react";
 import { useSelector } from "react-redux";
 import { Image } from "expo-image";
@@ -17,16 +22,20 @@ const Header = () => {
 
   return (
     <SafeAreaView>
-      <View style={{ height: 0.07 * height, elevation: 0.9 }} className="w-full bg-white">
+      <View
+        style={{ height: 0.07 * height, elevation: 0.9 }}
+        className="w-full bg-white"
+      >
         <View
           className={`h-full flex justify-between items-center flex-row px-5 py-2`}
         >
-          <View className="flex flex-row gap-3 w-[50%] justify-center items-center">
+          <View className="flex flex-row w-[50%] justify-center items-center">
             <TouchableOpacity
               onPress={() => router.push(route)}
               activeOpacity={0.7}
+              className="px-3 py-2"
             >
-              <FontAwesome6 name="bars" size={28} color="green" />
+              <FontAwesome6 name="bars" size={34} color="green" />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => router.push("/(tabs)")}
@@ -35,11 +44,17 @@ const Header = () => {
               <Logo width={width * 0.35} height={height * 0.04} />
             </TouchableOpacity>
           </View>
-          <View>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={() => router.push("/profile")}
+          >
             <View className="h-12 w-12 rounded-full border-2 border-green-700 p-0.5 overflow-hidden">
-              <Image source={user?.picture} style={{ height: "100%", width: "100%", borderRadius: 50 }} />
+              <Image
+                source={user?.picture}
+                style={{ height: "100%", width: "100%", borderRadius: 50 }}
+              />
             </View>
-          </View>
+          </TouchableOpacity>
         </View>
       </View>
     </SafeAreaView>

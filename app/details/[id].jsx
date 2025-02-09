@@ -39,9 +39,13 @@ const DetailsScreen = () => {
 
   const [filteredMembers, setFilteredMembers] = useState([]);
 
-  const tourData = tour.find((tourData) => tourData._id === id);
-
-  const { backpacks, checkinbagages, includeds, notincludeds } = tourData;
+  const tourData = tour.find((tourData) => tourData._id === id) || {};
+  const {
+    backpacks = [],
+    checkinbagages = [],
+    includeds = [],
+    notincludeds = [],
+  } = tourData;
 
   const [memberPreferences, setMemberPreferences] = useState({});
 
@@ -53,29 +57,43 @@ const DetailsScreen = () => {
   };
 
   const curatedMembers = useMemo(() => {
-    const existingMembers = members?.map((member) => ({
-      id: member._id,
-      name: member.name,
-      age: member.age,
-      gender: member.gender,
-      email: member.email,
-      tourId: id,
-      isTrekker: memberPreferences[member._id]?.isTrekker || false,
-      noAccommodation: memberPreferences[member._id]?.noAccommodation || false,
-    })) || [];
+    const existingMembers =
+      members?.map((member) => ({
+        id: member._id,
+        name: member.name,
+        age: member.age,
+        gender: member.gender,
+        email: member.email,
+        tourId: id,
+        isTrekker: memberPreferences[member._id]?.isTrekker || false,
+        noAccommodation:
+          memberPreferences[member._id]?.noAccommodation || false,
+        isSelected: true,
+      })) || [];
 
-    const selfMember = profile && user && id ? [{
-      id: profile._id,
-      name: user?.given_name,
-      age: profile?.age,
-      gender: profile?.gender,
-      email: user.email,
-      tourId: id,
-      isTrekker: memberPreferences[profile._id]?.isTrekker || false,
-      noAccommodation: memberPreferences[profile._id]?.noAccommodation || false,
-    }] : [];
+    const selfMember =
+      profile && user && id
+        ? [
+            {
+              id: profile._id,
+              name: user?.given_name,
+              age: profile?.age,
+              gender: profile?.gender,
+              email: user.email,
+              tourId: id,
+              isTrekker: memberPreferences[profile._id]?.isTrekker || false,
+              noAccommodation:
+                memberPreferences[profile._id]?.noAccommodation || false,
+              isSelected: true,
+            },
+          ]
+        : [];
 
-    const uniqueMembers = [...new Map([...selfMember, ...existingMembers].map(m => [m.id, m])).values()];
+    const uniqueMembers = [
+      ...new Map(
+        [...selfMember, ...existingMembers].map((m) => [m.id, m])
+      ).values(),
+    ];
 
     return uniqueMembers;
   }, [members, profile, user, id, memberPreferences]);
@@ -103,8 +121,8 @@ const DetailsScreen = () => {
         }
       );
 
-      if (response.status !== 201) {
-        throw new Error("Failed to post interest");
+      if (!response.ok) {
+        throw new Error(`Failed to post interest: ${response.status}`);
       }
 
       interestedRef.current?.open();
@@ -118,8 +136,13 @@ const DetailsScreen = () => {
 
   const handlePayNow = async () => {
     if (!tourData) return;
-    const totalCost = curatedMembers.length * tourData.tour_cost;
-    dispatch(setTourMembers(curatedMembers));
+    const bookingMembers = filteredMembers.filter((m) => m.isSelected);
+    if (bookingMembers.length === 0) {
+      Alert.alert("Select Members", "Please select members to book the tour.");
+      return;
+    }
+    const totalCost = bookingMembers.length * tourData.tour_cost;
+    dispatch(setTourMembers(bookingMembers));
     dispatch(setTotalCost(totalCost));
     router.replace(`/payment?id=${id}`);
   };
@@ -146,16 +169,23 @@ const DetailsScreen = () => {
     reserveRef.current.open();
   };
 
-  const handleRemoveMembers = (id) => {
-    if (id === profile?._id) {
-      Alert.alert("Cannot remove!", "You cannot remove yourself");
-      return;
-    }
-    setFilteredMembers((prev) => prev.filter((member) => member.id !== id));
+  const handleSelectMember = (id) => {
+    // if (id === profile?._id) {
+    //   Alert.alert("Cannot remove!", "You cannot remove yourself");
+    //   return;
+    // }
+
+    setFilteredMembers((prev) =>
+      prev.map((member) =>
+        member.id === id
+          ? { ...member, isSelected: !member.isSelected }
+          : member
+      )
+    );
   };
 
   useEffect(() => {
-    setFilteredMembers(curatedMembers);
+    setFilteredMembers([...curatedMembers]);
   }, [curatedMembers]);
 
   const images = useMemo(
@@ -165,8 +195,11 @@ const DetailsScreen = () => {
 
   return (
     <>
-      <SafeAreaView style={styles.safeArea} edges={['left', 'right', 'bottom']}>
-        <ScrollView className="flex h-full" showsVerticalScrollIndicator={false}>
+      <SafeAreaView style={styles.safeArea} edges={["left", "right", "bottom"]}>
+        <ScrollView
+          className="flex h-full"
+          showsVerticalScrollIndicator={false}
+        >
           <StatusBar
             style="dark"
             backgroundColor="#fff"
@@ -325,9 +358,15 @@ const DetailsScreen = () => {
             </View>
           </View>
         </ScrollView>
-        <View style={{ backgroundColor: "transparent" }} className="h-fit mb-3 p-1 flex flex-row justify-center items-center w-full gap-5">
+        <View
+          style={{ backgroundColor: "transparent" }}
+          className="h-fit mb-3 p-1 flex flex-row justify-center items-center w-full gap-5"
+        >
           <TouchableOpacity onPress={handleInterested} activeOpacity={0.8}>
-            <View style={{ width: width * 0.4 }} className="bg-slate-500 rounded-lg h-12 flex justify-center items-center ">
+            <View
+              style={{ width: width * 0.4 }}
+              className="bg-slate-500 rounded-lg h-12 flex justify-center items-center "
+            >
               {loading ? (
                 <ActivityIndicator color="white" size={"small"} />
               ) : (
@@ -338,7 +377,10 @@ const DetailsScreen = () => {
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={handleReserveButton} activeOpacity={0.8}>
-            <View style={{ width: width * 0.4 }} className="py-3 bg-green-700 rounded-lg h-12 flex justify-center items-center">
+            <View
+              style={{ width: width * 0.4 }}
+              className="py-3 bg-green-700 rounded-lg h-12 flex justify-center items-center"
+            >
               <Text className="text-center text-white font-semibold">
                 Reserve Seat
               </Text>
@@ -359,7 +401,11 @@ const DetailsScreen = () => {
           <Text className={`text-xl font-semibold px-5 text-center`}>
             Thanks for showing interest for the tour.
           </Text>
-          <Image source={approve} style={{ height: height * 0.2, width: width * 0.5 }} className="mt-2" />
+          <Image
+            source={approve}
+            style={{ height: height * 0.2, width: width * 0.5 }}
+            className="mt-2"
+          />
           <Text className={`mt-2 text-lg `}>
             Our team will reach out to you.
           </Text>
@@ -396,7 +442,8 @@ const DetailsScreen = () => {
                     key={member.id}
                     member={member}
                     handleCheckboxChange={handleCheckboxChange}
-                    handleRemoveMembers={handleRemoveMembers}
+                    handleSelectMember={handleSelectMember}
+                    isSelected={member.isSelected}
                   />
                 ))}
                 <TouchableOpacity
@@ -412,12 +459,14 @@ const DetailsScreen = () => {
               </View>
             </ScrollView>
           </View>
-          <View className={`px-4 absolute bottom-0 pb-4 pt-1 bg-white`}>
+          <View className={`px-4 absolute bottom-0 py-3 bg-white flex justify-center items-center`}>
             <View className="flex flex-row w-full justify-between items-center">
               <View>
                 <Text className={`text-xs `}>Total Payable</Text>
-                <Text className={`text-xl font-semibold `}>{`₹ ${curatedMembers.length * tourData?.tour_cost
-                  }`}</Text>
+                <Text className={`text-xl font-semibold `}>{`₹ ${
+                  filteredMembers.filter((m) => m.isSelected).length *
+                  tourData?.tour_cost
+                }`}</Text>
               </View>
               <TouchableOpacity activeOpacity={0.8} onPress={handlePayNow}>
                 <View className="h-10 w-40 flex justify-center items-center rounded-lg bg-green-600">
@@ -437,18 +486,18 @@ const DetailsScreen = () => {
 const BookingMembers = ({
   member,
   handleCheckboxChange,
-  handleRemoveMembers,
+  handleSelectMember,
+  isSelected,
 }) => {
   return (
     <View style={styles.memberCardStyle}>
       <View className="w-full flex flex-row justify-between items-center">
-        <Text className={`text-lg font-semibold `}>{member.name}</Text>
-        <TouchableOpacity
-          activeOpacity={0.8}
-          onPress={() => handleRemoveMembers(member.id)}
-        >
-          <Ionicons name="close-circle-outline" size={20} color={"red"} />
-        </TouchableOpacity>
+        <Text className={`text-xl font-semibold `}>{member.name}</Text>
+        <Checkbox
+          onPress={() => handleSelectMember(member.id)}
+          status={isSelected && "checked"}
+          color="green"
+        />
       </View>
       <View className="flex flex-row w-full justify-between mt-2">
         <View className="flex flex-row space-x-2 justify-center items-center">

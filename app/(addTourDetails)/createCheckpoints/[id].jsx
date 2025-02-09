@@ -84,7 +84,6 @@ const Page = () => {
 
   // Function to handle location selection (e.g., from Google Places)
   const handleLocationSelect = (details) => {
-    console.log("details-->", details);
     if (details && details.geometry) {
       const { lat, lng } = details.geometry.location;
       setRegion({

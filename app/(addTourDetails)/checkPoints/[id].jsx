@@ -24,7 +24,6 @@ import { useDispatch } from "react-redux";
 import { setCheckPoints } from "../../../redux/slices/tourSlice";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-
 const { height, width } = Dimensions.get("window");
 
 const Checkpoints = () => {
@@ -166,11 +165,7 @@ const Checkpoints = () => {
       <View className="px-4 relative h-full w-full flex justify-start items-center">
         {allCheckPoints.length === 0 ? (
           <View className="h-full w-full flex justify-center items-center -mt-10">
-            <Ionicons
-              name="navigate-circle-outline"
-              size={48}
-              color={"gray"}
-            />
+            <Ionicons name="navigate-circle-outline" size={48} color={"gray"} />
             <Text className="text-xl font-semibold mt-4 text-gray-400">
               No checkpoints added yet
             </Text>
@@ -192,7 +187,10 @@ const Checkpoints = () => {
             ))}
           </ScrollView>
         )}
-        <View style={{ width: width }} className="w-full absolute bottom-0 flex flex-row justify-between items-center h-16 bg-transparent px-4">
+        <View
+          style={{ width: width }}
+          className="w-full absolute bottom-0 flex flex-row justify-between items-center h-16 bg-transparent px-4"
+        >
           <TouchableOpacity
             activeOpacity={0.8}
             onPress={handleQrModal}
@@ -203,14 +201,13 @@ const Checkpoints = () => {
               borderRadius: 8,
             }}
           >
-            {
-              qrLoading ? (
-                <ActivityIndicator color="white" size={20} />
-              ) : (
-                <Text style={{ textAlign: "center", color: "#fff" }}>
-                  Download QR code
-                </Text>)
-            }
+            {qrLoading ? (
+              <ActivityIndicator color="white" size={20} />
+            ) : (
+              <Text style={{ textAlign: "center", color: "#fff" }}>
+                Download QR code
+              </Text>
+            )}
           </TouchableOpacity>
           <TouchableOpacity
             activeOpacity={0.8}
@@ -231,7 +228,9 @@ const Checkpoints = () => {
       <Modalize ref={editCheckPointRef} adjustToContentHeight snapPoint={500}>
         <View className="h-fit px-6 py-4 flex justify-center gap-3 items-center">
           <View className="w-full flex justify-start items-center">
-            <Text className="mt-1 text-2xl font-semibold">Edit Check Point</Text>
+            <Text className="mt-1 text-2xl font-semibold">
+              Edit Check Point
+            </Text>
             <View className="border mt-3 border-gray-500/50 p-1 px-2 rounded-lg w-full">
               <Text className="text-xs text-gray-500/70">Title</Text>
               <TextInput
@@ -261,7 +260,13 @@ const Checkpoints = () => {
                 borderRadius: 8,
               }}
             >
-              <Text style={{ textAlign: "center", color: "#fff", fontWeight: "600" }}>
+              <Text
+                style={{
+                  textAlign: "center",
+                  color: "#fff",
+                  fontWeight: "600",
+                }}
+              >
                 Save
               </Text>
             </TouchableOpacity>
@@ -308,7 +313,14 @@ const Checkpoints = () => {
             <Text className="text-base font-semibold">QR Code</Text>
           </View>
           <View className="p-1 border border-green-700 rounded-xl">
-            <Image source={qrUrl} style={{ height: height * 0.2, width: width * 0.4, borderRadius: 6 }} />
+            <Image
+              source={qrUrl}
+              style={{
+                height: height * 0.2,
+                width: width * 0.4,
+                borderRadius: 6,
+              }}
+            />
           </View>
           <View className="mt-6">
             <TouchableOpacity
@@ -334,6 +346,8 @@ const CheckPointCard = ({
 }) => {
   const [loading, setLoading] = useState(false);
 
+  console.log("point-->", point);
+
   const handleActivation = async () => {
     setLoading(true);
     try {
@@ -343,7 +357,7 @@ const CheckPointCard = ({
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
     <View className="border border-gray-500/50 rounded-lg py-3 px-2 mt-3 w-full bg-white">
@@ -369,7 +383,7 @@ const CheckPointCard = ({
             <ActivityIndicator color="green" size={"small"} />
           ) : (
             <>
-              {!point.activated ? (
+              {point.activated || point.type === "Geo Tagging" ? (
                 <Text className="text-xl font-semibold text-green-700">
                   {point.allCheckedCount}
                 </Text>
@@ -379,7 +393,9 @@ const CheckPointCard = ({
                   activeOpacity={0.8}
                   className=" flex justify-center items-center border px-2 py-0.5 rounded-full border-green-700"
                 >
-                  <Text className="text-sm font-semibold text-green-700">Activate</Text>
+                  <Text className="text-sm font-semibold text-green-700">
+                    Activate
+                  </Text>
                 </TouchableOpacity>
               )}
             </>

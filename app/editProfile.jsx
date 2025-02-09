@@ -91,8 +91,6 @@ const EditProfile = () => {
         info
       })
 
-      console.log(body);
-
       const response = await fetch(
         `${process.env.EXPO_PUBLIC_BASE_URL}/api/users/createProfile`,
         {

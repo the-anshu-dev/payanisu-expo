@@ -8,64 +8,65 @@ import {
   ScrollView,
   Dimensions,
   StyleSheet,
+  Alert,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useSelector } from "react-redux";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import * as ImagePicker from "expo-image-picker";
-import { Image } from "expo-image";
 import { format } from "date-fns";
-import { uploadFilesToS3 } from "../utils/uploadFileHelper";
 import { Picker } from "@react-native-picker/picker";
-import * as DocumentPicker from 'expo-document-picker';
+import { SafeAreaView } from "react-native-safe-area-context";
 
+const { height, width } = Dimensions.get("window");
 
-const { width, height } = Dimensions.get("window");
+const EditTour = () => {
+  const { tour } = useSelector((state) => state.tour);
+  const { id } = useLocalSearchParams();
 
-const addTours = () => {
   const { user } = useSelector((state) => state.user);
+
+  const tourDetails = tour.find((t) => t._id === id);
 
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [tourName, setTourName] = useState("");
-  const [location, setLocation] = useState("");
-  const [state, setState] = useState("");
-  const [description, setDescription] = useState("");
-  const [difficulty, setDifficulty] = useState("");
-  const [totalSeats, setTotalSeats] = useState("");
-  const [distance, setDistance] = useState("");
-  const [tourType, setTourType] = useState(null);
-  const [costPerPerson, setCostPerPerson] = useState("");
-  const [adminCanReject, setAdminCanReject] = useState(false);
-  const [paymentGatewayEnabled, setPaymentGatewayEnabled] = useState(false);
-  const [image, setImage] = useState([]);
-
-  const [consentForm, setConsentForm] = useState(null)
-
-  // date range picker
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
-  const [bookingCloseDate, setBookingCloseDate] = useState(null);
+  const [tourName, setTourName] = useState(tourDetails?.name || "");
+  const [location, setLocation] = useState(tourDetails?.location || "");
+  const [state, setState] = useState(tourDetails?.state || "");
+  const [description, setDescription] = useState(
+    tourDetails?.description || ""
+  );
+  const [difficulty, setDifficulty] = useState(
+    tourDetails?.difficulty || "Easy"
+  );
+  const [totalSeats, setTotalSeats] = useState(
+    tourDetails?.total_seats?.toString() || ""
+  );
+  const [distance, setDistance] = useState(
+    tourDetails?.distance?.toString() || ""
+  );
+  const [tourType, setTourType] = useState(tourDetails?.tourType || null);
+  const [costPerPerson, setCostPerPerson] = useState(
+    tourDetails?.tour_cost?.toString() || ""
+  );
+  const [adminCanReject, setAdminCanReject] = useState(
+    tourDetails?.can_admin_reject || false
+  );
+  const [paymentGatewayEnabled, setPaymentGatewayEnabled] = useState(
+    tourDetails?.enable_payment_getway || false
+  );
+  const [startDate, setStartDate] = useState(
+    new Date(tourDetails?.tour_start || Date.now())
+  );
+  const [endDate, setEndDate] = useState(
+    new Date(tourDetails?.tour_end || Date.now())
+  );
+  const [bookingCloseDate, setBookingCloseDate] = useState(
+    new Date(tourDetails?.booking_close || Date.now())
+  );
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showEndPicker, setShowEndPicker] = useState(false);
   const [showBookingClosePicker, setShowBookingClosePicker] = useState(false);
-
-  const pickPdf = async () => {
-    try {
-      const result = await DocumentPicker.getDocumentAsync({
-        type: 'application/pdf',
-      });
-      if (!result.canceled) {
-        setConsentForm(result.assets[0])
-      }
-    } catch (error) {
-      console.error('Error picking PDF:', error);
-    }
-  };
-
-  console.log(consentForm);
 
   const onChangeStart = (event, selectedDate) => {
     const currentDate = selectedDate || startDate;
@@ -85,23 +86,6 @@ const addTours = () => {
     setBookingCloseDate(currentDate);
   };
 
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      allowsMultipleSelection: true,
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      setImage(result.assets);
-    }
-  };
-
-  const handleCancelImage = (fileName) => {
-    setImage(image.filter((i) => i.fileName !== fileName));
-  };
-
   const submitForm = async () => {
     if (
       !tourName ||
@@ -115,8 +99,7 @@ const addTours = () => {
       !costPerPerson ||
       !difficulty ||
       !state ||
-      !tourType ||
-      image.length === 0
+      !tourType
     ) {
       setError("Please fill all required fields & add tour images.");
       return;
@@ -126,6 +109,7 @@ const addTours = () => {
     try {
       setError("");
       const formData = {
+        id,
         name: tourName,
         location,
         description,
@@ -143,7 +127,7 @@ const addTours = () => {
       };
 
       const response = await fetch(
-        `${process.env.EXPO_PUBLIC_BASE_URL}/api/tour/create-tour`,
+        `${process.env.EXPO_PUBLIC_BASE_URL}/api/tour/update-tour`,
         {
           method: "POST",
           headers: {
@@ -154,100 +138,86 @@ const addTours = () => {
         }
       );
 
-      const result = await response.json();
-
-      const notificationData = {
-        title: `Buckle up! New tour: ${tourName}`,
-        content: description,
-        id: result._id,
-      };
-
-      if (response.status === 201) {
-        await uploadFilesToS3(image, result._id);
-        const notify = await fetch(
-          `${process.env.EXPO_PUBLIC_BASE_URL}/api/notification/create`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(notificationData),
-          }
-        );
-        await notify.json();
-      } else {
-        setError(result.message || "Please fill in all required fields.");
-        return;
+      if (response.ok) {
+        Alert.alert("Success", "Tour details updated successfully.");
+        router.back();
       }
-      router.back();
     } catch (err) {
-      console.error("Error submitting tour:", err);
+      console.log("Error submitting tour:", err);
       setError("Error submitting tour. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(()=>{
-    if(startDate && endDate && bookingCloseDate){
-      if(startDate > endDate){
-        setError("Start date should be less than end date")
-      }
-      if(bookingCloseDate > startDate){
-        setError("Booking close date should be less than start date")
-      }
+  useEffect(() => {
+    if (!startDate || !endDate || !bookingCloseDate) return;
+
+    let newError = null;
+    if (endDate < startDate) {
+      newError = "End date should be greater than start date";
+    } else if (bookingCloseDate >= startDate) {
+      newError = "Booking close date should be before start date";
     }
-  },[startDate, endDate, bookingCloseDate])
+
+    if (error !== newError) {
+      setError(newError);
+    }
+  }, [startDate, endDate, bookingCloseDate, error]);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.safeArea} edges={["left", "right", "bottom"]}>
       <ScrollView
-        contentContainerStyle={styles.scrollViewContent}
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollViewContent}
       >
-        <View style={styles.innerContainer}>
+        <View className="flex justify-center items-center py-2 mt-3">
+          <Text style={{ fontSize: 24, fontWeight: "700", color: "green" }}>
+            Edit Tour Details
+          </Text>
+        </View>
+        <View className="flex justify-center items-center">
           {error && (
-            <View style={styles.errorContainer}>
-              <Ionicons name="warning" size={28} color="red" />
-              <Text style={styles.errorText}>{error}</Text>
-            </View>
+            <Text className="text-red-600 font-semibold text-lg">{error}</Text>
           )}
+        </View>
+        <View style={styles.innerContainer}>
           <TextInput
-            placeholder="Tour Name"
+            placeholder={tourDetails.name}
             value={tourName}
             placeholderTextColor="gray"
             onChangeText={setTourName}
             style={styles.input}
           />
           <TextInput
-            placeholder="Location"
+            placeholder={tourDetails.location}
             value={location}
             placeholderTextColor="gray"
             onChangeText={setLocation}
             style={styles.input}
           />
           <TextInput
-            placeholder="State"
+            placeholder={tourDetails.state}
             value={state}
             placeholderTextColor="gray"
             onChangeText={setState}
             style={styles.input}
           />
           <TextInput
-            placeholder="Description"
+            placeholder={tourDetails.description}
             value={description}
             onChangeText={setDescription}
             placeholderTextColor="gray"
             multiline
             style={[styles.input, styles.descriptionInput]}
           />
-          <TextInput
-            placeholder="Difficulty [Easy, Medium, Hard]"
-            value={difficulty}
-            placeholderTextColor="gray"
-            onChangeText={setDifficulty}
-            style={styles.input}
-          />
+          <View style={styles.pickerContainer}>
+            <Picker selectedValue={difficulty} onValueChange={setDifficulty}>
+              <Picker.Item label="Easy" value="Easy" />
+              <Picker.Item label="Medium" value="Medium" />
+              <Picker.Item label="Hard" value="Hard" />
+            </Picker>
+          </View>
           <View style={styles.pickerContainer}>
             <Picker selectedValue={tourType} onValueChange={setTourType}>
               <Picker.Item label="Select tour type" value={null} />
@@ -270,7 +240,7 @@ const addTours = () => {
             </Picker>
           </View>
           <TextInput
-            placeholder="Total Seats"
+            placeholder={tourDetails?.total_seats.toString()}
             value={totalSeats}
             placeholderTextColor="gray"
             onChangeText={setTotalSeats}
@@ -278,7 +248,7 @@ const addTours = () => {
             style={styles.input}
           />
           <TextInput
-            placeholder="Distance (kms)"
+            placeholder={tourDetails.distance.toString()}
             value={distance}
             placeholderTextColor="gray"
             onChangeText={setDistance}
@@ -291,7 +261,7 @@ const addTours = () => {
                 editable={false}
                 className={`border py-2 mb-3 w-full border-slate-500/50 rounded-lg text-black placeholder:text-base  px-3 `}
                 value={startDate ? format(startDate, "yyyy-MM-dd") : new Date()}
-                placeholder="Select Start Date"
+                placeholder={format(tourDetails.tour_start, "yyyy-MM-dd")}
               />
             </TouchableOpacity>
             {showStartPicker && (
@@ -307,7 +277,7 @@ const addTours = () => {
                 editable={false}
                 className={`border py-2 mb-3 w-full border-slate-500/50 rounded-lg text-black placeholder:text-base  px-3 `}
                 value={endDate ? format(endDate, "yyyy-MM-dd") : new Date()}
-                placeholder="Select End Date"
+                placeholder={format(tourDetails.tour_end, "yyyy-MM-dd")}
               />
             </TouchableOpacity>
             {showEndPicker && (
@@ -327,7 +297,7 @@ const addTours = () => {
                     ? format(bookingCloseDate, "yyyy-MM-dd")
                     : new Date()
                 }
-                placeholder="Select Booking Close Date"
+                placeholder={format(tourDetails.booking_close, "yyyy-MM-dd")}
               />
             </TouchableOpacity>
             {showBookingClosePicker && (
@@ -340,7 +310,7 @@ const addTours = () => {
             )}
           </View>
           <TextInput
-            placeholder="Cost Per Person"
+            placeholder={tourDetails.tour_cost.toString()}
             value={costPerPerson}
             placeholderTextColor="gray"
             onChangeText={setCostPerPerson}
@@ -365,83 +335,40 @@ const addTours = () => {
               ios_backgroundColor="gray"
             />
           </View>
-          <View className="w-full">
-            {
-              consentForm ?
-                <View className="flex flex-row justify-between item-center border border-green-700 w-full rounded-lg px-4 py-2">
-                  <View className="flex flex-row justify-center items-center gap-5">
-                    <Ionicons name="document-text-outline" color={"green"} size={24} />
-                    <Text style={{ color: "green", fontWeight: "400" }}>{consentForm?.name}</Text>
-                  </View>
-                  <TouchableOpacity onPress={() => setConsentForm(null)}>
-                    <Ionicons name="close-outline" size={24} color="red" />
-                  </TouchableOpacity>
-                </View>
-                :
-                <View className="w-full">
-                  <TouchableOpacity onPress={pickPdf} style={styles.imagePicker}>
-                    <Ionicons name="add-circle" size={20} color="green" />
-                    <Text style={styles.imagePickerText}>Add Consent Form</Text>
-                  </TouchableOpacity>
-                </View>
-            }
-          </View>
-          <View className="w-full mt-3">
-            {image.length > 0 ? (
-              <View style={{ width: "100%" }}>
-                {image.map((img, idx) => (
-                  <View key={idx} style={styles.imageWrapper}>
-                    <Image source={{ uri: img.uri }} style={styles.image} />
-                    <TouchableOpacity
-                      onPress={() => handleCancelImage(img.fileName)}
-                      style={styles.closeButton}
-                    >
-                      <Ionicons name="close-outline" size={16} color="white" />
-                    </TouchableOpacity>
-                  </View>
-                ))}
-              </View>
-            ) : (
-              <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
-                <Ionicons name="add-circle" size={20} color="green" />
-                <Text style={styles.imagePickerText}>
-                  Add tour images
-                </Text>
-              </TouchableOpacity>
-            )}
-          </View>
         </View>
       </ScrollView>
-      <View
-        style={{
-          width: "100%",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <TouchableOpacity onPress={submitForm} style={styles.submitButton}>
+      <View style={styles.buttonWrapper}>
+        <TouchableOpacity
+          disabled={!!error}
+          onPress={submitForm}
+          activeOpacity={0.8}
+          style={styles.submitButton}
+        >
           {loading ? (
-            <ActivityIndicator color="white" />
+            <ActivityIndicator color={"white"} />
           ) : (
-            <Text style={styles.submitButtonText}>Submit</Text>
+            <Text className="text-xl text-white font-semibold">Save</Text>
           )}
         </TouchableOpacity>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     paddingHorizontal: width * 0.05,
   },
   scrollViewContent: {
     paddingBottom: height * 0.1,
-    paddingTop: 15,
   },
   innerContainer: {
+    paddingHorizontal: 12,
+    paddingTop: 10,
     width: "100%",
     alignItems: "center",
   },
@@ -530,19 +457,27 @@ const styles = StyleSheet.create({
     marginLeft: width * 0.02,
   },
   submitButton: {
+    display: "flex",
     position: "absolute",
     bottom: height * 0.02,
-    width: "100%",
+    width: "80%",
     backgroundColor: "#228B22",
-    paddingVertical: height * 0.009,
+    height: height * 0.045,
     borderRadius: 10,
     alignItems: "center",
+    justifyContent: "center",
   },
   submitButtonText: {
     color: "white",
     fontSize: width * 0.045,
     fontWeight: "bold",
   },
+  buttonWrapper: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
 });
 
-export default addTours;
+export default EditTour;

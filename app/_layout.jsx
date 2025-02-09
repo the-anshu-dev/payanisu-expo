@@ -29,7 +29,7 @@ export default function RootLayout() {
 
   // async function registerForPushNotificationsAsync() {
   //   let token;
-    
+
   //   if (Platform.OS === "android") {
   //     await Notifications.setNotificationChannelAsync("myNotificationChannel", {
   //       name: "A channel is needed for the permissions prompt to appear",
@@ -38,7 +38,7 @@ export default function RootLayout() {
   //       lightColor: "#FF231F7C",
   //     });
   //   }
-    
+
   //   if (Device.isDevice) {
   //     const { status: existingStatus } =
   //     await Notifications.getPermissionsAsync();
@@ -72,10 +72,10 @@ export default function RootLayout() {
   //   } else {
   //     alert("Must use physical device for Push Notifications");
   //   }
-    
+
   //   return token;
   // }
-  
+
   // useEffect(() => {
   //   registerForPushNotificationsAsync().then(
   //     (token) => token && setExpoPushToken(token)
@@ -153,6 +153,13 @@ export default function RootLayout() {
           <Stack.Screen
             name="(addTourDetails)/accomodation/[id]"
             options={getOpt("Accomodations", "(addTourDetails)/tourDetails")}
+          />
+          <Stack.Screen
+            name="(addTourDetails)/editTourDetails/[id]"
+            options={getOpt(
+              "Edit Tour Details",
+              "(addTourDetails)/tourDetails"
+            )}
           />
           <Stack.Screen
             name="(addTourDetails)/allocatedCoordinators/[id]"

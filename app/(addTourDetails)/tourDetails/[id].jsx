@@ -1,6 +1,6 @@
-import { View, Text } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useSelector } from "react-redux";
 import LabelValue from "../../../components/UI/LabelValue";
 import { formatDate } from "../../../utils/helpers";
@@ -27,11 +27,11 @@ const TourDetails = () => {
         />
         <LabelValue
           label={"Booking Close Before"}
-          value={formatDate(tourData?.tour_cost)}
+          value={formatDate(tourData?.booking_close)}
         />
         <LabelValue
           label={"Tour Cost Per Seat (INR)"}
-          value={formatDate(tourData?.booking_close)}
+          value={tourData?.tour_cost}
         />
         <LabelValue
           label={"Admin can reaject ?"}
@@ -42,6 +42,13 @@ const TourDetails = () => {
           value={tourData?.enable_payment_getway ? "Yes" : "No"}
         />
       </ScrollView>
+      <TouchableOpacity
+        onPress={() => router.push(`/(addTourDetails)/editTourDetails/${id}`)}
+        activeOpacity={0.8}
+        className="w-full py-2 flex flex-row justify-center items-center bg-green-700 h-12 gap-2 rounded-lg mb-4"
+      >
+        <Text className="text-white text-xl font-semibold">Edit Tour</Text>
+      </TouchableOpacity>
     </View>
   );
 };

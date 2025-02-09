@@ -19,7 +19,7 @@ import { setTour } from "../../redux/slices/tourSlice";
 const { width, height } = Dimensions.get("window");
 
 const Tours = () => {
-  const { tour } = useSelector((state) => state.tour);
+  const [tours, setTours] = useState([]);
 
   const [refresh, setRefresh] = useState(false);
 
@@ -35,6 +35,7 @@ const Tours = () => {
       }
       const tour = await response.json();
       await AsyncStorage.setItem("tours", JSON.stringify(tour));
+      setTours(tour);
       dispatch(setTour(tour));
     } catch (error) {
       Alert.alert("Error", error.message || "Something went wrong.");
@@ -43,9 +44,9 @@ const Tours = () => {
   };
 
   const onRefresh = async () => {
+    setRefresh(true);
     try {
       await getAllTours();
-      setRefresh(true);
     } finally {
       setRefresh(false);
     }
@@ -66,8 +67,8 @@ const Tours = () => {
           }
         >
           <View style={styles.tourListContainer}>
-            {tour.length > 0 ? (
-              tour.map((item) => <TourCard key={item?._id} tour={item} />)
+            {tours.length > 0 ? (
+              tours.map((item) => <TourCard key={item?._id} tour={item} />)
             ) : (
               <View style={styles.noToursCard}>
                 <Text style={styles.noToursText}>No Tours Available</Text>
@@ -121,15 +122,15 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 0,
     width: "100%",
-    paddingHorizontal: width * 0.06,
-    paddingVertical: height * 0.01,
+    paddingHorizontal: width * 0.04,
+    paddingVertical: 5,
   },
   createButton: {
     backgroundColor: "green",
     width: "100%",
     justifyContent: "center",
     alignItems: "center",
-    paddingVertical: height * 0.015,
+    paddingVertical: 10,
     borderRadius: 10,
   },
   createButtonText: {

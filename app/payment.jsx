@@ -37,7 +37,6 @@ const Payment = () => {
   const [image, setImage] = useState(null);
   const [agree, setAgree] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
 
   const qrRef = useRef();
 
@@ -96,7 +95,6 @@ const Payment = () => {
         Alert.alert("Sharing not available", "Unable to share the QR code.");
       }
     } catch (error) {
-      console.log("Sharing failed", error);
       Alert.alert("Error", "Failed to share the QR code.");
     }
   };
@@ -203,26 +201,6 @@ const Payment = () => {
           </TouchableOpacity>
         </View>
       </View>
-      <Modal visible={modalVisible} transparent animationType="slide">
-        <View className="flex-1 justify-center items-center bg-black/50">
-          <View className="bg-white w-[80%] p-5 rounded-lg">
-            <Text className="text-lg font-semibold">Share QR Code</Text>
-            <View className="w-full flex flex-row justify-center items-center gap-12 mt-4">
-              <TouchableOpacity className="py-2 mt-4 flex justify-center items-center gap-2 p-2 rounded-lg w-[30%] shadow-md shadow-black/50 bg-white" onPress={() => { }}>
-                <Ionicons name="logo-whatsapp" color={"green"} size={28} />
-                <Text className="text-green-700 font-semibold text-base">WhatsApp</Text>
-              </TouchableOpacity>
-              <TouchableOpacity className="py-2 mt-4 flex justify-center items-center gap-2 p-2 rounded-lg w-[30%] shadow-md shadow-black/50 bg-white" onPress={() => { }}>
-                <Ionicons name="mail-outline" color={"green"} size={28} />
-                <Text className="text-green-700 font-semibold text-base">Email</Text>
-              </TouchableOpacity>
-            </View>
-            <TouchableOpacity className="mt-8 flex justify-end items-end px-2" onPress={() => setModalVisible(false)}>
-              <Text className="text-red-600 text-center text-base">Close</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
     </SafeAreaView>
   );
 };

@@ -116,15 +116,49 @@ const CheckPointElement = ({ points, index, handleGetCheckPoints }) => {
             <Text style={styles.pointName}>{points?.name}</Text>
           </View>
           <View style={styles.qrIconContainer}>
-            {checkInLoading ? (
-              <ActivityIndicator color="green" size={"small"} />
-            ) : points.checked ? (
-              <Ionicons name="checkmark-circle-outline" size={32} color={"green"} />
-            ) : points.activated ? (
-              <TouchableOpacity activeOpacity={0.6} onPress={handleQRCodePress} className="border-2 border-green-700 rounded-full px-2 ">
-                <Text className="font-semibold text-green-700 text-xl">Scan QR</Text>
-              </TouchableOpacity>
-            ) : <Text className="text-red-400 font-semibold border px-2 py-1 rounded-full border-red-400">In-active</Text>}
+            {checkInLoading && <ActivityIndicator color="green" size="small" />}
+            {!checkInLoading &&
+              points.type === "Geo Tagging" &&
+              (points.checked ? (
+                <Ionicons
+                  name="checkmark-circle-outline"
+                  size={32}
+                  color="green"
+                />
+              ) : (
+                <Ionicons name="time-outline" size={28} color="green" />
+              ))}
+            {!checkInLoading &&
+              points.type !== "Geo Tagging" &&
+              points.checked && (
+                <Ionicons
+                  name="checkmark-circle-outline"
+                  size={32}
+                  color="green"
+                />
+              )}
+            {!checkInLoading &&
+              points.type !== "Geo Tagging" &&
+              points.activated &&
+              !points.checked && (
+                <TouchableOpacity
+                  activeOpacity={0.6}
+                  onPress={handleQRCodePress}
+                  className="border-2 border-green-700 rounded-full px-2"
+                >
+                  <Text className="font-semibold text-green-700 text-xl">
+                    Scan QR
+                  </Text>
+                </TouchableOpacity>
+              )}
+            {!checkInLoading &&
+              !points.checked &&
+              !points.activated &&
+              points.type !== "Geo Tagging" && (
+                <Text className="text-red-400 font-semibold border px-2 py-1 rounded-full border-red-400">
+                  In-active
+                </Text>
+              )}
           </View>
         </View>
         <View style={styles.descriptionContainer}>
