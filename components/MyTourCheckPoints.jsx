@@ -1,16 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { Dimensions, StyleSheet, View } from "react-native";
+import { Alert, Dimensions, Platform, StyleSheet, View } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import MapViewDirections from "react-native-maps-directions";
 import * as Location from "expo-location";
+import { useDispatch } from "react-redux";
+import { setMapLink } from "../redux/slices/mapSlice";
 
-const { width, height } = Dimensions.get("window");
+const { height } = Dimensions.get("window");
 const apiKey = process.env.EXPO_PUBLIC_GOOGLE_API_KEY;
 
-const MyTourCheckPoints = ({ checkPoints }) => {
-  const [region, setRegion] = useState(null);
+const MyTourCheckPoints = ({ checkPoints = [] }) => {
   const [userLocation, setUserLocation] = useState(null);
-  const [destination, setDestination] = useState(null);
+  const dispatch = useDispatch();
+
+  const filteredCheckPoints = checkPoints.filter(
+    (cp) => cp.type === "Geo Tagging"
+  );
 
   useEffect(() => {
     const getUserLocation = async () => {
@@ -19,40 +24,47 @@ const MyTourCheckPoints = ({ checkPoints }) => {
         console.log("Permission denied");
         return;
       }
-
       const location = await Location.getCurrentPositionAsync({});
-      const userCoords = {
+      setUserLocation({
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
-      };
-
-      setUserLocation(userCoords);
-
-      if (checkPoints?.length > 0) {
-        const lastCheckpoint = checkPoints[checkPoints.length - 1];
-        setDestination({
-          latitude: lastCheckpoint.latitude,
-          longitude: lastCheckpoint.longitude,
-        });
-      }
-
-      setRegion({
-        latitude: userCoords.latitude,
-        longitude: userCoords.longitude,
-        latitudeDelta: 0.05,
+        latitudeDelta: 0.05, 
         longitudeDelta: 0.05,
       });
     };
 
     getUserLocation();
-  }, [checkPoints]);
+  }, []);
+
+  useEffect(() => {
+    if (!userLocation || filteredCheckPoints.length === 0) return;
+
+    const destination = filteredCheckPoints[filteredCheckPoints.length - 1];
+    const mapsUrl = Platform.select({
+      ios: `maps://?daddr=${destination.latitude},${destination.longitude}&dirflg=d`,
+      android: `google.navigation:q=${destination.latitude},${destination.longitude}&mode=d`,
+    });
+
+    dispatch(setMapLink(mapsUrl));
+  }, [userLocation, filteredCheckPoints, dispatch]);
 
   return (
     <View style={styles.screenContainer}>
       <View className="rounded-xl overflow-hidden">
         <View className="w-full rounded-xl overflow-hidden mt-2 border border-gray-500/50">
-          <MapView style={styles.mapViewStyle} region={region} showsUserLocation={true}>
-            {checkPoints?.map((checkpoint) => (
+          <MapView
+            style={styles.mapViewStyle}
+            region={
+              userLocation || {
+                latitude: 12.9716,
+                longitude: 77.5946,
+                latitudeDelta: 0.05,
+                longitudeDelta: 0.05,
+              }
+            }
+            showsUserLocation={true}
+          >
+            {filteredCheckPoints.map((checkpoint) => (
               <Marker
                 key={checkpoint._id}
                 coordinate={{
@@ -65,20 +77,28 @@ const MyTourCheckPoints = ({ checkPoints }) => {
               />
             ))}
 
-            {userLocation && (
-              <Marker coordinate={userLocation} title="You are here" pinColor="blue" />
-            )}
-
-            {/* {userLocation && destination && (
-              <MapViewDirections
-                origin={userLocation}
-                destination={destination}
-                apikey={apiKey}
-                strokeWidth={4}
-                strokeColor="red"
-                optimizeWaypoints={true}
-              />
-            )} */}
+            {userLocation &&
+              filteredCheckPoints.map((checkpoint, index) => (
+                <MapViewDirections
+                  key={index}
+                  origin={userLocation}
+                  destination={{
+                    latitude: checkpoint.latitude,
+                    longitude: checkpoint.longitude,
+                  }}
+                  apikey={apiKey}
+                  strokeWidth={6}
+                  strokeColor="green"
+                  onError={(errorMessage) => {
+                    if (errorMessage.includes("ZERO_RESULTS")) {
+                      Alert.alert(
+                        "No Route Found",
+                        "No available route between your location and the destination."
+                      );
+                    }
+                  }}
+                />
+              ))}
           </MapView>
         </View>
       </View>

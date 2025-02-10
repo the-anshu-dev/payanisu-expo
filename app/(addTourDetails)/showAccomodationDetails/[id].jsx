@@ -15,7 +15,7 @@ import ModalBody from "../../../components/UI/ModalBody";
 import { transformAllocationData } from "../../../utils/helpers";
 import EditModal from "../../../components/UI/EditModal";
 
-const { width, height } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 
 const showAccomodationDetails = () => {
   const { id, tourId } = useLocalSearchParams();
@@ -40,7 +40,9 @@ const showAccomodationDetails = () => {
       }
 
       const result = await response.json();
-      setGuests(result.data);
+      const filteredData = result.data.filter((d) => d.status === 1);
+      console.log("result", filteredData);
+      setGuests(filteredData);
     } catch (error) {
       console.log(error);
     }
@@ -137,7 +139,7 @@ const showAccomodationDetails = () => {
           activeOpacity={0.7}
           onPress={() => setModalVisible(true)}
           style={{
-            width: 270,
+            width: width * 0.9,
             backgroundColor: "green",
             borderRadius: 6,
             paddingVertical: 12,

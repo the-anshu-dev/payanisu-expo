@@ -19,6 +19,7 @@ import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
 import { uploadFilesToS3 } from "../../utils/uploadFileHelper";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Redirect } from "expo-router";
 
 const { width, height } = Dimensions.get("window");
 
@@ -92,7 +93,7 @@ const Community = () => {
     getAllPosts();
   }, []);
 
-  if (!user) return <LoginReqCard />;
+  if (!user) return <Redirect href="/login" />
 
   return (
     <SafeAreaView style={styles.safeArea} edges={["left", "right", "bottom"]}>

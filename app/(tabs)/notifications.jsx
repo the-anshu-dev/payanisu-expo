@@ -12,6 +12,7 @@ import { apiRequest } from "../../utils/helpers";
 import { useSelector } from "react-redux";
 import LoginReqCard from "../../components/UI/LoginReqCard";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Redirect } from "expo-router";
 
 const NotificationsScreen = () => {
   const { user } = useSelector((state) => state.user);
@@ -37,7 +38,7 @@ const NotificationsScreen = () => {
     if (user) fetchData();
   }, [user]);
 
-  if (!user) return <LoginReqCard />;
+  if (!user) return <Redirect href="/login" />;
 
   return (
     <SafeAreaView style={styles.safeArea} edges={["left", "right", "bottom"]}>

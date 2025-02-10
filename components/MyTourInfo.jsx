@@ -14,10 +14,9 @@ import ListComponent from "./UI/ListComponent";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { formatDate } from "../utils/helpers.js";
-import { format, set } from "date-fns";
+import { format } from "date-fns";
 import CarouselImageRender from "./UI/CarouselImageRender.jsx";
 import Carousel from "react-native-reanimated-carousel";
-import * as Location from "expo-location";
 import MapScreen from "./MapWithDirection.jsx";
 
 const { width, height } = Dimensions.get("window");
@@ -45,6 +44,8 @@ const MyTourInfo = ({ tour }) => {
   const [transport, setTransport] = useState({});
   const [boardingPoints, setBoardingPoints] = useState([]);
   const [accomodationDetails, setAccomodationDetails] = useState([]);
+
+  const [cancelling, setCancelling] = useState(false);
 
   // modal
 
@@ -131,32 +132,47 @@ const MyTourInfo = ({ tour }) => {
   };
 
   const handleCancelBooking = async () => {
-    return;
+    setCancelling(true);
     try {
       const response = await fetch(
-        `${process.env.EXPO_PUBLIC_BASE_URL}/api/booking/cancel?id=${_id}`,
+        `${process.env.EXPO_PUBLIC_BASE_URL}/api/booking/update?id=${_id}`,
         {
-          method: "DELETE",
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
+          body: JSON.stringify({ status: 3 }),
         }
       );
+
       if (!response.ok || response.status !== 200) {
-        throw new Error("Failed to cancel booking.");
+        throw new Error("Failed to cancel booking. Please try again later.");
       }
+
       Alert.alert("Success", "Booking has been cancelled successfully.");
-      router.push("/my-tours");
+      router.push("/mytours");
     } catch (error) {
-      Alert.alert("Oops!", "Something went wrong. Please try again later.");
+      Alert.alert(
+        "Oops!",
+        error.message || "Something went wrong. Please try again later."
+      );
       console.log("Error:", error);
+    } finally {
+      setCancelling(false);
     }
   };
 
-  const [destination, setDestination] = useState({
+  const destination = {
     latitude: boardingPoints[0]?.latitude || 12.9716,
     longitude: boardingPoints[0]?.longitude || 77.5946,
-  });
+  };
+
+  const statusText = {
+    0: "Rejected",
+    1: "Confirmed",
+    2: "Pending",
+    3: "Cancelled",
+  };
 
   useEffect(() => {
     onRefresh();
@@ -195,11 +211,7 @@ const MyTourInfo = ({ tour }) => {
               Booking Status :
             </Text>
             <Text className="text-white font-semibold text-lg">
-              {status === 1
-                ? "Confirmed"
-                : status === 2
-                  ? "Pending"
-                  : "Rejected"}
+              {statusText[status]}
             </Text>
           </View>
           <View className="flex justify-center items-end gap-1">
@@ -492,7 +504,7 @@ const MyTourInfo = ({ tour }) => {
             className="flex w-full flex-row justify-center items-center bg-white rounded-lg p-2 py-3 shadow-lg shadow-black"
           >
             <Text className="text-red-700 text-lg font-semibold">
-              Cancel Booking
+              {cancelling ? "Cancelling.." : "Cancel Booking"}
             </Text>
           </TouchableOpacity>
         )}

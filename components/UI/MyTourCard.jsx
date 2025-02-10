@@ -13,12 +13,25 @@ const MyTourCard = ({ tour, status }) => {
   const images = tour?.images?.filter((i) => !i.type).map((i) => i.url);
 
   const onClickHandler = () => {
-    const clickEnabled = status === 1 || 2 ? true : false;
+    if(status === 0) {
+      Alert.alert("Booking Rejected", " Your booking has been rejected. Please contact the admin for more details.");
+      return;
+    }
+    if(status === 3) {
+      Alert.alert("Booking Cancelled", " Your booking has been cancelled.");
+      return;
+    }
+    const clickEnabled = status === 1 || status === 2;
     if (clickEnabled) {
       router.push(`/mytour/${tour?._id}`);
-    } else {
-      Alert.alert("Booking Rejected", "Your booking request has been rejected.");
     }
+  };
+
+  const statusText = {
+    0: "Rejected",
+    1: "Booked",
+    2: "Pending",
+    3: "Cancelled",
   };
 
   return (
@@ -67,7 +80,7 @@ const MyTourCard = ({ tour, status }) => {
               color={"white"}
             />
             <Text className="text-center font-bold text-white capitalize">
-              {status === 1 ? "Booked" : status === 2 ? "Pending" : "Rejected"}
+              {statusText[status]}
             </Text>
           </View>
         </View>

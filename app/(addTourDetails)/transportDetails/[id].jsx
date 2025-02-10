@@ -187,9 +187,9 @@ const TransportDetails = () => {
                     boardingPointDate,
                     location,
                     _id,
-                  }) => (
+                  }, index) => (
                     <BoardingPointCard
-                      key={_id+boardingPointName}
+                      key={`${_id}-${boardingPointName}-${index}`}
                       name={boardingPointName}
                       date={boardingPointDate}
                       time={boardingPointTime}

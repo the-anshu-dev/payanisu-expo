@@ -52,7 +52,6 @@ export const uploadFilesToS3 = async (files, id = 12, type) => {
         );
       }
     }
-
     return true;
   } catch (error) {
     console.error("Error while uploading files", error);

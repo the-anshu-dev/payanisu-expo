@@ -4,8 +4,8 @@ import {
   Pressable,
   TouchableOpacity,
   Alert,
-  StyleSheet,
   Dimensions,
+  Linking,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
@@ -20,11 +20,12 @@ import { Ionicons } from "@expo/vector-icons";
 import MyTourCheckPointsListView from "../../components/MyTourCheckPointsListView";
 import { useSelector } from "react-redux";
 
-const { width, height } = Dimensions.get("window")
+const { width, height } = Dimensions.get("window");
 
 const MyTourDetails = () => {
   const { id } = useLocalSearchParams();
   const { user } = useSelector((state) => state.user);
+  const { mapLink } = useSelector((state) => state.map);
 
   const { bookedTour } = useSelector((state) => state.tour);
 
@@ -37,7 +38,6 @@ const MyTourDetails = () => {
 
   const [activeTab, setActiveTab] = useState("tourInfo");
   const [listView, setListView] = useState(true);
-
 
   const handleGetCheckPoints = async () => {
     setLoading(true);
@@ -67,13 +67,20 @@ const MyTourDetails = () => {
   const translateX = useSharedValue(-tabWidth);
 
   const handleTabPress = (tab) => {
-    setActiveTab(tab)
+    setActiveTab(tab);
     translateX.value = withSpring(tab === "checkPoints" ? 0 : -tabWidth);
   };
 
   const animatedStyles = useAnimatedStyle(() => ({
     transform: [{ translateX: translateX.value + (tabWidth - barWidth) / 2 }],
   }));
+
+  const handleOpenMap = () => {
+    if (!mapLink) {
+      return;
+    }
+    Linking.openURL(mapLink);
+  };
 
   useEffect(() => {
     handleGetCheckPoints();
@@ -93,12 +100,17 @@ const MyTourDetails = () => {
           </Pressable>
           <Pressable onPress={() => handleTabPress("checkPoints")}>
             <View style={{ width: tabWidth }} className="py-2">
-              <Text className="text-center text-xl font-semibold">Checkpoints</Text>
+              <Text className="text-center text-xl font-semibold">
+                Checkpoints
+              </Text>
             </View>
           </Pressable>
         </View>
         <Animated.View style={[animatedStyles]}>
-          <View style={{ width: barWidth }} className="bg-green-600 h-1.5 rounded-t-xl absolute bottom-0" />
+          <View
+            style={{ width: barWidth }}
+            className="bg-green-600 h-1.5 rounded-t-xl absolute bottom-0"
+          />
         </Animated.View>
       </View>
       <View className={`w-full`}>
@@ -116,7 +128,7 @@ const MyTourDetails = () => {
         )}
       </View>
       <View
-        className={`absolute bottom-0 w-full py-2 flex flex-row justify-center gap-4 bg-transparent`}
+        className={`absolute bottom-0 w-full py-2 flex flex-row justify-center gap-10 bg-transparent`}
       >
         {activeTab === "tourInfo" ? (
           <TouchableOpacity
@@ -124,7 +136,7 @@ const MyTourDetails = () => {
             activeOpacity={0.8}
           >
             <View
-              style={{ width: width * 0.45 }}
+              style={{ width: width * 0.4 }}
               className={`flex flex-row justify-center items-center bg-gray-500 h-12 gap-2 rounded-lg`}
             >
               <Ionicons
@@ -141,7 +153,7 @@ const MyTourDetails = () => {
             activeOpacity={0.8}
           >
             <View
-              style={{ width: width * 0.45 }}
+              style={{ width: width * 0.4 }}
               className={`flex flex-row justify-center items-center bg-gray-500 h-12 gap-2 rounded-lg`}
             >
               <Ionicons
@@ -155,13 +167,18 @@ const MyTourDetails = () => {
             </View>
           </TouchableOpacity>
         )}
-        <TouchableOpacity activeOpacity={0.8}>
+        <TouchableOpacity
+          onPress={handleOpenMap}
+          disabled={activeTab === "tourInfo" || listView}
+          activeOpacity={0.8}
+          style={{ opacity: activeTab === "tourInfo" || listView ? 0.8 : 1 }}
+        >
           <View
             style={{ width: width * 0.4 }}
             className={`flex flex-row justify-center items-center bg-green-700 h-12 gap-2 rounded-lg`}
           >
-            <Ionicons name="qr-code-outline" size={20} color="white" />
-            <Text className={`font-semibold text-white`}>Check-In</Text>
+            <Ionicons name="locate-outline" size={20} color="white" />
+            <Text className={`font-semibold text-white`}>Open in Maps</Text>
           </View>
         </TouchableOpacity>
       </View>

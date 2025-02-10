@@ -61,7 +61,7 @@ const AllocatedRoomCard = ({
         }}
       >
         <Text>Room 1</Text>
-        <View className="flex flex-row justify-center items-center space-x-5 pr-2">
+        <View className="flex flex-row justify-center items-center gap-5 pr-2">
           <TouchableOpacity
             onPress={() => setEditModalVisible(true)}
             activeOpacity={0.5}

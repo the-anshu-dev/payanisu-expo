@@ -17,6 +17,7 @@ import { apiRequest } from "../../../utils/helpers";
 import * as Location from "expo-location"
 
 const { width, height } = Dimensions.get("window");
+const apiKey = process.env.EXPO_PUBLIC_GOOGLE_API_KEY;
 
 const Page = () => {
   const { id } = useLocalSearchParams();
@@ -65,7 +66,6 @@ const Page = () => {
 
   // Function to fetch address based on latitude and longitude
   const reverseGeocode = async (latitude, longitude) => {
-    const apiKey = "AIzaSyAWiZa_f1BStr9sDkGGJdDvmOV76-SVoFo";
     const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`;
 
     try {

@@ -50,7 +50,11 @@ const Accomodation = () => {
       }
       const data = await response.json();
 
-      const formattedData = await data.map((d) => ({
+      if (data.length === 0) {
+        throw new Error("No data to export");
+      }
+
+      const formattedData = data.map((d) => ({
         Name: d?.guestHouseName || "",
         Location: d?.location || "",
         Rooms: d?.numberOfRoom || 0,
@@ -61,6 +65,12 @@ const Accomodation = () => {
       await exportDataToExcel(formattedData, "guestHouseData");
     } catch (error) {
       console.log("error:", error);
+      Alert.alert(
+        "Oops!",
+        error.message || "Something went wrong. Please try again later."
+      );
+    } finally {
+      setExporting(false);
     }
   };
 

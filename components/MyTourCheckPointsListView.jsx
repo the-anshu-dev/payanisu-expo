@@ -14,14 +14,14 @@ const MyTourCheckPointsListView = ({
   checkPoints,
   handleGetCheckPoints,
 }) => {
+  
   const [userLocation, setUserLocation] = useState(null);
 
   const { user } = useSelector((state) => state.user);
 
-  // Function to calculate distance between two points (Haversine Formula)
   const calculateDistance = (lat1, lon1, lat2, lon2) => {
     const toRad = (value) => (value * Math.PI) / 180;
-    const R = 6371000; // Earth's radius in meters
+    const R = 6371000;
     const dLat = toRad(lat2 - lat1);
     const dLon = toRad(lon2 - lon1);
     const a =
@@ -34,7 +34,6 @@ const MyTourCheckPointsListView = ({
     return R * c;
   };
 
-  // Function to send a local notification
   const sendNotification = async (checkpoint) => {
     await Notifications.scheduleNotificationAsync({
       content: {
@@ -42,11 +41,10 @@ const MyTourCheckPointsListView = ({
         body: `You are near ${checkpoint?.name}.`,
         data: "You are checked in now.",
       },
-      trigger: null, // Immediate notification
+      trigger: null,
     });
   };
 
-  // Function to check if user is within 100 meters of any checkpoint
   const checkProximity = async (location) => {
     const unprocessedCheckpoints = [];
 
@@ -55,7 +53,6 @@ const MyTourCheckPointsListView = ({
     }
 
     for (const checkpoint of geoTaggedCheckPoints) {
-      // Skip checkpoints that are not activated
       if (!checkpoint?.activated) {
         continue;
       }
@@ -72,19 +69,18 @@ const MyTourCheckPointsListView = ({
         const isAlreadyProcessed = await AsyncStorage.getItem(checkpointKey);
 
         if (!isAlreadyProcessed) {
-          // Log the checkpoint reached
           const logEntry = {
             checkpointId: checkpoint?._id,
             userLocation: location,
             message: `User reached checkpoint: ${checkpoint?.name}`,
             timestamp: new Date().toISOString(),
           };
+
           await AsyncStorage.setItem(
             `log_${checkpoint?._id}`,
             JSON.stringify(logEntry)
           );
 
-          // Notify and store the checkpoint
           await sendNotification(checkpoint);
           await AsyncStorage.setItem(checkpointKey, JSON.stringify(checkpoint));
 
@@ -97,12 +93,10 @@ const MyTourCheckPointsListView = ({
       }
     }
 
-    // Process each unprocessed checkpoint (check-in)
     for (const body of unprocessedCheckpoints) {
       console.log("Checking in for:", body);
-      await checkInUser(body); // Call the check-in function
+      await checkInUser(body);
 
-      // Log the check-in attempt
       const logEntry = {
         checkInAttempt: true,
         body: body,
@@ -115,7 +109,6 @@ const MyTourCheckPointsListView = ({
     }
   };
   
-  // Function to track user's live location
   const trackUserLocation = async () => {
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();
@@ -140,7 +133,6 @@ const MyTourCheckPointsListView = ({
     }
   };
 
-  // Request notification permissions
   const requestNotificationPermissions = async () => {
     const { status } = await Notifications.requestPermissionsAsync();
     if (status !== "granted") {
@@ -183,9 +175,9 @@ const MyTourCheckPointsListView = ({
             <Ionicons
               name="navigate-circle-outline"
               size={48}
-              color={"green"}
+              color={"gray"}
             />
-            <Text style={{ fontSize: 18, fontWeight: "bold", marginTop: 4 }}>
+            <Text style={{ fontSize: 18, fontWeight: "bold", marginTop: 4, color: "gray" }}>
               No checkpoints added yet
             </Text>
           </View>
