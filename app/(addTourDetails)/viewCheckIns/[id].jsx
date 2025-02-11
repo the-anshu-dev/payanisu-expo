@@ -277,7 +277,7 @@ const ViewCheckIns = () => {
           </ScrollView>
           <View className="absolute bottom-6 h-16 flex justify-center items-center w-full px-5">
             <TouchableOpacity
-              activeOpacity={0.7}
+              activeOpacity={0.9}
               onPress={() => resetAllRef.current?.open()}
               className="w-full py-4 flex justify-center items-center rounded-lg border border-red-700"
             >
@@ -479,7 +479,7 @@ const CheckedInUserCard = ({
     manualCheckInRef.current?.open();
   };
   return (
-    <TouchableOpacity onPress={handleOpenModal} activeOpacity={0.6}>
+    <TouchableOpacity onPress={handleOpenModal} activeOpacity={0.9}>
       <View
         style={[
           styles.card,

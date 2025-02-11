@@ -13,7 +13,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { Modalize } from "react-native-modalize";
 import DropDownPicker from "react-native-dropdown-picker";
 import { useSelector } from "react-redux";
-import { Button } from "react-native";
 import { sendNotificaton } from "../../utils/pushNotification";
 import { ActivityIndicator } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -93,7 +92,7 @@ const AnnouncementScreen = () => {
       </View>
       <View style={styles.buttonContainer}>
         <TouchableOpacity
-          activeOpacity={0.7}
+          activeOpacity={0.9}
           onPress={() => addAnnounceMentRef?.current?.open()}
           style={styles.newAnnouncementButton}
         >
@@ -135,11 +134,11 @@ const AnnouncementScreen = () => {
             }}
           >
             <TouchableOpacity
-              activeOpacity={0.7}
+              activeOpacity={0.9}
               onPress={handleCreateAnnouncement}
               style={{
                 backgroundColor: "green",
-                width: width * 0.6,
+                width: width * 0.9,
                 height: height * 0.05,
                 borderRadius: 10,
                 justifyContent: "center",

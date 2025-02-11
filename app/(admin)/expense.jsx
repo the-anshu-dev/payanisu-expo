@@ -239,7 +239,7 @@ const expense = () => {
 
   useEffect(() => {
     getAllTours();
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (currentTour) {
@@ -306,29 +306,60 @@ const expense = () => {
             </View>
             <ScrollView
               showsVerticalScrollIndicator={false}
-              contentContainerStyle={{ paddingTop: 10, paddingBottom: 56, paddingHorizontal: 14 }}
+              contentContainerStyle={{
+                paddingTop: 10,
+                paddingBottom: 56,
+                paddingHorizontal: 14,
+              }}
               refreshControl={
                 <RefreshControl refreshing={refresh} onRefresh={onRefresh} />
               }
             >
-              {
-                expenseData?.expanses?.length > 0 ?
-                  expenseData?.expanses?.map((item, index) => (
-                    <ExpenseCard getIconName={getIconName} key={index} item={item} handleShowExpenseDetails={handleShowExpenseDetails} />
-                  ))
-                  :
-                  <View style={{ width: "100%", height: "100%", display: "flex", justifyContent: "center", alignItems: "center", paddingVertical: 50, }}>
-                    <Text style={{ color: "gray", fontWeight: "500" }}>No Expense Added</Text>
-                  </View>
-              }
+              {expenseData?.expanses?.length > 0 ? (
+                expenseData?.expanses?.map((item, index) => (
+                  <ExpenseCard
+                    getIconName={getIconName}
+                    key={index}
+                    item={item}
+                    handleShowExpenseDetails={handleShowExpenseDetails}
+                  />
+                ))
+              ) : (
+                <View
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    paddingVertical: 50,
+                  }}
+                >
+                  <Text style={{ color: "gray", fontWeight: "500" }}>
+                    No Expense Added
+                  </Text>
+                </View>
+              )}
             </ScrollView>
           </>
         )}
         <View
-          className={`flex flex-grow flex-row justify-between items-center w-full absolute bottom-16 px-6 py-2 bg-transparent `}
+          className={`flex flex-grow flex-row justify-between items-center w-full absolute bottom-16 px-6 py-2 bg-white `}
         >
-          <TouchableOpacity activeOpacity={0.9} onPress={handleExport} style={{ width: width * 0.4, display: "flex", justifyContent: "center", alignItems: "center" }}>
-            <View style={{ width: "100%" }} className="bg-green-700 py-3 rounded-lg flex justify-center items-center">
+          <TouchableOpacity
+            activeOpacity={0.9}
+            onPress={handleExport}
+            style={{
+              width: width * 0.4,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <View
+              style={{ width: width * 0.4, backgroundColor: "green" }}
+              className=" py-3 rounded-lg flex justify-center items-center"
+            >
               {exporting ? (
                 <ActivityIndicator color={"white"} size={"small"} />
               ) : (
@@ -339,10 +370,13 @@ const expense = () => {
             </View>
           </TouchableOpacity>
           <TouchableOpacity
-            activeOpacity={0.7}
+            activeOpacity={0.9}
             onPress={() => addExpenseDetailRef?.current?.open()}
           >
-            <View style={{ width: width * 0.4 }} className="bg-green-700 py-3 rounded-lg flex justify-center  items-center">
+            <View
+              style={{ width: width * 0.4, backgroundColor: "green" }}
+              className="py-3 rounded-lg flex justify-center  items-center"
+            >
               <Text className="text-white text-base font-semibold">
                 Add Expense
               </Text>
@@ -371,7 +405,7 @@ const expense = () => {
           </View>
           <View className="w-full flex justify-center items-center mb-3">
             <TouchableOpacity
-              activeOpacity={0.7}
+              activeOpacity={0.9}
               className="w-56 bg-red-700 rounded-lg py-2 flex justify-center items-center"
             >
               <Text className="text-white font-semibold">Delete</Text>
@@ -444,7 +478,7 @@ const expense = () => {
             placeholderTextColor={"#7d7d7d"}
           />
           <TouchableOpacity
-            activeOpacity={0.8}
+            activeOpacity={0.9}
             style={{ width: "100%" }}
             onPress={pickImage}
           >
@@ -472,7 +506,7 @@ const expense = () => {
         </View>
         <View className="w-full flex justify-center items-center mb-3">
           <TouchableOpacity
-            activeOpacity={0.8}
+            activeOpacity={0.9}
             style={{ width: width * 0.7 }}
             onPress={handleAddExpense}
           >
@@ -493,41 +527,31 @@ const expense = () => {
 };
 
 const ExpenseCard = ({ getIconName, item, handleShowExpenseDetails }) => {
-  return <View
-    className={`flex flex-row w-full justify-between items-center px-2 py-2 bg-white shadow-xl shadow-black/50 rounded-lg mb-2`}
-  >
-    <View className="flex flex-row w-[40%] justify-start items-center gap-3">
-      <Ionicons
-        name={getIconName(item.category)}
-        size={24}
-        color={"green"}
-      />
-      <View>
-        <Text className={`font-semibold`}>
-          {shorten(item.category, 20)}
-        </Text>
-        <Text className="text-xs text-gray-500">
-          {formatDate(item?.createdAt)}
-        </Text>
+  return (
+    <View
+      className={`flex flex-row w-full justify-between items-center px-2 py-2 bg-white shadow-xl shadow-black/50 rounded-lg mb-2`}
+    >
+      <View className="flex flex-row w-[40%] justify-start items-center gap-3">
+        <Ionicons name={getIconName(item.category)} size={24} color={"green"} />
+        <View>
+          <Text className={`font-semibold`}>{shorten(item.category, 20)}</Text>
+          <Text className="text-xs text-gray-500">
+            {formatDate(item?.createdAt)}
+          </Text>
+        </View>
+      </View>
+      <Text>{shorten(item.name, 12)}</Text>
+      <View className="flex flex-row justify-center items-center gap-3">
+        <Text className={`w-14 text-right font-medium  `}>₹ {item.amount}</Text>
+        <TouchableOpacity
+          activeOpacity={0.9}
+          onPress={() => handleShowExpenseDetails(item._id)}
+        >
+          <Ionicons name="eye-outline" size={20} color={"green"} />
+        </TouchableOpacity>
       </View>
     </View>
-    <Text>{shorten(item.name, 12)}</Text>
-    <View className="flex flex-row justify-center items-center gap-3">
-      <Text className={`w-14 text-right font-medium  `}>
-        ₹ {item.amount}
-      </Text>
-      <TouchableOpacity
-        activeOpacity={0.6}
-        onPress={() => handleShowExpenseDetails(item._id)}
-      >
-        <Ionicons
-          name="eye-outline"
-          size={20}
-          color={"green"}
-        />
-      </TouchableOpacity>
-    </View>
-  </View>
-}
+  );
+};
 
 export default expense;

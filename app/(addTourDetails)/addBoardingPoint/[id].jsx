@@ -270,7 +270,7 @@ const Page = () => {
       </ScrollView>
       <View className="w-full flex justify-center items-center absolute bottom-0 mb-2">
         <TouchableOpacity
-          activeOpacity={0.8}
+          activeOpacity={0.9}
           onPress={handleAddBoardingPoint}
           style={{
             width: width * 0.7,

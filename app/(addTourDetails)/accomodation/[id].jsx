@@ -145,7 +145,7 @@ const Accomodation = () => {
         }}
       >
         <TouchableOpacity
-          activeOpacity={0.7}
+          activeOpacity={0.9}
           onPress={handleExportDetails}
           style={{
             flex: 1,
@@ -165,7 +165,7 @@ const Accomodation = () => {
           )}
         </TouchableOpacity>
         <TouchableOpacity
-          activeOpacity={0.7}
+          activeOpacity={0.9}
           onPress={() =>
             router.push(`(addTourDetails)/addAccomodationForm/${id}`)
           }
@@ -196,7 +196,7 @@ const AccomodationButton = ({
 }) => {
   return (
     <TouchableOpacity
-      activeOpacity={0.8}
+      activeOpacity={0.9}
       onPress={() =>
         router.push(
           `(addTourDetails)/showAccomodationDetails/${_id}?tourId=${tourId}`

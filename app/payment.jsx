@@ -172,11 +172,11 @@ const Payment = () => {
                     source={{ uri: image.uri }}
                     style={{ width: width - 40, height: 200 }}
                   />
-                  <TouchableOpacity activeOpacity={0.8} onPress={() => setImage(null)} className="absolute top-2 right-2 flex justify-center items-center">
+                  <TouchableOpacity activeOpacity={0.9} onPress={() => setImage(null)} className="absolute top-2 right-2 flex justify-center items-center">
                     <Ionicons name="close-circle" size={28} color="red" />
                   </TouchableOpacity>
                 </View>
-              ) : <TouchableOpacity activeOpacity={0.6} onPress={pickImage} style={{ width: "100%" }}>
+              ) : <TouchableOpacity activeOpacity={0.9} onPress={pickImage} style={{ width: "100%" }}>
                 <View className="border-2 h-36 rounded-xl mt-3 border-green-600 flex justify-center items-center">
                   <Text className="text-green-800">Upload your payment proof</Text>
                 </View>
@@ -192,7 +192,7 @@ const Payment = () => {
             <Text className="tracking-wide text-base">I agree to all Terms and Conditions</Text>
           </View>
         </ScrollView>
-        <View className="w-full flex flex-row justify-center gap-5 items-center h-16 bg-transparent px-4">
+        <View className="w-full flex flex-row justify-center gap-5 items-center h-16 bg-white px-4">
           <TouchableOpacity className="w-[50%] bg-gray-700 py-3 rounded-lg">
             <Text className="text-center text-white">Cancel</Text>
           </TouchableOpacity>

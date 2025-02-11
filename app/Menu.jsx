@@ -55,7 +55,7 @@ const Menu = () => {
   return (
     <View style={styles.screenContainer}>
       <TouchableOpacity
-        activeOpacity={0.7}
+        activeOpacity={0.9}
         style={styles.profileButtonContainer}
         onPress={openProfile}
       >
@@ -76,7 +76,7 @@ const Menu = () => {
         {options.map((option) => (
           <TouchableOpacity
             key={option.id}
-            activeOpacity={0.7}
+            activeOpacity={0.9}
             onPress={() => handleNavigation(option.route)}
             style={styles.optionButtonContainer}
           >
@@ -90,7 +90,7 @@ const Menu = () => {
       <View style={styles.logOutButtonContainer}>
         <TouchableOpacity
           onPress={handleLogOut}
-          activeOpacity={0.7}
+          activeOpacity={0.9}
           style={styles.logOutButton}
         >
           {loggingOut ? (

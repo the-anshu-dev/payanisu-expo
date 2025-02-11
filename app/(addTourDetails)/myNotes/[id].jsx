@@ -173,7 +173,7 @@ const Mynotes = () => {
         </View>
         <View className="w-full absolute bottom-0 flex flex-row justify-center items-center h-16">
           <TouchableOpacity
-            activeOpacity={0.8}
+            activeOpacity={0.9}
             onPress={() => addNotesRef.current?.open()}
             style={{
               width: width * 0.7,
@@ -214,7 +214,7 @@ const Mynotes = () => {
           </View>
           <View className="w-full flex justify-center items-center mt-4">
             <TouchableOpacity
-              activeOpacity={0.8}
+              activeOpacity={0.9}
               onPress={handleAddNotes}
               style={{
                 width: width * 0.7,
@@ -256,7 +256,7 @@ const NotesCard = ({
           />
           <Text className="text-base font-semibold">{title}</Text>
         </View>
-        <TouchableOpacity activeOpacity={0.5} onPress={handleDeleteNotes}>
+        <TouchableOpacity activeOpacity={0.9} onPress={handleDeleteNotes}>
           <TrashIcon height={20} width={20} />
         </TouchableOpacity>
       </View>

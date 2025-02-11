@@ -242,7 +242,7 @@ const EditProfile = () => {
         <TouchableOpacity
           onPress={() => router.back()}
           style={styles.cancelButton}
-          activeOpacity={0.8}
+          activeOpacity={0.9}
         >
           <Text style={styles.cancelText}>Cancel</Text>
         </TouchableOpacity>

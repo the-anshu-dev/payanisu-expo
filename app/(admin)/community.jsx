@@ -135,7 +135,7 @@ const Community = () => {
           </ScrollView>
           <View style={styles.shareButtonContainer}>
             <TouchableOpacity
-              activeOpacity={0.8}
+              activeOpacity={0.9}
               onPress={() => addPostRef.current?.open()}
               style={styles.shareButton}
             >
@@ -174,7 +174,7 @@ const Community = () => {
                             style={styles.image}
                           />
                           <TouchableOpacity
-                            activeOpacity={0.8}
+                            activeOpacity={0.9}
                             onPress={() => handleUnselect(img.uri)}
                             style={styles.imageCloseButton}
                           >
@@ -192,7 +192,7 @@ const Community = () => {
                       <Text>Add the moments you captured</Text>
                       <TouchableOpacity
                         onPress={pickImage}
-                        activeOpacity={0.6}
+                        activeOpacity={0.9}
                         style={styles.addImagesButton}
                       >
                         <Text style={styles.addImagesButtonText}>
@@ -206,7 +206,7 @@ const Community = () => {
               <View style={styles.postButtonContainer}>
                 <TouchableOpacity
                   onPress={handlePost}
-                  activeOpacity={0.7}
+                  activeOpacity={0.9}
                   style={styles.postButton}
                 >
                   {loading ? (
@@ -261,6 +261,7 @@ const styles = StyleSheet.create({
   shareButtonText: {
     color: "white",
     fontWeight: "bold",
+    fontSize: height * 0.02,
   },
   modalStyle: {
     width: "100%",

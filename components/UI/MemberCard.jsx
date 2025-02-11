@@ -31,7 +31,7 @@ const MemberCard = ({ data }) => {
           <Text className="text-xs text-gray-600  ">Name</Text>
           <Text className="text-lg">{data.name}</Text>
         </View>
-        <TouchableOpacity activeOpacity={0.8} onPress={handleDeleteMember}>
+        <TouchableOpacity activeOpacity={0.9} onPress={handleDeleteMember}>
           <TrashIcon height={20} width={20} />
         </TouchableOpacity>
       </View>

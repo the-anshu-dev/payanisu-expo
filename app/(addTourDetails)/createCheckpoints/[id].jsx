@@ -14,65 +14,65 @@ import MapView, { Marker } from "react-native-maps";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { router, useLocalSearchParams } from "expo-router";
 import { apiRequest } from "../../../utils/helpers";
-import * as Location from "expo-location"
+import * as Location from "expo-location";
 
 const { width, height } = Dimensions.get("window");
 const apiKey = process.env.EXPO_PUBLIC_GOOGLE_API_KEY;
+
+const INITIAL_REGION = {
+  latitude: 12.9716,
+  longitude: 77.5946,
+  latitudeDelta: 0.0922,
+  longitudeDelta: 0.0421,
+};
 
 const Page = () => {
   const { id } = useLocalSearchParams();
 
   const googlePlacesRef = useRef();
+  const [region, setRegion] = useState(INITIAL_REGION);
+  const [markerPosition, setMarkerPosition] = useState({
+    latitude: INITIAL_REGION.latitude,
+    longitude: INITIAL_REGION.longitude,
+  });
+  const [selectedAddress, setSelectedAddress] = useState("");
+  const [coordinates, setCoordinates] = useState({
+    latitude: null,
+    longitude: null,
+  });
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [locationType, setLocationType] = useState("");
-  const [latitude, setLatitude] = useState(null);
-  const [longitude, setLongitude] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [selectLocation, setSelectLocation] = useState(false);
+  const [locationType, setLocationType] = useState("Geo Tagging");
 
-  const [location, setLocation] = useState();
+  const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  useEffect(() => {
-    async function getCurrentLocation() {
-      let { status } = await Location.requestForegroundPermissionsAsync();
+  const getCurrentLocation = async () => {
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
         setErrorMsg("Permission to access location was denied");
         return;
       }
-
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
+      const location = await Location.getCurrentPositionAsync({});
+      const { latitude, longitude } = location.coords;
+      setRegion((prev) => ({ ...prev, latitude, longitude }));
+      setMarkerPosition({ latitude, longitude });
+      setCoordinates({ latitude, longitude });
+      await reverseGeocode(latitude, longitude);
+    } catch (error) {
+      console.error("Error getting location:", error);
+      setErrorMsg("Failed to get current location");
     }
-
-    getCurrentLocation();
-  }, []);
-
-  const [region, setRegion] = useState({
-    latitude: 12.9716,
-    longitude: 77.5946,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421,
-  });
-
-  const [markerPosition, setMarkerPosition] = useState({
-    latitude: 12.9716,
-    longitude: 77.5946,
-  });
-
-  const [selectedAddress, setSelectedAddress] = useState("");
-
-  // Function to fetch address based on latitude and longitude
+  };
   const reverseGeocode = async (latitude, longitude) => {
-    const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`;
-
     try {
+      const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`;
       const response = await fetch(url);
       const data = await response.json();
 
-      if (data.results.length > 0) {
+      if (data.results?.[0]) {
         const address = data.results[0].formatted_address;
         setSelectedAddress(address);
         googlePlacesRef.current?.setAddressText(address);
@@ -82,83 +82,75 @@ const Page = () => {
     }
   };
 
-  // Function to handle location selection (e.g., from Google Places)
   const handleLocationSelect = (details) => {
-    if (details && details.geometry) {
-      const { lat, lng } = details.geometry.location;
-      setRegion({
-        latitude: lat,
-        longitude: lng,
-        latitudeDelta: 0.015,
-        longitudeDelta: 0.015,
-      });
-      setLatitude(lat);
-      setLongitude(lng);
-      setMarkerPosition({ latitude: lat, longitude: lng });
-      setSelectedAddress(details.formatted_address);
-    } else {
-      console.error("Invalid location details:", details);
-    }
+    if (!details?.geometry?.location) return;
+
+    const { lat, lng } = details.geometry.location;
+    const newRegion = {
+      latitude: lat,
+      longitude: lng,
+      latitudeDelta: 0.015,
+      longitudeDelta: 0.015,
+    };
+
+    setRegion(newRegion);
+    setCoordinates({ latitude: lat, longitude: lng });
+    setMarkerPosition({ latitude: lat, longitude: lng });
+    setSelectedAddress(details.formatted_address);
   };
 
-  // Function to handle map press and update location
-  const handleMapPress = (event) => {
+  const handleMapPress = async (event) => {
     const { latitude, longitude } = event.nativeEvent.coordinate;
-
-    // Update the marker and reverse geocode to fetch the address
     setMarkerPosition({ latitude, longitude });
-    setLatitude(latitude);
-    setLongitude(longitude);
-
-    // Fetch the address for the selected coordinates
-    reverseGeocode(latitude, longitude);
+    setCoordinates({ latitude, longitude });
+    await reverseGeocode(latitude, longitude);
   };
 
-  // Function to create a checkpoint
   const handleAddCheckPoint = async () => {
-    if (
-      !id ||
-      !title ||
-      !description ||
-      !locationType
-    ) {
+    const { title, description, locationType } = formData;
+    const { latitude, longitude } = coordinates;
+
+    if (!id || !title || !description || !locationType) {
       Alert.alert("Empty field", "Please fill all the fields.");
       return;
     }
 
-    if(locationType === "Geo Tagging" && (!latitude || !longitude)) {
+    if (locationType === "Geo Tagging" && (!latitude || !longitude)) {
       Alert.alert("Empty field", "Please select location.");
-      return; 
+      return;
     }
 
     setLoading(true);
-
-    const body = {
-      tourId: id,
-      name: title,
-      description,
-      type: locationType,
-      longitude,
-      latitude,
-    };
 
     try {
       const res = await apiRequest(
         `${process.env.EXPO_PUBLIC_BASE_URL}/api/create-point`,
         "POST",
-        body
+        {
+          tourId: id,
+          name: title,
+          description,
+          type: locationType,
+          longitude,
+          latitude,
+        }
       );
 
-      if (res) {
-        console.log("Checkpoint created successfully:", res);
-        router.replace(`/(addTourDetails)/checkPoints/${id}`);
+      if (res.data) {
+        Alert.alert("Success", "Checkpoint created successfully.");
+        router.back();
       }
     } catch (error) {
-      console.log("Failed to create checkpoint:", error.message);
+      console.error("Failed to create checkpoint:", error);
+      Alert.alert("Failed to create checkpoint", error.message);
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    getCurrentLocation();
+  }, []);
 
   return (
     <View className="h-full flex justify-between items-center w-full relative px-2">
@@ -206,54 +198,54 @@ const Page = () => {
                 </Picker>
               </View>
             </View>
-            {
-              locationType === "Geo Tagging" && (<View className="w-full flex justify-start items-center">
-              <View className="w-full">
-                <GooglePlacesAutocomplete
-                  ref={googlePlacesRef}
-                  placeholder="Search location"
-                  minLength={2}
-                  fetchDetails={true}
-                  onPress={(data, details = null) =>
-                    handleLocationSelect(details)
-                  }
-                  query={{
-                    key: "AIzaSyAWiZa_f1BStr9sDkGGJdDvmOV76-SVoFo",
-                    language: "en",
-                  }}
-                  styles={{
-                    container: {
-                      width: "100%",
-                      zIndex: 1000,
-                    },
-                    textInput: {
-                      height: 44,
-                      paddingHorizontal: 10,
-                      backgroundColor: "#FFFFFF",
-                      color: "black",
-                      zIndex: 1000,
-                    },
-                  }}
-                />
+            {locationType === "Geo Tagging" && (
+              <View className="w-full flex justify-start items-center">
+                <View className="w-full">
+                  <GooglePlacesAutocomplete
+                    ref={googlePlacesRef}
+                    placeholder="Search location"
+                    minLength={2}
+                    fetchDetails={true}
+                    onPress={(data, details = null) =>
+                      handleLocationSelect(details)
+                    }
+                    query={{
+                      key: "AIzaSyAWiZa_f1BStr9sDkGGJdDvmOV76-SVoFo",
+                      language: "en",
+                    }}
+                    styles={{
+                      container: {
+                        width: "100%",
+                        zIndex: 1000,
+                      },
+                      textInput: {
+                        height: 44,
+                        paddingHorizontal: 10,
+                        backgroundColor: "#FFFFFF",
+                        color: "black",
+                        zIndex: 1000,
+                      },
+                    }}
+                  />
+                </View>
+                <View className="h-fit w-full rounded-xl overflow-hidden mt-2 border border-gray-500/50">
+                  <MapView
+                    style={{ height: height * 0.45, width: "100%" }}
+                    className="rounded-xl"
+                    region={region}
+                    onPress={handleMapPress}
+                  >
+                    <Marker coordinate={markerPosition} />
+                  </MapView>
+                </View>
               </View>
-              <View className="h-fit w-full rounded-xl overflow-hidden mt-2 border border-gray-500/50">
-                <MapView
-                  style={{ height: height * 0.45, width: "100%" }}
-                  className="rounded-xl"
-                  region={region}
-                  onPress={handleMapPress}
-                >
-                  <Marker coordinate={markerPosition} />
-                </MapView>
-              </View>
-            </View>)
-            }
+            )}
           </View>
         </View>
       </ScrollView>
       <View className="w-full flex justify-center items-center absolute bottom-0 mb-2">
         <TouchableOpacity
-          activeOpacity={0.8}
+          activeOpacity={0.9}
           onPress={handleAddCheckPoint}
           style={{
             width: width * 0.9,

@@ -23,7 +23,7 @@ const Notifications = ({ id, title, content, seen }) => {
   };
 
   return (
-    <TouchableOpacity activeOpacity={0.8} onPress={handleSeen}>
+    <TouchableOpacity activeOpacity={0.9} onPress={handleSeen}>
       <View
         className={`border border-green-600 h-fit rounded-lg p-2 mt-3 relative`}
       >

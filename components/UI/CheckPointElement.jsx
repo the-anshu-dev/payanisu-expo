@@ -13,10 +13,16 @@ import { Ionicons } from "@expo/vector-icons";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { useSelector } from "react-redux";
 import { ActivityIndicator } from "react-native-paper";
+import * as Location from "expo-location";
 
 const { height, width } = Dimensions.get("window");
 
-const CheckPointElement = ({ points, index, handleGetCheckPoints }) => {
+const CheckPointElement = ({
+  points,
+  index,
+  handleGetCheckPoints,
+  isTourCurrentlyActive,
+}) => {
   const [permission, requestPermission] = useCameraPermissions();
   const [showCameraModal, setShowCameraModal] = useState(false);
   const [scanned, setScanned] = useState(false);
@@ -25,14 +31,22 @@ const CheckPointElement = ({ points, index, handleGetCheckPoints }) => {
 
   const { user } = useSelector((state) => state.user);
 
-  useEffect(() => {
-    const checkAndRequestPermission = async () => {
-      if (!permission?.granted) {
-        await requestPermission();
-      }
-    };
-    checkAndRequestPermission();
-  }, [permission]);
+  const [location, setLocation] = useState(null);
+
+  const getDistance = (lat1, lon1, lat2, lon2) => {
+    const R = 6371e3; // Earth's radius in meters
+    const φ1 = (lat1 * Math.PI) / 180;
+    const φ2 = (lat2 * Math.PI) / 180;
+    const Δφ = ((lat2 - lat1) * Math.PI) / 180;
+    const Δλ = ((lon2 - lon1) * Math.PI) / 180;
+
+    const a =
+      Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+      Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return R * c;
+  };
 
   const handleQRCodePress = () => {
     if (!points.activated) {
@@ -57,7 +71,7 @@ const CheckPointElement = ({ points, index, handleGetCheckPoints }) => {
         }
       );
 
-      if (response.status !== 200) {
+      if (response.ok) {
         throw new Error("Failed to check in");
       }
       Alert.alert("Successful", "You are checked in.");
@@ -69,6 +83,69 @@ const CheckPointElement = ({ points, index, handleGetCheckPoints }) => {
       setCheckInLoading(false);
     }
   };
+
+  useEffect(() => {
+    const checkAndRequestPermission = async () => {
+      if (!permission?.granted) {
+        await requestPermission();
+      }
+    };
+    checkAndRequestPermission();
+  }, [permission]);
+
+  useEffect(() => {
+    let watchId;
+
+    const startLocationTracking = async () => {
+      try {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') {
+          Alert.alert('Permission Denied', 'Location permission is required for auto check-in');
+          return;
+        }
+
+        watchId = await Location.watchPositionAsync(
+          {
+            accuracy: Location.Accuracy.High,
+            distanceInterval: 10,
+          },
+          (location) => {
+            setLocation(location);
+
+            if (points.type === "Geo Tagging" && !points.checked) {
+              const distance = getDistance(
+                location.coords.latitude,
+                location.coords.longitude,
+                points.latitude,
+                points.longitude
+              );
+
+              if (distance <= 100) { 
+                const body = {
+                  email: user?.email,
+                  tourId: points.tourId,
+                  checkPointId: points._id,
+                };
+                handleCheckIn(body);
+              }
+            }
+          }
+        );
+      } catch (error) {
+        console.log('Error getting location:', error);
+      }
+    };
+
+    if (points.type === "Geo Tagging" && !points.checked && isTourCurrentlyActive) {
+      startLocationTracking();
+    }
+
+    return () => {
+      if (watchId) {
+        watchId.remove();
+      }
+    };
+  }, [points]);
 
   if (!permission) {
     return <View />;
@@ -142,7 +219,7 @@ const CheckPointElement = ({ points, index, handleGetCheckPoints }) => {
               points.activated &&
               !points.checked && (
                 <TouchableOpacity
-                  activeOpacity={0.6}
+                  activeOpacity={0.9}
                   onPress={handleQRCodePress}
                   className="border-2 border-green-700 rounded-full px-2"
                 >

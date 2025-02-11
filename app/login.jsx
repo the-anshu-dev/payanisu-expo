@@ -138,7 +138,7 @@ const Login = () => {
         </View>
         <View style={styles.contentContainer}>
           <TouchableOpacity
-            activeOpacity={0.7}
+            activeOpacity={0.9}
             onPress={handleLogin}
             style={styles.loginButton}
             disabled={loading}

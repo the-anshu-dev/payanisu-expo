@@ -7,7 +7,7 @@ import {
   Dimensions,
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
-import { Ionicons } from "@expo/vector-icons";
+import { FontAwesome6, Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import MarkerIcon from "../../../assets/marker-pin.svg";
 import EditIcon from "../../../assets/edit.svg";
@@ -109,7 +109,6 @@ const Checkpoints = () => {
         throw new Error("Failed to get checkpoints");
       }
       const data = await res.json();
-
       setAllCheckPoints(data);
       dispatch(setCheckPoints(data));
     } catch (error) {
@@ -125,6 +124,27 @@ const Checkpoints = () => {
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   });
+
+  const getUserLocation = async () => {
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert("Permission denied", "Location permission is required");
+        return;
+      }
+
+      const location = await Location.getCurrentPositionAsync({});
+      setRegion({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      });
+    } catch (error) {
+      console.log("Error getting location:", error);
+      Alert.alert("Error", "Failed to get current location");
+    }
+  };
 
   const handleCheckpointActive = async (id) => {
     try {
@@ -150,6 +170,7 @@ const Checkpoints = () => {
 
   useEffect(() => {
     handleGetAllCheckPoints();
+    getUserLocation();
   }, []);
 
   if (loading) {
@@ -189,10 +210,10 @@ const Checkpoints = () => {
         )}
         <View
           style={{ width: width }}
-          className="w-full absolute bottom-0 flex flex-row justify-between items-center h-16 bg-transparent px-4"
+          className="w-full absolute bottom-0 flex flex-row justify-between items-center h-16 bg-white px-4"
         >
           <TouchableOpacity
-            activeOpacity={0.8}
+            activeOpacity={0.9}
             onPress={handleQrModal}
             style={{
               width: width * 0.43,
@@ -210,7 +231,7 @@ const Checkpoints = () => {
             )}
           </TouchableOpacity>
           <TouchableOpacity
-            activeOpacity={0.8}
+            activeOpacity={0.9}
             onPress={() => router.push(`/createCheckpoints/${id}`)}
             style={{
               width: width * 0.43,
@@ -251,7 +272,7 @@ const Checkpoints = () => {
           </View>
           <View className="w-full flex justify-center items-center mt-2">
             <TouchableOpacity
-              activeOpacity={0.8}
+              activeOpacity={0.9}
               onPress={() => addNotesRef.current?.open()}
               style={{
                 width: width * 0.9,
@@ -325,7 +346,7 @@ const Checkpoints = () => {
           <View className="mt-6">
             <TouchableOpacity
               onPress={handleDownloadQr}
-              activeOpacity={0.8}
+              activeOpacity={0.9}
               className="h-10 w-56 bg-green-700 flex justify-center items-center rounded-lg"
             >
               <Text className="text-white font-semibold">Download</Text>
@@ -346,8 +367,6 @@ const CheckPointCard = ({
 }) => {
   const [loading, setLoading] = useState(false);
 
-  console.log("point-->", point);
-
   const handleActivation = async () => {
     setLoading(true);
     try {
@@ -361,14 +380,14 @@ const CheckPointCard = ({
 
   return (
     <View className="border border-gray-500/50 rounded-lg py-3 px-2 mt-3 w-full bg-white">
-      <View className="flex flex-row justify-between ">
+      <View className="flex flex-row justify-between items-center ">
         <View>
           <Text className="text-xs">{`Check Point ${idx + 1}`}</Text>
           <Text className="text-lg font-medium">{point.name}</Text>
         </View>
-        <View>
-          <TouchableOpacity activeOpacity={0.6}>
-            <Ionicons name="ellipsis-vertical" size={20} />
+        <View className=" h-10 w-10 flex justify-center items-center">
+          <TouchableOpacity activeOpacity={0.9}>
+            <FontAwesome6 name="trash" size={14} color="red" />
           </TouchableOpacity>
         </View>
       </View>
@@ -390,7 +409,7 @@ const CheckPointCard = ({
               ) : (
                 <TouchableOpacity
                   onPress={handleActivation}
-                  activeOpacity={0.8}
+                  activeOpacity={0.9}
                   className=" flex justify-center items-center border px-2 py-0.5 rounded-full border-green-700"
                 >
                   <Text className="text-sm font-semibold text-green-700">

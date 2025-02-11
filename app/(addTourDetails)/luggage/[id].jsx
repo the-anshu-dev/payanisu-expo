@@ -164,14 +164,14 @@ const Luggage = () => {
       <View style={styles.tabContainer}>
         <TouchableOpacity
           onPress={() => setIsBackpack(true)}
-          activeOpacity={0.8}
+          activeOpacity={0.9}
           style={isBackpack ? styles.activeTab : styles.tab}
         >
           <Text style={styles.tabText}>Backpack</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => setIsBackpack(false)}
-          activeOpacity={0.8}
+          activeOpacity={0.9}
           style={!isBackpack ? styles.activeTab : styles.tab}
         >
           <Text style={styles.tabText}>Check-In Baggage</Text>
@@ -191,7 +191,7 @@ const Luggage = () => {
               <View key={index} style={styles.listItem}>
                 <Text>{i?.item}</Text>
                 <TouchableOpacity
-                  activeOpacity={0.5}
+                  activeOpacity={0.9}
                   onPress={() => handleDelete(i?._id)}
                 >
                   <TrashIcon height={20} width={20} />

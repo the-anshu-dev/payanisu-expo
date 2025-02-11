@@ -248,7 +248,7 @@ const ModalBody = ({
         }}
       >
         <TouchableOpacity
-          activeOpacity={0.7}
+          activeOpacity={0.9}
           onPress={() => setModalVisible(false)}
           style={{
             backgroundColor: "gray",
@@ -265,7 +265,7 @@ const ModalBody = ({
         </TouchableOpacity>
         <TouchableOpacity
           onPress={handleAllocateRoom}
-          activeOpacity={0.7}
+          activeOpacity={0.9}
           style={{
             backgroundColor: "green",
             height: 40,

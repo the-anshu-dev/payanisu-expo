@@ -31,9 +31,6 @@ const MyTours = () => {
 
     useEffect(() => {
         getData();
-        if(isConnected){
-            router.push("/(tabs)");
-        }
         const interval = setInterval(checkConnection, 5000);
         return () => clearInterval(interval);
     }, []);
@@ -90,6 +87,7 @@ const styles = StyleSheet.create({
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
+        gap: 15,
     },
     noTourContainer: {
         flex: 1,

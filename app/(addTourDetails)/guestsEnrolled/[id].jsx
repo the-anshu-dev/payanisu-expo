@@ -493,13 +493,13 @@ const ReqCard = ({
           <View className="flex flex-row items-center justify-center gap-2">
             <TouchableOpacity
               onPress={() => handleReserveMembers(bookingId, "accept")}
-              activeOpacity={0.5}
+              activeOpacity={0.9}
             >
               <Text className="text-green-700">Accept</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => handleReserveMembers(bookingId, "reject")}
-              activeOpacity={0.5}
+              activeOpacity={0.9}
             >
               <Text className="text-red-700">Reject</Text>
             </TouchableOpacity>
@@ -508,7 +508,7 @@ const ReqCard = ({
         {interest && (
           <TouchableOpacity
             onPress={handleEnrolling}
-            activeOpacity={0.5}
+            activeOpacity={0.9}
             style={{ marginRight: 10 }}
           >
             <Text className="text-green-700">Enrol</Text>

@@ -127,14 +127,14 @@ const TourDetails = () => {
       <View style={styles.tabContainer}>
         <TouchableOpacity
           onPress={() => setIsIncludedTab(true)}
-          activeOpacity={0.8}
+          activeOpacity={0.9}
           style={isIncludedTab ? styles.activeTab : styles.tab}
         >
           <Text style={styles.tabText}>Included</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => setIsIncludedTab(false)}
-          activeOpacity={0.8}
+          activeOpacity={0.9}
           style={!isIncludedTab ? styles.activeTab : styles.tab}
         >
           <Text style={styles.tabText}>Not Included</Text>
@@ -158,7 +158,7 @@ const TourDetails = () => {
               <View key={i?._id} style={styles.listItem}>
                 <Text style={styles.itemText}>{i?.item}</Text>
                 <TouchableOpacity
-                  activeOpacity={0.7}
+                  activeOpacity={0.9}
                   onPress={() => handleDelete(i?._id)}
                 >
                   <TrashIcon height={20} width={20} />

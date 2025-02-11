@@ -64,13 +64,13 @@ const AllocatedRoomCard = ({
         <View className="flex flex-row justify-center items-center gap-5 pr-2">
           <TouchableOpacity
             onPress={() => setEditModalVisible(true)}
-            activeOpacity={0.5}
+            activeOpacity={0.9}
           >
             <EditIcon height={20} width={20} />
           </TouchableOpacity>
           <TouchableOpacity
             onPress={handleDeleteAllocation}
-            activeOpacity={0.5}
+            activeOpacity={0.9}
           >
             {deleting ? (
               <ActivityIndicator

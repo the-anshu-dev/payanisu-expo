@@ -19,8 +19,9 @@ import MyTourCheckPoints from "../../components/MyTourCheckPoints";
 import { Ionicons } from "@expo/vector-icons";
 import MyTourCheckPointsListView from "../../components/MyTourCheckPointsListView";
 import { useSelector } from "react-redux";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const { width, height } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 
 const MyTourDetails = () => {
   const { id } = useLocalSearchParams();
@@ -28,16 +29,25 @@ const MyTourDetails = () => {
   const { mapLink } = useSelector((state) => state.map);
 
   const { bookedTour } = useSelector((state) => state.tour);
+  const tour = bookedTour?.find((t) => t.tourDetails._id === id);
+
+  const isTourCurrentlyActive =
+    tour?.tourDetails.tour_start > new Date() ? true : false;
 
   const [loading, setLoading] = useState();
   const [checkPoints, setCheckPoints] = useState();
 
   const [geoTaggedCheckPoints, setGeoTaggedCheckPoints] = useState([]);
 
-  const tour = bookedTour?.find((t) => t.tourDetails._id === id);
-
   const [activeTab, setActiveTab] = useState("tourInfo");
   const [listView, setListView] = useState(true);
+
+  const tabWidth = width * 0.5;
+  const barWidth = width * 0.35;
+  const translateX = useSharedValue(-tabWidth);
+  const animatedStyles = useAnimatedStyle(() => ({
+    transform: [{ translateX: translateX.value + (tabWidth - barWidth) / 2 }],
+  }));
 
   const handleGetCheckPoints = async () => {
     setLoading(true);
@@ -53,6 +63,7 @@ const MyTourDetails = () => {
       const geoTaggedData = result.filter(
         (i) => i.type === "Geo Tagging" && i.checked === false
       );
+      await AsyncStorage.setItem("geoTaggedCheckPoints", JSON.stringify(geoTaggedData));
       setGeoTaggedCheckPoints(geoTaggedData);
     } catch (error) {
       console.log("error:", error);
@@ -62,18 +73,10 @@ const MyTourDetails = () => {
     }
   };
 
-  const tabWidth = width * 0.5;
-  const barWidth = width * 0.35;
-  const translateX = useSharedValue(-tabWidth);
-
   const handleTabPress = (tab) => {
     setActiveTab(tab);
     translateX.value = withSpring(tab === "checkPoints" ? 0 : -tabWidth);
   };
-
-  const animatedStyles = useAnimatedStyle(() => ({
-    transform: [{ translateX: translateX.value + (tabWidth - barWidth) / 2 }],
-  }));
 
   const handleOpenMap = () => {
     if (!mapLink) {
@@ -84,12 +87,11 @@ const MyTourDetails = () => {
 
   useEffect(() => {
     handleGetCheckPoints();
-    translateX.value = withSpring(activeTab === "checkPoints" ? 0 : -tabWidth);
   }, []);
 
   return (
-    <View className={`px-3 relative h-full flex items-center`}>
-      <View className="px-5 w-full flex justify-center items-center">
+    <View className={`relative h-full flex items-center`}>
+      <View className="px-8 w-full flex justify-center items-center">
         <View className="flex flex-row justify-between">
           <Pressable onPress={() => handleTabPress("tourInfo")}>
             <View style={{ width: tabWidth }} className="py-2">
@@ -118,22 +120,26 @@ const MyTourDetails = () => {
           <MyTourInfo tour={tour} />
         ) : listView ? (
           <MyTourCheckPointsListView
+            isTourCurrentlyActive={isTourCurrentlyActive}
             checkPoints={checkPoints}
             geoTaggedCheckPoints={geoTaggedCheckPoints}
             tourId={id}
             handleGetCheckPoints={handleGetCheckPoints}
           />
         ) : (
-          <MyTourCheckPoints checkPoints={checkPoints} />
+          <MyTourCheckPoints
+            isTourCurrentlyActive={isTourCurrentlyActive}
+            checkPoints={checkPoints}
+          />
         )}
       </View>
       <View
-        className={`absolute bottom-0 w-full py-2 flex flex-row justify-center gap-10 bg-transparent`}
+        className={`absolute bottom-0 w-full py-2 flex flex-row justify-center gap-10 bg-white`}
       >
         {activeTab === "tourInfo" ? (
           <TouchableOpacity
             onPress={() => handleTabPress("checkPoints")}
-            activeOpacity={0.8}
+            activeOpacity={0.9}
           >
             <View
               style={{ width: width * 0.4 }}
@@ -150,7 +156,7 @@ const MyTourDetails = () => {
         ) : (
           <TouchableOpacity
             onPress={() => setListView(!listView)}
-            activeOpacity={0.8}
+            activeOpacity={0.9}
           >
             <View
               style={{ width: width * 0.4 }}
@@ -170,7 +176,7 @@ const MyTourDetails = () => {
         <TouchableOpacity
           onPress={handleOpenMap}
           disabled={activeTab === "tourInfo" || listView}
-          activeOpacity={0.8}
+          activeOpacity={0.9}
           style={{ opacity: activeTab === "tourInfo" || listView ? 0.8 : 1 }}
         >
           <View

@@ -136,7 +136,7 @@ const showAccomodationDetails = () => {
       </ScrollView>
       <View className="w-full absolute bottom-2 h-12 flex justify-center items-center">
         <TouchableOpacity
-          activeOpacity={0.7}
+          activeOpacity={0.9}
           onPress={() => setModalVisible(true)}
           style={{
             width: width * 0.9,

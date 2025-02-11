@@ -181,7 +181,7 @@ const TransportDetails = () => {
               </View>
             ) : (
               <TouchableOpacity
-                activeOpacity={0.6}
+                activeOpacity={0.9}
                 style={[styles.buttons, { backgroundColor: "green" }]}
                 onPress={pickImage}
               >
@@ -194,7 +194,7 @@ const TransportDetails = () => {
       <View style={styles.buttonsContainer}>
         <TouchableOpacity
           style={[styles.buttons, { backgroundColor: "white", borderWidth: 1 }]}
-          activeOpacity={0.6}
+          activeOpacity={0.9}
           onPress={() => {
             router.back();
           }}
@@ -203,7 +203,7 @@ const TransportDetails = () => {
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.buttons, { backgroundColor: "green" }]}
-          activeOpacity={0.6}
+          activeOpacity={0.9}
           onPress={handleAddBusDetails}
         >
           {loading ? (

@@ -265,7 +265,7 @@ const EditModal = ({
         }}
       >
         <TouchableOpacity
-          activeOpacity={0.7}
+          activeOpacity={0.9}
           onPress={() => setEditModalVisible(false)}
           style={{
             backgroundColor: "gray",
@@ -282,7 +282,7 @@ const EditModal = ({
         </TouchableOpacity>
         <TouchableOpacity
           onPress={handleUpdateAllocation}
-          activeOpacity={0.7}
+          activeOpacity={0.9}
           style={{
             backgroundColor: "green",
             height: 40,

@@ -6,7 +6,7 @@ const { height, width } = Dimensions.get("window");
 
 const TourCard = ({ tourName, startDate, endDate, status, distance }) => {
     return (
-        <TouchableOpacity activeOpacity={0.7} style={{ width: width * 0.9, borderRadius: 10, padding: 10, elevation: 1 }} className=" bg-white w-full">
+        <TouchableOpacity activeOpacity={0.9} style={{ width: width * 0.9, borderRadius: 10, padding: 10, elevation: 1 }} className=" bg-white w-full">
             <View className="flex flex-row justify-between items-center w-full">
                 <Text className="text-2xl font-bold">{tourName}</Text>
                 <Text className="border px-4 py-0.5 font-semibold rounded-full">{status === 1 ? "Booked" : status === 2 ? "Rejected" : "Pending"}</Text>

@@ -8,7 +8,7 @@ import { formatDate } from "../../utils/helpers";
 const PostComponent = ({ post }) => {
   return (
     <TouchableOpacity
-      activeOpacity={0.8}
+      activeOpacity={0.9}
       onPress={() => router.push(`/postdetails/${post._id}`)}
     >
       <View

@@ -140,9 +140,9 @@ const AllocatedCoordinators = () => {
             )}
           </View>
         </View>
-        <View className="w-full flex flex-row justify-center items-center h-16 bg-transparent">
+        <View className="w-full flex flex-row justify-center items-center h-16 bg-white">
           <TouchableOpacity
-            activeOpacity={0.8}
+            activeOpacity={0.9}
             style={{
               width: 265,
               paddingVertical: 12,

@@ -85,7 +85,7 @@ const addTourImgs = () => {
           paddingHorizontal: 24,
         }}
       >
-        <TouchableOpacity activeOpacity={0.8} onPress={pickImage}>
+        <TouchableOpacity activeOpacity={0.9} onPress={pickImage}>
           <View className="h-12 flex justify-center items-center border-2 border-dashed rounded-lg mb-3 border-green-600">
             <View className="flex flex-row justify-center items-center space-x-3">
               <Ionicons name="add-circle" size={20} color={"green"} />
@@ -96,7 +96,7 @@ const addTourImgs = () => {
           </View>
         </TouchableOpacity>
         <TouchableOpacity
-          activeOpacity={0.8}
+          activeOpacity={0.9}
           containerStyle={{ height: "100%" }}
           onPress={handleTourImageUpload}
         >

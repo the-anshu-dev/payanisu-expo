@@ -179,7 +179,7 @@ const tourDetails = () => {
       </ScrollView>
       <View className="w-full flex flex-row justify-between items-center h-16 px-6">
         <TouchableOpacity
-          activeOpacity={0.8}
+          activeOpacity={0.9}
           disabled={unPublishLoading}
           onPress={handleTourStatus}
           style={{
@@ -201,7 +201,7 @@ const tourDetails = () => {
           )}
         </TouchableOpacity>
         <TouchableOpacity
-          activeOpacity={0.8}
+          activeOpacity={0.9}
           disabled={loading}
           onPress={handleDeleteTour}
           style={{
@@ -284,7 +284,7 @@ const DetailTitle = [
 const DetailScreenButton = ({ title, href, id }) => {
   return (
     <TouchableOpacity
-      activeOpacity={0.8}
+      activeOpacity={0.9}
       onPress={() => router.push(`${href}/${id}`)}
       className="py-4 rounded-lg mt-3 w-full bg-white shadow-xl shadow-black/50"
     >

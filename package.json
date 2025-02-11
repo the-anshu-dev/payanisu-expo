@@ -88,7 +88,8 @@
     "reanimated-bottom-sheet": "^1.0.0-alpha.22",
     "redux-thunk": "^3.1.0",
     "xlsx": "^0.18.5",
-    "react-native-view-shot": "3.8.0"
+    "react-native-view-shot": "3.8.0",
+    "expo-task-manager": "~11.8.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

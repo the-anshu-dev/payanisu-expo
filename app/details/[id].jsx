@@ -362,7 +362,7 @@ const DetailsScreen = () => {
           style={{ backgroundColor: "transparent" }}
           className="h-fit mb-3 p-1 flex flex-row justify-center items-center w-full gap-5"
         >
-          <TouchableOpacity onPress={handleInterested} activeOpacity={0.8}>
+          <TouchableOpacity onPress={handleInterested} activeOpacity={0.9}>
             <View
               style={{ width: width * 0.4 }}
               className="bg-slate-500 rounded-lg h-12 flex justify-center items-center "
@@ -376,7 +376,7 @@ const DetailsScreen = () => {
               )}
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={handleReserveButton} activeOpacity={0.8}>
+          <TouchableOpacity onPress={handleReserveButton} activeOpacity={0.9}>
             <View
               style={{ width: width * 0.4 }}
               className="py-3 bg-green-700 rounded-lg h-12 flex justify-center items-center"
@@ -447,7 +447,7 @@ const DetailsScreen = () => {
                   />
                 ))}
                 <TouchableOpacity
-                  activeOpacity={0.8}
+                  activeOpacity={0.9}
                   onPress={() => router.push("/addMember")}
                   className="bg-green-600 py-3 flex flex-row justify-center items-center rounded-lg mt-3"
                 >
@@ -468,7 +468,7 @@ const DetailsScreen = () => {
                   tourData?.tour_cost
                 }`}</Text>
               </View>
-              <TouchableOpacity activeOpacity={0.8} onPress={handlePayNow}>
+              <TouchableOpacity activeOpacity={0.9} onPress={handlePayNow}>
                 <View className="h-10 w-40 flex justify-center items-center rounded-lg bg-green-600">
                   <Text className="text-white font-semibold tracking-wider">
                     Pay Now

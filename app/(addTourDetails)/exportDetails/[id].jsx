@@ -20,7 +20,7 @@ const Export = () => {
   // Custom button component with consistent styling
   const CustomButton = ({ title, onPress }) => (
     <TouchableOpacity
-      activeOpacity={0.6}
+      activeOpacity={0.9}
       style={{
         width: "80%",
         paddingVertical: 12,

@@ -32,20 +32,20 @@ const Header = () => {
           <View className="flex flex-row w-[50%] justify-center items-center">
             <TouchableOpacity
               onPress={() => router.push(route)}
-              activeOpacity={0.7}
+              activeOpacity={0.9}
               className="px-3 py-2"
             >
               <FontAwesome6 name="bars" size={34} color="green" />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => router.push("/(tabs)")}
-              activeOpacity={0.7}
+              activeOpacity={0.9}
             >
               <Logo width={width * 0.35} height={height * 0.04} />
             </TouchableOpacity>
           </View>
           <TouchableOpacity
-            activeOpacity={0.7}
+            activeOpacity={0.9}
             onPress={() => router.push("/profile")}
           >
             <View className="h-12 w-12 rounded-full border-2 border-green-700 p-0.5 overflow-hidden">

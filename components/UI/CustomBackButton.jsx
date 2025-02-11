@@ -7,7 +7,7 @@ const CustomBackButton = ({ icon }) => {
   return (
     <TouchableOpacity
       onPress={() => router.back()}
-      activeOpacity={0.8}
+      activeOpacity={0.9}
       className={`mr-4 p-1`}
     >
       <Ionicons name={icon} size={24} color={"green"} />

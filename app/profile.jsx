@@ -165,7 +165,7 @@ const Profile = () => {
       </ScrollView>
       <View style={styles.actionsContainer}>
         <TouchableOpacity
-          activeOpacity={0.8}
+          activeOpacity={0.9}
           onPress={() => router.push("/addMember")}
           style={[styles.actionButton, styles.addMemberButton]}
         >
@@ -173,7 +173,7 @@ const Profile = () => {
         </TouchableOpacity>
         <TouchableOpacity
           disabled={!profile}
-          activeOpacity={0.8}
+          activeOpacity={0.9}
           onPress={() => router.push("/updateProfile")}
           style={[styles.actionButton, styles.editProfileButton]}
         >

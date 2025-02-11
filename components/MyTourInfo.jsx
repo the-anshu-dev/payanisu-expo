@@ -372,7 +372,7 @@ const MyTourInfo = ({ tour }) => {
                       busImageModal: true,
                     }))
                   }
-                  activeOpacity={0.7}
+                  activeOpacity={0.9}
                   className="mt-3 flex flex-row justify-start items-center gap-2"
                 >
                   <Ionicons name="images" size={12} color={"green"} />
@@ -381,7 +381,7 @@ const MyTourInfo = ({ tour }) => {
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  activeOpacity={0.7}
+                  activeOpacity={0.9}
                   onPress={() =>
                     setIsModalVisible((prev) => ({
                       ...prev,
@@ -397,7 +397,7 @@ const MyTourInfo = ({ tour }) => {
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => router.push(`/bus-mates/${transportId}`)}
-                  activeOpacity={0.7}
+                  activeOpacity={0.9}
                   className="mt-3 flex flex-row justify-start items-center gap-2"
                 >
                   <Ionicons name="compass" size={12} color={"green"} />
@@ -462,7 +462,7 @@ const MyTourInfo = ({ tour }) => {
                           `/room-mates/${allocatedAccommodation[0]?.roomNumber}`
                         )
                       }
-                      activeOpacity={0.7}
+                      activeOpacity={0.9}
                       className="flex flex-row justify-between items-center py-1 px-2 gap-2 w-full"
                     >
                       <View className="flex flex-row justify-start items-center gap-2">
@@ -500,7 +500,7 @@ const MyTourInfo = ({ tour }) => {
         {status === 1 && (
           <TouchableOpacity
             onPress={handleCancelBooking}
-            activeOpacity={0.8}
+            activeOpacity={0.9}
             className="flex w-full flex-row justify-center items-center bg-white rounded-lg p-2 py-3 shadow-lg shadow-black"
           >
             <Text className="text-red-700 text-lg font-semibold">

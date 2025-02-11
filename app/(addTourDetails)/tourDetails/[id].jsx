@@ -44,7 +44,7 @@ const TourDetails = () => {
       </ScrollView>
       <TouchableOpacity
         onPress={() => router.push(`/(addTourDetails)/editTourDetails/${id}`)}
-        activeOpacity={0.8}
+        activeOpacity={0.9}
         className="w-full py-2 flex flex-row justify-center items-center bg-green-700 h-12 gap-2 rounded-lg mb-4"
       >
         <Text className="text-white text-xl font-semibold">Edit Tour</Text>

@@ -105,14 +105,14 @@ export default function HomeScreen() {
             </Text>
             <View className="flex flex-row justify-between w-full items-center gap-4 mt-4">
               <TouchableOpacity
-                activeOpacity={0.7}
+                activeOpacity={0.9}
                 style={styles.retryButton}
                 onPress={checkNetworkConnection}
               >
                 <Text style={styles.retryButtonText}>Retry</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                activeOpacity={0.7}
+                activeOpacity={0.9}
                 style={styles.retryButton}
                 onPress={() => router.push("/(offlinemode)/mytours")}
               >

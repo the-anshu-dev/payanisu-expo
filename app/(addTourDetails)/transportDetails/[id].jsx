@@ -243,14 +243,14 @@ const TransportDetails = () => {
               styles.buttons,
               { backgroundColor: "white", borderWidth: 1 },
             ]}
-            activeOpacity={0.6}
+            activeOpacity={0.9}
             onPress={() => addGuestsRef.current?.open()}
           >
             <Text style={styles.buttonText}>Add Guests</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.buttons, { backgroundColor: "green" }]}
-            activeOpacity={0.6}
+            activeOpacity={0.9}
             onPress={() =>
               router.push(`/(addTourDetails)/addBoardingPoint/${id}`)
             }
@@ -322,7 +322,7 @@ const TransportDetails = () => {
           <View style={styles.modalizeButtonContainer}>
             <TouchableOpacity
               onPress={handleAddGuests}
-              activeOpacity={0.7}
+              activeOpacity={0.9}
               style={styles.modalizeButton}
             >
               {addingGuests ? (
@@ -386,7 +386,7 @@ const BoardingPointCard = ({
         }}
       >
         <Text style={{ fontSize: 16, fontWeight: "600" }}>Boading Point</Text>
-        <TouchableOpacity onPress={handleDelete} activeOpacity={0.5}>
+        <TouchableOpacity onPress={handleDelete} activeOpacity={0.9}>
           <Ionicons name="trash-outline" color={"red"} size={18} />
         </TouchableOpacity>
       </View>
@@ -459,7 +459,7 @@ const TransportAllocatedGuests = ({ item }) => {
       </View>
       <Text>{item?.bookingData?.name}</Text>
       <Text>{item?.bookingData?.age} Yrs</Text>
-      <TouchableOpacity onPress={() => {}} activeOpacity={0.5}>
+      <TouchableOpacity onPress={() => {}} activeOpacity={0.9}>
         <Ionicons name="trash-outline" color={"red"} size={18} />
       </TouchableOpacity>
     </View>

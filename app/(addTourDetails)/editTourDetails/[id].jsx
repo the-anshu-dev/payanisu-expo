@@ -341,7 +341,7 @@ const EditTour = () => {
         <TouchableOpacity
           disabled={!!error}
           onPress={submitForm}
-          activeOpacity={0.8}
+          activeOpacity={0.9}
           style={styles.submitButton}
         >
           {loading ? (

@@ -135,7 +135,7 @@ const Transportation = () => {
       <View style={styles.buttonsContainer}>
         <TouchableOpacity
           style={[styles.buttons, { backgroundColor: "white", borderWidth: 1 }]}
-          activeOpacity={0.6}
+          activeOpacity={0.9}
           onPress={handleExport}
         >
           {exporting ? (
@@ -146,7 +146,7 @@ const Transportation = () => {
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.buttons, { backgroundColor: "green" }]}
-          activeOpacity={0.6}
+          activeOpacity={0.9}
           onPress={() =>
             router.push(`/(addTourDetails)/addTransportDetails/${id}`)
           }
