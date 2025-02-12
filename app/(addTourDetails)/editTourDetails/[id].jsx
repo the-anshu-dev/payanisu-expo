@@ -8,7 +8,6 @@ import {
   ScrollView,
   Dimensions,
   StyleSheet,
-  Alert,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
@@ -17,6 +16,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { format } from "date-fns";
 import { Picker } from "@react-native-picker/picker";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { showError, showSuccess } from "../../../utils/toastHelper";
 
 const { height, width } = Dimensions.get("window");
 
@@ -139,12 +139,11 @@ const EditTour = () => {
       );
 
       if (response.ok) {
-        Alert.alert("Success", "Tour details updated successfully.");
         router.back();
+        showSuccess("Tour updated successfully");
       }
     } catch (err) {
-      console.log("Error submitting tour:", err);
-      setError("Error submitting tour. Please try again.");
+      showError(err.message || "Please try again.");
     } finally {
       setLoading(false);
     }

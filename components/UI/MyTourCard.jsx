@@ -1,24 +1,23 @@
-import { View, Text, TouchableOpacity, Alert, Dimensions } from "react-native";
+import { View, Text, TouchableOpacity, Dimensions } from "react-native";
 import React from "react";
 import { router } from "expo-router";
 import { FontAwesome6, Ionicons } from "@expo/vector-icons";
 import CarouselImageRender from "./CarouselImageRender";
 import Carousel from "react-native-reanimated-carousel";
 import { calculateDuration, formatDate } from "../../utils/helpers";
-
-const { width, height } = Dimensions.get("window")
+import { showWarning } from "../../utils/toastHelper";
+const { width, height } = Dimensions.get("window");
 
 const MyTourCard = ({ tour, status }) => {
-
   const images = tour?.images?.filter((i) => !i.type).map((i) => i.url);
 
   const onClickHandler = () => {
-    if(status === 0) {
-      Alert.alert("Booking Rejected", " Your booking has been rejected. Please contact the admin for more details.");
+    if (status === 0) {
+      showWarning("Booking Rejected !!");
       return;
     }
-    if(status === 3) {
-      Alert.alert("Booking Cancelled", " Your booking has been cancelled.");
+    if (status === 3) {
+      showWarning("Booking Cancelled !!");
       return;
     }
     const clickEnabled = status === 1 || status === 2;
@@ -59,23 +58,25 @@ const MyTourCard = ({ tour, status }) => {
         <View className="flex flex-row justify-between px-3 mt-3">
           <View>
             <Text className={`text-xl font-semibold`}>{tour?.name}</Text>
-            <Text >{calculateDuration(tour?.tour_start, tour?.tour_end)}</Text>
+            <Text>{calculateDuration(tour?.tour_start, tour?.tour_end)}</Text>
           </View>
           <View
-            className={`w-28 ${status === 1
-              ? "bg-green-700"
-              : status === 2
-                ? "bg-orange-500"
-                : "bg-red-500"
-              } flex flex-row justify-center items-center gap-2 mt-2 rounded-lg h-6`}
+            className={`w-28 ${
+              status === 1
+                ? "bg-green-700"
+                : status === 2
+                  ? "bg-orange-500"
+                  : "bg-red-500"
+            } flex flex-row justify-center items-center gap-2 mt-2 rounded-lg h-6`}
           >
             <Ionicons
-              name={`${status === 1
-                ? "checkmark-outline"
-                : status === 2
-                  ? "time-outline"
-                  : "close-circle-outline"
-                }`}
+              name={`${
+                status === 1
+                  ? "checkmark-outline"
+                  : status === 2
+                    ? "time-outline"
+                    : "close-circle-outline"
+              }`}
               size={16}
               color={"white"}
             />

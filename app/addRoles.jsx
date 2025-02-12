@@ -1,9 +1,10 @@
-import { View, Text, ActivityIndicator, Alert, Dimensions, StyleSheet, TextInput, TouchableOpacity } from "react-native";
+import { View, Text, ActivityIndicator, Dimensions, StyleSheet, TextInput, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import DropDownPicker from "react-native-dropdown-picker";
+import { showError, showSuccess } from "../utils/toastHelper";
 
 const { width, height } = Dimensions.get("window");
 
@@ -35,10 +36,9 @@ const AddRoles = () => {
       setLoading(false);
       setEmail("");
       setValue(null);
-      Alert.alert("Success", "Role added successfully");
+      showSuccess("Role added successfully");
     } catch (error) {
-      console.log(error?.message);
-      setError("An error occurred. Please try again.");
+      showError(error?.message || "Please try again.");
       setLoading(false);
     }
   };

@@ -1,10 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
-import { View, Text, Alert, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Dimensions } from "react-native";
 import { Modalize } from "react-native-modalize";
 import { TextInput } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import { ActivityIndicator } from "react-native-paper";
 import { Ionicons } from "@expo/vector-icons";
+import { showError, showSuccess } from "../../../utils/toastHelper";
+
+const { width } = Dimensions.get("window");
 
 const AllocatedCoordinators = () => {
   const { id } = useLocalSearchParams();
@@ -26,7 +29,6 @@ const AllocatedCoordinators = () => {
   const handleAddCoordinator = async () => {
     setLoading(true);
     if (!name || !gender || !age || !email || !phone) {
-      Alert.alert("Field empty!", "All fields are required");
       setLoading(false);
       return;
     }
@@ -43,7 +45,7 @@ const AllocatedCoordinators = () => {
       if (response.status !== 201) {
         throw new Error("Failed to add coordinator");
       }
-      Alert.alert("Success", "Coordinator added successfully.");
+      showSuccess("Coordinator added successfully");
       addCoordinatorRef.current?.close();
       getAllCoordinators();
       setName("");
@@ -52,8 +54,7 @@ const AllocatedCoordinators = () => {
       setEmail("");
       setPhone("");
     } catch (error) {
-      Alert.alert("Oops!", "Something went wrong...\n\nPlease try again");
-      console.log("Error:", error);
+      showError(error.message || "Please try again.");
     } finally {
       setLoading(false);
     }
@@ -72,7 +73,7 @@ const AllocatedCoordinators = () => {
       setCoordinators(result);
       setFilteredCoordinators(result);
     } catch (error) {
-      Alert.alert("Oops!", "Something went wrong...\n\nPlease try again");
+      showError(error.message || "Please try again.");
       router.replace("/(addTourDetails)/tourDetails");
     } finally {
       setCoordinatorLoading(false);
@@ -104,8 +105,8 @@ const AllocatedCoordinators = () => {
 
   return (
     <>
-      <View className="h-full w-full flex justify-between px-3 pt-4">
-        <View>
+      <View className="h-full w-full flex justify-between pt-4">
+        <View className="px-4">
           <TextInput
             placeholder="Search by name"
             value={searchTerm}
@@ -144,7 +145,7 @@ const AllocatedCoordinators = () => {
           <TouchableOpacity
             activeOpacity={0.9}
             style={{
-              width: 265,
+              width: width*0.9,
               paddingVertical: 12,
               borderRadius: 8,
               borderWidth: 1,
@@ -152,16 +153,15 @@ const AllocatedCoordinators = () => {
             }}
             onPress={() => addCoordinatorRef.current?.open()}
           >
-            <Text style={{ textAlign: "center", color: "green" }}>
+            <Text style={{ textAlign: "center", color: "green", fontSize: 16, fontWeight: "bold" }}>
               Add Coordinator
             </Text>
           </TouchableOpacity>
         </View>
       </View>
-
       <Modalize ref={addCoordinatorRef} adjustToContentHeight>
         <View style={{ padding: 20 }}>
-          <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 20 }}>
+          <Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 20, textAlign: "center" }}>
             Add Coordinator
           </Text>
 
@@ -265,16 +265,16 @@ const CoordinatorCard = ({ gender, name, age, phone }) => {
   const textCol =
     gender === "Male" || gender === "male" ? "text-green-700" : "text-red-700";
   return (
-    <View className="w-full p-1.5 bg-white shadow-xl shadow-black/70 rounded-lg mt-2">
+    <View className="w-full p-3 bg-white shadow-xl shadow-black/70 rounded-lg mt-2">
       <View className="flex flex-row justify-between items-center">
         <Text
           className={`h-6 w-6 ${col} flex justify-center items-center text-center rounded-full ${textCol} font-semibold`}
         >
           {gender.charAt(0)}
         </Text>
-        <Text>{name}</Text>
-        <Text>{age} Yrs</Text>
-        <Text>{phone}</Text>
+        <Text className="text-lg font-semibold">{name}</Text>
+        <Text className="text-lg font-semibold">{age} Yrs</Text>
+        <Text className="text-lg font-semibold">{phone}</Text>
       </View>
     </View>
   );

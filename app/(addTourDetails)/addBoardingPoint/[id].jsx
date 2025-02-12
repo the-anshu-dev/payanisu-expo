@@ -1,7 +1,6 @@
 import {
   View,
   Text,
-  Alert,
   ActivityIndicator,
   ScrollView,
   TextInput,
@@ -14,6 +13,7 @@ import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplet
 import { router, useLocalSearchParams } from "expo-router";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { format } from "date-fns";
+import { showError, showSuccess } from "../../../utils/toastHelper";
 
 const { width } = Dimensions.get("window");
 const apiKey = process.env.EXPO_PUBLIC_GOOGLE_API_KEY;
@@ -111,7 +111,7 @@ const Page = () => {
       !latitude ||
       !longitude
     ) {
-      Alert.alert("Empty field!", "All fields required!");
+      showWarning("All fields required!");
       return;
     }
 
@@ -143,11 +143,10 @@ const Page = () => {
         throw new Error("Failed to add boarding point");
       }
 
-      Alert.alert("Added!", "Boarding point added successfully");
       router.back();
+      showSuccess("Boarding point added successfully");
     } catch (error) {
-      console.log("Failed to create checkpoint", error?.message);
-      Alert.alert("Oops", "Something went wrong.\n Please try again");
+      showError(error.message || "Please try again.");
     } finally {
       setLoading(false);
     }

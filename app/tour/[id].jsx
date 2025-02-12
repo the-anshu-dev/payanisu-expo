@@ -1,4 +1,4 @@
-import { View, Text, Alert, ScrollView, TouchableOpacity, Dimensions } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, Dimensions } from "react-native";
 import React, { useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import LinearGradient from "react-native-linear-gradient";
@@ -9,6 +9,7 @@ import { formatDate } from "../../utils/helpers";
 import { ActivityIndicator } from "react-native-paper";
 import { setTour } from "../../redux/slices/tourSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { showError, showSuccess, showWarning } from "../../utils/toastHelper";
 
 const { height, width } = Dimensions.get("window");
 
@@ -36,7 +37,7 @@ const tourDetails = () => {
       await AsyncStorage.setItem("tours", JSON.stringify(tour));
       dispatch(setTour(tour));
     } catch (error) {
-      Alert.alert("Error", error.message || "Something went wrong.");
+      showWarning(error.message || "Failed to fetch tours.");
       console.log("Error fetching tours:", error);
     }
   };
@@ -53,16 +54,14 @@ const tourDetails = () => {
           },
         }
       );
-
       if (response.status !== 200) {
         throw new Error("Failed to delete");
       }
-
       await getAllTours();
-      Alert.alert("Success", "Tour deleted.");
+      showSuccess("Tour deleted.");
       router.replace("/(admin)/tours");
     } catch (error) {
-      Alert.alert("Oops!", "Something went wrong...\n\nPlease try again.");
+      showError(error.message || "Please try again.");
       console.log("error:", error);
     } finally {
       setLoading(false);
@@ -103,13 +102,10 @@ const tourDetails = () => {
       const tour = await refreshTour.json();
       dispatch(setTour(tour));
 
-      Alert.alert(
-        "Success",
-        `The tour has been ${tourDetail.status ? "unpublished" : "published"}`
-      );
+      showSuccess("Tour Status Updated.");
       router.push("/(admin)/tours");
     } catch (error) {
-      Alert.alert("Oops!", "Something went wrong...\n\nPlease try again.");
+      showError(error.message || "Please try again.");
       console.log("error:", error);
     } finally {
       setUnPublishLoading(false);

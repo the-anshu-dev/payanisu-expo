@@ -2,7 +2,6 @@ import {
   View,
   Text,
   Pressable,
-  Alert,
   TouchableOpacity,
   ScrollView,
   Switch,
@@ -24,6 +23,7 @@ import { formatDate } from "../../../utils/helpers";
 import { Ionicons } from "@expo/vector-icons";
 import { ActivityIndicator, Checkbox } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { showError, showSuccess } from "../../../utils/toastHelper";
 
 const { height, width } = Dimensions.get("window");
 
@@ -95,8 +95,7 @@ const GuestsEnrolled = () => {
 
       setInterestedMembers(data);
     } catch (error) {
-      console.log("Error:", error);
-      Alert.alert("Something went wrong.", "Please try again");
+      showError(error.message || "Please try again.");
     } finally {
       setLoading(false);
     }
@@ -119,8 +118,7 @@ const GuestsEnrolled = () => {
       setPendingApproval(data);
       setReservedMembers(reservedData);
     } catch (error) {
-      console.log("Error", error);
-      Alert.alert("Oops", "Something went wrong");
+      showError(error.message || "Please try again.");
     } finally {
       setGetPendingApprovalLoading(false);
     }
@@ -146,15 +144,10 @@ const GuestsEnrolled = () => {
       if (response.status !== 200) {
         throw new Error("Failed to update.");
       }
-
-      Alert.alert(
-        "Reserved",
-        `Member has been ${type === "accept" ? "accepted" : "rejected"}`
-      );
+      showSuccess(`Member has been ${type === "accept" ? "accepted" : "rejected"}`);
       getPendingApprovals();
     } catch (error) {
-      console.log("Error:", error);
-      Alert.alert("Oops", "Something went wrong.\nPlease try again.");
+      showError(error.message || "Please try again.");
     } finally {
       setReserving(false);
     }
@@ -214,8 +207,6 @@ const GuestsEnrolled = () => {
         }
       );
 
-      console.log("response status", response.status);
-
       if (response.status !== 201) {
         await fetch(
           `${process.env.EXPO_PUBLIC_BASE_URL}/api/interested/update?id=${enrollingDetails._id}`,
@@ -231,11 +222,9 @@ const GuestsEnrolled = () => {
       }
 
       handleGetInterestedMembers();
-      Alert.alert("Enrolled", "Member enrolled successfully.");
       enrollRef.current?.close();
     } catch (error) {
-      console.log("Error:", error);
-      Alert.alert("Oops", "Something went wrong.\nPlease try again.");
+      showError(error.message || "Please try again.");
       enrollRef.current?.close();
     } finally {
       setEnrolling(false);

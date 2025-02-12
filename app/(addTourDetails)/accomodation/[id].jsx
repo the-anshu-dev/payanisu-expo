@@ -3,7 +3,6 @@ import {
   Text,
   TouchableOpacity,
   Dimensions,
-  Alert,
   ScrollView,
   RefreshControl,
 } from "react-native";
@@ -12,6 +11,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import { exportDataToExcel } from "../../../utils/helpers";
 import { ActivityIndicator } from "react-native-paper";
 import { Ionicons } from "@expo/vector-icons";
+import { showError } from "../../../utils/toastHelper";
 
 const { width } = Dimensions.get("window");
 
@@ -34,8 +34,7 @@ const Accomodation = () => {
       const data = await response.json();
       setGuestHouses(data);
     } catch (error) {
-      console.log(error);
-      Alert.alert("Error", "Failed to fetch guest houses");
+      showError(error.message || "Please try again.");
     }
   };
 
@@ -64,11 +63,7 @@ const Accomodation = () => {
 
       await exportDataToExcel(formattedData, "guestHouseData");
     } catch (error) {
-      console.log("error:", error);
-      Alert.alert(
-        "Oops!",
-        error.message || "Something went wrong. Please try again later."
-      );
+      showError(error.message || "Please try again.");
     } finally {
       setExporting(false);
     }

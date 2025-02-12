@@ -3,7 +3,6 @@ import {
   Text,
   Dimensions,
   TouchableOpacity,
-  Alert,
   ActivityIndicator,
 } from "react-native";
 import React from "react";
@@ -15,6 +14,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { setUser } from "../redux/slices/userSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { showError, showSuccess } from "../utils/toastHelper";
 
 const { width, height } = Dimensions.get("window");
 
@@ -42,11 +42,10 @@ const Menu = () => {
     try {
       await AsyncStorage.removeItem("user");
       dispatch(setUser(null));
-      Alert.alert("Success", "You have been logged out successfully.");
+      showSuccess("Logged Out");
       router.replace("/login");
     } catch (error) {
-      console.error("Error during logout:", error);
-      Alert.alert("Oops", "Something went wrong.\nPlease try again.");
+      showError(error.message || "Please try again.");
     } finally {
       setLoggingOut(false);
     }

@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   Dimensions,
-  Alert,
   Linking,
   Platform,
   ScrollView,
@@ -14,6 +13,7 @@ import * as Network from "expo-network";
 import MapView, { Marker } from "react-native-maps";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { showError } from "../../utils/toastHelper";
 
 const { height, width } = Dimensions.get("window");
 
@@ -25,8 +25,6 @@ const Map = () => {
   const [checkPoints, setCheckPoints] = useState([]);
 
   const [completedCheckpoints, setCompletedCheckpoints] = useState([]);
-
-  const [reels, setReels] = useState([]);
 
   const getData = async () => {
     try {
@@ -56,25 +54,12 @@ const Map = () => {
         JSON.stringify(updatedCheckpoints)
       );
     } catch (error) {
-      console.error("Error saving checkpoint:", error);
-      Alert.alert("Error", "Failed to save checkpoint completion");
-    }
-  };
-
-  const getReels = async () => {
-    try {
-        console.log(process.env.EXPO_PUBLIC_INSTAGRAM_API_URL);
-      const reels = await fetch(`${process.env.EXPO_PUBLIC_INSTAGRAM_API_URL}/api/reels/get-all`);
-      const result = await reels.json();
-      setReels(result);
-    } catch (error) {
-      console.error("Error getting reels:", error);
+      showError(error.message || "Please try again.");
     }
   };
 
   useEffect(() => {
     getData();
-    getReels();
   }, []);
 
   useEffect(() => {
@@ -251,24 +236,6 @@ const Map = () => {
             completedCheckpoints.map((checkpoint) => (
               <Text key={checkpoint._id}>
                 {checkpoint.latitude}, {checkpoint.longitude}
-              </Text>
-            ))}
-        </View>
-        <View
-          style={{
-            padding: 10,
-            height: height * 0.6,
-            borderWidth: 1,
-            borderColor: "green",
-            borderRadius: 10,
-            margin: 10,
-          }}
-        >
-          <Text className="font-semibold text-center">Reels</Text>
-          {reels.length > 0 &&
-            reels.map((reel) => (
-              <Text key={reel._id}>
-                {reel.title}
               </Text>
             ))}
         </View>

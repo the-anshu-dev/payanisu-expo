@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { View, Alert } from "react-native";
+import { View} from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import MapViewDirections from "react-native-maps-directions";
 import * as Location from "expo-location";
+import { showWarning } from "../utils/toastHelper";
 
 const GOOGLE_MAPS_APIKEY = process.env.EXPO_PUBLIC_GOOGLE_API_KEY;
 
@@ -14,7 +15,7 @@ const MapScreen = ({ destination }) => {
     (async () => {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
-        console.log("Permission to access location was denied");
+        showWarning("Permission to access location was denied");
         return;
       }
 
@@ -56,7 +57,7 @@ const MapScreen = ({ destination }) => {
             strokeColor="blue"
             onError={(errorMessage) => {
               if (errorMessage.includes("ZERO_RESULTS")) {
-                Alert.alert("No Route Found", "No available route between your location and the destination.");
+                showWarning("No route found.");
               }
             }}
           />

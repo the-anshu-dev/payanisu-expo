@@ -2,7 +2,6 @@ import React from "react";
 import {
   View,
   Text,
-  Alert,
   Platform,
   ScrollView,
   TouchableOpacity,
@@ -12,6 +11,7 @@ import * as FileSystem from "expo-file-system";
 import * as MediaLibrary from "expo-media-library";
 import XLSX from "xlsx";
 import { useSelector } from "react-redux";
+import { showError, showSuccess, showWarning } from "../../../utils/toastHelper";
 
 const Export = () => {
   const { id } = useLocalSearchParams();
@@ -42,8 +42,7 @@ const Export = () => {
     try {
       const { status } = await MediaLibrary.requestPermissionsAsync();
       if (status !== "granted") {
-        Alert.alert(
-          "Permission Denied",
+        showWarning(
           "Permission to access media library is required!"
         );
         return;
@@ -67,8 +66,7 @@ const Export = () => {
         const permissions =
           await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
         if (!permissions.granted) {
-          Alert.alert(
-            "Permission required",
+          showWarning(
             "Cannot save file without permission"
           );
           return;
@@ -82,17 +80,15 @@ const Export = () => {
           await FileSystem.writeAsStringAsync(uri, wbout, {
             encoding: FileSystem.EncodingType.Base64,
           });
-          Alert.alert(
-            "Success",
+          showSuccess(
             `${fileName} saved successfully in Downloads folder`
           );
         });
       } else {
-        Alert.alert("Error", "This method is only supported on Android");
+        showWarning("This method is only supported on Android");
       }
     } catch (error) {
-      console.log(error);
-      Alert.alert("Error", error.message);
+      showError(error.message || "Please try again.");
     }
   };
 

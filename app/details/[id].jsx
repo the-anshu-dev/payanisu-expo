@@ -2,9 +2,9 @@ import {
   View,
   Text,
   Dimensions,
-  Alert,
   ScrollView,
   TouchableOpacity,
+  Alert,
   ActivityIndicator,
   StyleSheet,
 } from "react-native";
@@ -27,7 +27,7 @@ import {
   setTourMembers,
 } from "../../redux/slices/bookingSlice.js";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import { showError, showWarning } from "../../utils/toastHelper";
 const { width, height } = Dimensions.get("window");
 
 const DetailsScreen = () => {
@@ -127,8 +127,7 @@ const DetailsScreen = () => {
 
       interestedRef.current?.open();
     } catch (error) {
-      console.log("Error:", error);
-      Alert.alert("Something went wrong.", "Please try again.");
+      showError(error.message || "Please try again.");
     } finally {
       setLoading(false);
     }
@@ -138,7 +137,7 @@ const DetailsScreen = () => {
     if (!tourData) return;
     const bookingMembers = filteredMembers.filter((m) => m.isSelected);
     if (bookingMembers.length === 0) {
-      Alert.alert("Select Members", "Please select members to book the tour.");
+      showWarning("Please select at least one member.");
       return;
     }
     const totalCost = bookingMembers.length * tourData.tour_cost;
@@ -171,7 +170,7 @@ const DetailsScreen = () => {
 
   const handleSelectMember = (id) => {
     // if (id === profile?._id) {
-    //   Alert.alert("Cannot remove!", "You cannot remove yourself");
+    //  showWarning("You cannot remove yourself");
     //   return;
     // }
 

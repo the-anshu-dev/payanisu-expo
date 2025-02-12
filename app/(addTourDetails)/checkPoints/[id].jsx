@@ -18,11 +18,12 @@ import { router, useLocalSearchParams } from "expo-router";
 import { shorten } from "../../../components/UI/PostComponent";
 import { ActivityIndicator } from "react-native-paper";
 import * as FileSystem from "expo-file-system";
-import { Alert } from "react-native";
 import * as MediaLibrary from "expo-media-library";
 import { useDispatch } from "react-redux";
 import { setCheckPoints } from "../../../redux/slices/tourSlice";
 import { SafeAreaView } from "react-native-safe-area-context";
+import * as Location from "expo-location";
+import { showError, showSuccess, showWarning   } from "../../../utils/toastHelper";
 
 const { height, width } = Dimensions.get("window");
 
@@ -51,8 +52,7 @@ const Checkpoints = () => {
       setQrUrl(qr.url);
       downloadQRref.current?.open();
     } catch (error) {
-      Alert.alert("Failed to generate QR code", "Please try again.");
-      console.log("failed to generate qr", error);
+      showError(error.message || "Please try again.");
     } finally {
       setQrLoading(false);
     }
@@ -64,14 +64,12 @@ const Checkpoints = () => {
 
   const handleDownloadQr = async () => {
     if (!qrUrl) {
-      Alert.alert("No QR Code", "Please generate a QR code first.");
       return;
     }
     try {
       const { status } = await MediaLibrary.requestPermissionsAsync();
       if (status !== "granted") {
-        Alert.alert(
-          "Permission required",
+        showWarning(
           "We need access to your media library to save the image."
         );
         return;
@@ -90,11 +88,10 @@ const Checkpoints = () => {
       } else {
         await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
       }
+      showSuccess("QR code downloaded and saved to your gallery!");
 
-      Alert.alert("Success", "QR code downloaded and saved to your gallery!");
     } catch (error) {
-      console.log("Failed to download image", error);
-      Alert.alert("Error", "Failed to download the image.");
+      showError(error.message || "Failed to download the image.");
     }
   };
 
@@ -129,7 +126,7 @@ const Checkpoints = () => {
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
-        Alert.alert("Permission denied", "Location permission is required");
+        showWarning("Location permission is required");
         return;
       }
 
@@ -141,8 +138,7 @@ const Checkpoints = () => {
         longitudeDelta: 0.0421,
       });
     } catch (error) {
-      console.log("Error getting location:", error);
-      Alert.alert("Error", "Failed to get current location");
+      showError(error.message || "Failed to get current location");
     }
   };
 
@@ -161,10 +157,9 @@ const Checkpoints = () => {
       if (response.status !== 200) {
         throw new Error("Failed to update checkpoint");
       }
-      Alert.alert("Acivated", "Checkpoint Activated.");
+      showSuccess("Checkpoint Activated.");
     } catch (error) {
-      console.log("Error:", error);
-      Alert.alert("Failed to activate", "Please try again.");
+      showError(error.message || "Please try again.");
     }
   };
 
@@ -204,6 +199,7 @@ const Checkpoints = () => {
                 editRef={editCheckPointRef}
                 mapRef={viewMapRef}
                 handleCheckpointActive={handleCheckpointActive}
+                handleGetAllCheckPoints={handleGetAllCheckPoints}
               />
             ))}
           </ScrollView>
@@ -364,8 +360,11 @@ const CheckPointCard = ({
   idx,
   point,
   handleCheckpointActive,
+  handleGetAllCheckPoints
 }) => {
   const [loading, setLoading] = useState(false);
+
+  const [deleting, setDeleting] = useState(false);
 
   const handleActivation = async () => {
     setLoading(true);
@@ -378,6 +377,26 @@ const CheckPointCard = ({
     }
   };
 
+  const handleDeleteCheckpoint = async (id) => {  
+    setDeleting(true);
+    try {
+      const response = await fetch(`${process.env.EXPO_PUBLIC_BASE_URL}/api/delete-point?id=${id}`, {
+        method: "DELETE",
+      });
+      console.log(await response.json());
+      if (!response.ok) {
+        throw new Error("Failed to delete checkpoint");
+      }
+      handleGetAllCheckPoints();
+      showSuccess("Checkpoint deleted successfully.");
+    } catch (error) {
+      showError(error.message || "Please try again.");
+      console.log("Error:", error);
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   return (
     <View className="border border-gray-500/50 rounded-lg py-3 px-2 mt-3 w-full bg-white">
       <View className="flex flex-row justify-between items-center ">
@@ -386,8 +405,14 @@ const CheckPointCard = ({
           <Text className="text-lg font-medium">{point.name}</Text>
         </View>
         <View className=" h-10 w-10 flex justify-center items-center">
-          <TouchableOpacity activeOpacity={0.9}>
-            <FontAwesome6 name="trash" size={14} color="red" />
+          <TouchableOpacity onPress={() => handleDeleteCheckpoint(point._id)} activeOpacity={0.9}>
+            {
+              deleting ? (
+                <ActivityIndicator color="red" size={"small"} />
+              ) : (
+                <FontAwesome6 name="trash" size={14} color="red" />
+              )
+            }
           </TouchableOpacity>
         </View>
       </View>

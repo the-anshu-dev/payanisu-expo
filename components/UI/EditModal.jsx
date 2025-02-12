@@ -1,7 +1,8 @@
-import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import DropDownPicker from "react-native-dropdown-picker";
 import { ActivityIndicator } from "react-native-paper";
+import { showError, showSuccess } from "../../utils/toastHelper";
 
 const EditModal = ({
   guests,
@@ -102,13 +103,12 @@ const EditModal = ({
       }
 
       setEditModalVisible(false);
-      Alert.alert("Success", "Room allocation updated successfully.");
+      showSuccess("Room allocation updated successfully.");
       getAllocationsByGuestHouseId();
       getAllAllocations();
       getBookedUsers();
     } catch (error) {
-      console.log("error", error);
-      Alert.alert("Error", "Failed to allocate room.Please try again.");
+      showError(error.message || "Please try again.");
     } finally {
       setLoading(false);
     }

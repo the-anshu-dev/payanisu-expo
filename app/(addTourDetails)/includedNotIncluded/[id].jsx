@@ -5,7 +5,6 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
-  Alert,
   StyleSheet,
   Dimensions,
   ActivityIndicator,
@@ -15,6 +14,7 @@ import TrashIcon from "../../../assets/trash-04.svg";
 import { useSelector } from "react-redux";
 import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
+import { showError, showSuccess } from "../../../utils/toastHelper";
 
 const { width, height } = Dimensions.get("window");
 
@@ -50,8 +50,7 @@ const TourDetails = () => {
       setIncludedItems(Array.isArray(result1) ? result1 : []);
       setNotIncludedItems(Array.isArray(result2) ? result2 : []);
     } catch (error) {
-      console.log("Failed to fetch included/not-included items", error);
-      Alert.alert("Error", "Could not fetch items.\n\nPlease try again.");
+      showError(error.message || "Please try again.");
     } finally {
       setGetLoading(false);
     }
@@ -83,12 +82,11 @@ const TourDetails = () => {
         throw new Error("Failed to add item");
       }
 
-      Alert.alert("Success", "Item added successfully.");
+      showSuccess("Item added successfully.");
       handleGet();
       setNewItem("");
     } catch (error) {
-      console.log("Error adding item:", error);
-      Alert.alert("Error", "Something went wrong. Please try again.");
+      showError(error.message || "Please try again.");
     } finally {
       setLoading(false);
     }
@@ -110,11 +108,10 @@ const TourDetails = () => {
       if (response.status !== 200) {
         throw new Error("Failed to delete item");
       }
-      Alert.alert("Success", "Item deleted successfully.");
+      showSuccess("Item deleted successfully.");
       handleGet();
     } catch (error) {
-      console.log("Error deleting item:", error);
-      Alert.alert("Error", "Could not delete item. Please try again.");
+      showError(error.message || "Please try again.");
     }
   };
 

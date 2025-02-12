@@ -4,7 +4,6 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Alert,
   Dimensions,
   RefreshControl,
 } from "react-native";
@@ -17,6 +16,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { format } from "date-fns";
 import { ActivityIndicator } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { showError, showSuccess } from "../../../utils/toastHelper";
 
 const { width, height } = Dimensions.get("window");
 
@@ -75,7 +75,7 @@ const ViewCheckIns = () => {
       const result = await response.json();
       setAllMembers(result.data);
     } catch (error) {
-      console.log(error);
+      showError(error.message || "Please try again.");
     }
   };
 
@@ -93,8 +93,7 @@ const ViewCheckIns = () => {
       const data = await response.json();
       setCheckedInMembers(data);
     } catch (error) {
-      console.log("Error:", error);
-      Alert.alert("Something went wrong", "Please try again.");
+      showError(error.message || "Please try again.");
     } finally {
       setCheckedInMembersLoading(false);
     }
@@ -108,8 +107,6 @@ const ViewCheckIns = () => {
         checkPointId: id,
         tourId: tourId,
       };
-      console.log(body);
-
       const response = await fetch(
         `${process.env.EXPO_PUBLIC_BASE_URL}/api/checked/add`,
         {
@@ -125,12 +122,11 @@ const ViewCheckIns = () => {
         throw new Error("Failed to check in");
       }
 
-      Alert.alert("Checked-In", "Member successfully logged in.");
+      showSuccess("Member successfully checked in.");
       handleGetCheckedInMembers();
       manualCheckInRef.current?.close();
     } catch (error) {
-      console.log("Error:", error);
-      Alert.alert("Failed", "Failed to check-in Member.\nPlease try again.");
+      showError(error.message || "Please try again.");
     } finally {
       setCheckingIn(false);
     }
@@ -148,12 +144,11 @@ const ViewCheckIns = () => {
       if (!response.ok) {
         throw new Error("Failed to mark absent.");
       }
-      Alert.alert("Absented", "Member absented successfully.");
+      showSuccess("Member absented successfully.");
       handleGetCheckedInMembers();
       manualCheckInRef?.current?.close();
     } catch (error) {
-      console.log("Error:", error);
-      Alert.alert("Oops", "Something went wrong.\nPlease try again.");
+      showError(error.message || "Please try again.");
     } finally {
       setAbsenting(false);
     }
@@ -173,12 +168,11 @@ const ViewCheckIns = () => {
         throw new Error("Failed to reset.");
       }
 
-      Alert.alert("Reset", "All checked ins deleted.");
+      showSuccess("All checked ins deleted.");
       handleGetCheckedInMembers();
       resetAllRef.current?.close();
     } catch (error) {
-      console.log("Error:", error);
-      Alert.alert("Oops", "Something went wrong.\nPlease try again.");
+      showError(error.message || "Please try again.");
     } finally {
       setReseting(false);
     }

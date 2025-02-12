@@ -52,6 +52,7 @@
     "expo-splash-screen": "~0.27.7",
     "expo-status-bar": "~1.12.1",
     "expo-system-ui": "~3.0.7",
+    "expo-task-manager": "~11.8.2",
     "expo-web-browser": "~13.0.3",
     "galio-framework": "^0.8.0",
     "native-base": "^3.4.28",
@@ -84,12 +85,11 @@
     "react-native-svg": "^15.2.0",
     "react-native-url-polyfill": "^2.0.0",
     "react-native-vector-icons": "^10.1.0",
+    "react-native-view-shot": "3.8.0",
     "react-redux": "^9.2.0",
     "reanimated-bottom-sheet": "^1.0.0-alpha.22",
     "redux-thunk": "^3.1.0",
-    "xlsx": "^0.18.5",
-    "react-native-view-shot": "3.8.0",
-    "expo-task-manager": "~11.8.2"
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

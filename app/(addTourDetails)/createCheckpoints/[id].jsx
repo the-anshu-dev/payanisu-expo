@@ -1,7 +1,6 @@
 import {
   View,
   Text,
-  Alert,
   ActivityIndicator,
   ScrollView,
   TextInput,
@@ -15,6 +14,7 @@ import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplet
 import { router, useLocalSearchParams } from "expo-router";
 import { apiRequest } from "../../../utils/helpers";
 import * as Location from "expo-location";
+import { showError, showSuccess, showWarning } from "../../../utils/toastHelper";
 
 const { width, height } = Dimensions.get("window");
 const apiKey = process.env.EXPO_PUBLIC_GOOGLE_API_KEY;
@@ -111,12 +111,12 @@ const Page = () => {
     const { latitude, longitude } = coordinates;
 
     if (!id || !title || !description || !locationType) {
-      Alert.alert("Empty field", "Please fill all the fields.");
+      showWarning("All fields required");
       return;
     }
 
     if (locationType === "Geo Tagging" && (!latitude || !longitude)) {
-      Alert.alert("Empty field", "Please select location.");
+      showWarning("Please select location.");
       return;
     }
 
@@ -137,12 +137,11 @@ const Page = () => {
       );
 
       if (res.data) {
-        Alert.alert("Success", "Checkpoint created successfully.");
+        showSuccess("Checkpoint created successfully.");
         router.back();
       }
     } catch (error) {
-      console.error("Failed to create checkpoint:", error);
-      Alert.alert("Failed to create checkpoint", error.message);
+      showError(error.message || "Please try again.");
     } finally {
       setLoading(false);
     }

@@ -3,7 +3,6 @@ import {
   Text,
   Pressable,
   TouchableOpacity,
-  Alert,
   Dimensions,
   Linking,
 } from "react-native";
@@ -20,6 +19,7 @@ import { Ionicons } from "@expo/vector-icons";
 import MyTourCheckPointsListView from "../../components/MyTourCheckPointsListView";
 import { useSelector } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { showError } from "../../utils/toastHelper";
 
 const { width } = Dimensions.get("window");
 
@@ -66,8 +66,7 @@ const MyTourDetails = () => {
       await AsyncStorage.setItem("geoTaggedCheckPoints", JSON.stringify(geoTaggedData));
       setGeoTaggedCheckPoints(geoTaggedData);
     } catch (error) {
-      console.log("error:", error);
-      Alert.alert("Oops!", "Something went wrong. Please try again later.");
+      showError(error.message || "Please try again.");
     } finally {
       setLoading(false);
     }

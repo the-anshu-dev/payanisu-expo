@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   TextInput,
   ScrollView,
-  Alert,
 } from "react-native";
 import React, { useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
@@ -14,6 +13,7 @@ import * as ImagePicker from "expo-image-picker";
 import { Image } from "expo-image";
 import { ActivityIndicator } from "react-native-paper";
 import { uploadFilesToS3 } from "../../../utils/uploadFileHelper";
+import { showError, showSuccess, showWarning } from "../../../utils/toastHelper";
 
 const { width, height } = Dimensions.get("window");
 
@@ -53,7 +53,7 @@ const TransportDetails = () => {
       !driverContact ||
       images.length === 0
     ) {
-      Alert.alert("Empty fields!", "Please fill all fields.");
+      showWarning("Please fill all fields.");
       return;
     }
     setLoading(true);
@@ -90,11 +90,10 @@ const TransportDetails = () => {
         );
         throw new Error("Failed to upload images.");
       }
-      Alert.alert("Added", "Bus details added successfully.");
       router.back();
+      showSuccess("Bus details added successfully");
     } catch (error) {
-      console.log("Error:", error);
-      Alert.alert("Oops", "Something went wrong.");
+      showError(error.message || "Please try again.");
     } finally {
       setLoading(false);
     }

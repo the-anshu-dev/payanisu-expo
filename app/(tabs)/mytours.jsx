@@ -5,7 +5,6 @@ import {
   Text,
   RefreshControl,
   ActivityIndicator,
-  Alert,
 } from "react-native";
 import React, { useEffect, useState, useCallback } from "react";
 import { ScrollView } from "react-native-gesture-handler";
@@ -13,10 +12,10 @@ import { StatusBar } from "expo-status-bar";
 import { useDispatch, useSelector } from "react-redux";
 import { setBookedTour } from "../../redux/slices/tourSlice";
 import MyTourCard from "../../components/UI/MyTourCard";
-import LoginReqCard from "../../components/UI/LoginReqCard.jsx";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Redirect } from "expo-router";
+import { showError } from "../../utils/toastHelper";
 
 const { width, height } = Dimensions.get("window");
 
@@ -38,7 +37,6 @@ const MyTours = () => {
       );
 
       if (!response.ok) {
-        console.error("Failed to fetch tours", response);
         throw new Error("Failed to fetch booked tours.");
       }
 
@@ -46,12 +44,7 @@ const MyTours = () => {
       await AsyncStorage.setItem("bookedTours", JSON.stringify(data.data));
       dispatch(setBookedTour(data.data));
     } catch (error) {
-      console.error("Error fetching booked tours:", error);
-      Alert.alert(
-        "Error",
-        error.message ||
-          "Failed to fetch booked tours. Please check your network connection."
-      );
+      showError(error.message || "Please try again.");
     } finally {
       setLoading(false);
     }

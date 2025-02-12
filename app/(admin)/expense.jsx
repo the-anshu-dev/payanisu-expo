@@ -2,7 +2,6 @@ import {
   Text,
   View,
   ActivityIndicator,
-  Alert,
   ScrollView,
   TextInput,
   TouchableOpacity,
@@ -25,6 +24,7 @@ import LabelValue from "../../components/UI/LabelValue.jsx";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { setTour } from "../../redux/slices/tourSlice.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { showError, showWarning } from "../../utils/toastHelper.js";
 
 const { width } = Dimensions.get("window");
 
@@ -79,8 +79,7 @@ const expense = () => {
       await AsyncStorage.setItem("tours", JSON.stringify(tour));
       dispatch(setTour(tour));
     } catch (error) {
-      Alert.alert("Error", error.message || "Something went wrong.");
-      console.log("Error fetching tours:", error);
+      showError(error.message || "Please try again.");
     }
   };
 
@@ -98,7 +97,7 @@ const expense = () => {
 
   const handleAddExpense = async () => {
     if (!expenseCategory || !amount || !date || !user.name) {
-      Alert.alert("Empty Field", "All fields required.");
+      showWarning("All fields required.");
       return;
     }
 
@@ -137,8 +136,7 @@ const expense = () => {
       addExpenseDetailRef?.current?.close();
       fetchExpense();
     } catch (error) {
-      console.error(error);
-      Alert.alert("Oops!", "Something went wrong!\n\nPlease try again");
+      showError(error.message || "Please try again.");
       setError(error?.message);
     } finally {
       setLoading(false);
@@ -173,8 +171,7 @@ const expense = () => {
       });
       setExcelData(data?.expanses);
     } catch (error) {
-      console.error("Failed to load expenses --->", error.message);
-      Alert.alert("Something went wrong", "Please try again.");
+      showError(error.message || "Please try again.");
     } finally {
       setLoading(false);
     }

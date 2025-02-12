@@ -3,7 +3,6 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Alert,
   Dimensions,
   StyleSheet,
   ActivityIndicator,
@@ -13,14 +12,13 @@ import { ScrollView, TextInput } from "react-native-gesture-handler";
 import { Modalize } from "react-native-modalize";
 import PostComponent from "../../components/UI/PostComponent";
 import { useSelector } from "react-redux";
-import LoginReqCard from "../../components/UI/LoginReqCard";
 import * as ImagePicker from "expo-image-picker";
 import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
 import { uploadFilesToS3 } from "../../utils/uploadFileHelper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Redirect } from "expo-router";
-
+import { showError } from "../../utils/toastHelper";
 const { width, height } = Dimensions.get("window");
 
 const Community = () => {
@@ -56,8 +54,7 @@ const Community = () => {
       const posts = await res.json();
       setAllPosts(posts.data);
     } catch (error) {
-      console.log("Failed to get posts", error);
-      Alert.alert("Error", error.message || "Failed to get posts. Please try again later.");
+      showError(error.message || "Please try again.");
     } finally {
       setRefresh(false);
     }
@@ -83,7 +80,7 @@ const Community = () => {
       addPostRef.current?.close();
       await getAllPosts();
     } catch (error) {
-      Alert.alert("Oops!", "Something went wrong. Please try again.");
+      showError(error.message || "Please try again.");
     } finally {
       setLoading(false);
     }

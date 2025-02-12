@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Alert, Dimensions, Platform, StyleSheet, View } from "react-native";
+import { Dimensions, Platform, StyleSheet, View } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import MapViewDirections from "react-native-maps-directions";
 import * as Location from "expo-location";
 import { useDispatch } from "react-redux";
 import { setMapLink } from "../redux/slices/mapSlice";
+import { showWarning } from "../utils/toastHelper";
 
 const { height } = Dimensions.get("window");
 const apiKey = process.env.EXPO_PUBLIC_GOOGLE_API_KEY;
@@ -91,10 +92,7 @@ const MyTourCheckPoints = ({ checkPoints = [] }) => {
                   strokeColor="green"
                   onError={(errorMessage) => {
                     if (errorMessage.includes("ZERO_RESULTS")) {
-                      Alert.alert(
-                        "No Route Found",
-                        "No available route between your location and the destination."
-                      );
+                      showWarning("No route found.");
                     }
                   }}
                 />

@@ -5,7 +5,6 @@ import {
   Dimensions,
   TouchableOpacity,
   ScrollView,
-  Alert,
   ActivityIndicator,
 } from "react-native";
 import React, { useEffect, useState } from "react";
@@ -14,6 +13,7 @@ import AllocatedRoomCard from "../../../components/UI/AllocatedRoomCard";
 import ModalBody from "../../../components/UI/ModalBody";
 import { transformAllocationData } from "../../../utils/helpers";
 import EditModal from "../../../components/UI/EditModal";
+import { showError } from "../../../utils/toastHelper";
 
 const { width } = Dimensions.get("window");
 
@@ -41,10 +41,9 @@ const showAccomodationDetails = () => {
 
       const result = await response.json();
       const filteredData = result.data.filter((d) => d.status === 1);
-      console.log("result", filteredData);
       setGuests(filteredData);
     } catch (error) {
-      console.log(error);
+      showError(error.message || "Please try again.");
     }
   };
 
@@ -62,8 +61,7 @@ const showAccomodationDetails = () => {
       const data = transformAllocationData(result);
       setAllocations(data);
     } catch (error) {
-      console.log(error);
-      Alert.alert("Something Went Wrong.", "Failed to fetch allocations.");
+      showError(error.message || "Please try again.");
     }
   };
 
@@ -81,8 +79,7 @@ const showAccomodationDetails = () => {
       const result = await response.json();
       setGuestsToDisable(result);
     } catch (error) {
-      console.log(error);
-      Alert.alert("Something Went Wrong.", "Failed to fetch allocations.");
+      showError(error.message || "Please try again.");
     } finally {
       setLoading(false);
     }

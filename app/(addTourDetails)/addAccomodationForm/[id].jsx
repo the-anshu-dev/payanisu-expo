@@ -3,11 +3,11 @@ import {
   Text,
   TouchableOpacity,
   TextInput,
-  Alert,
   ActivityIndicator,
 } from "react-native";
 import React, { useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
+import { showError, showSuccess, showWarning } from "../../../utils/toastHelper";
 
 const RoomDetails = () => {
   const { id } = useLocalSearchParams();
@@ -20,7 +20,7 @@ const RoomDetails = () => {
 
   const handleAddGuestHouse = async () => {
     if (!guestHouseName || !location || !numberOfRooms || !totalOccupancy) {
-      Alert.alert("Info", "Please fill all the fields.");
+      showWarning("Please fill all the fields.");
       return;
     }
     setLoading(true);
@@ -51,11 +51,10 @@ const RoomDetails = () => {
       setLocation("");
       setNumberOfRooms("");
       setTotalOccupancy("");
-      Alert.alert("Success", "Guest house added successfully.");
       router.replace(`(addTourDetails)/accomodation/${id}`);
+      showSuccess("Guest house added successfully");
     } catch (error) {
-      console.log(error);
-      Alert.alert("Error", "Failed to add guest house.\nPlease try again.");
+      showError(error.message || "Please try again.");
     } finally {
       setLoading(false);
     }

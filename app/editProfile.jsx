@@ -2,7 +2,6 @@ import {
   View,
   Text,
   ActivityIndicator,
-  Alert,
   ScrollView,
   TextInput,
   TouchableOpacity,
@@ -18,6 +17,7 @@ import { format, differenceInYears } from "date-fns";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Picker } from "@react-native-picker/picker";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { showError, showSuccess } from "../utils/toastHelper";
 
 const { width } = Dimensions.get("window");
 
@@ -114,9 +114,10 @@ const EditProfile = () => {
 
       const { user: { email } } = result;
       await fetchProfile(email);
-      Alert.alert("Success", "Profile Created!");
+      showSuccess("Profile Created!");
       router.back();
     } catch (error) {
+      showError(error.message || "Please try again.");
       if (error instanceof TypeError) {
         setError("Network error. Please check your internet connection.");
       } else {
@@ -141,10 +142,9 @@ const EditProfile = () => {
         }
       }
     } catch (error) {
-      console.error("Error fetching user data:", error);
+      showError(error.message || "Please try again.");
     }
   };
-
 
   return (
     <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']}>

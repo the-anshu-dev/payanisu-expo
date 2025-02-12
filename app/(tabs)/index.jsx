@@ -6,7 +6,6 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Alert,
 } from "react-native";
 import CarouselComponent from "@/components/CarouselComponent";
 import { useEffect, useState } from "react";
@@ -18,6 +17,7 @@ import { setAdminAccessEnabled, setMembers } from "../../redux/slices/userSlice"
 import { checkNetworkStatus } from "../../utils/offlineLocationHelper";
 import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { showError } from "../../utils/toastHelper";
 
 const { width, height } = Dimensions.get("window");
 
@@ -36,7 +36,7 @@ export default function HomeScreen() {
 
   const handleGetMembers = async () => {
     if (!user?.email) {
-      console.error("User email is not available.");
+      showError("User email is not available.");
       return;
     }
     try {
@@ -56,7 +56,7 @@ export default function HomeScreen() {
       const data = await response.json();
       dispatch(setMembers(data));
     } catch (error) {
-      console.log("Error fetching members:", error);
+      showError(error.message || "Please try again.");
     }
   };
 
@@ -72,8 +72,7 @@ export default function HomeScreen() {
       await AsyncStorage.setItem("tours", JSON.stringify(tour));
       dispatch(setTour(tour));
     } catch (error) {
-      Alert.alert("Error", error.message || "Something went wrong.");
-      console.log("Error fetching tours:", error);
+      showError(error.message || "Please try again.");
     }
   };
 

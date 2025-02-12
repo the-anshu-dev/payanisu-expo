@@ -3,16 +3,15 @@ import {
   ScrollView,
   StyleSheet,
   RefreshControl,
-  Alert,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import Notifications from "../../components/UI/Notifications";
 import { StatusBar } from "expo-status-bar";
 import { apiRequest } from "../../utils/helpers";
 import { useSelector } from "react-redux";
-import LoginReqCard from "../../components/UI/LoginReqCard";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Redirect } from "expo-router";
+import { showError } from "../../utils/toastHelper";
 
 const NotificationsScreen = () => {
   const { user } = useSelector((state) => state.user);
@@ -27,8 +26,7 @@ const NotificationsScreen = () => {
       );
       setData(newData);
     } catch (error) {
-      console.log("Notification Fetch Error:", error);
-      Alert.alert("Oops", "Something went wrong. Please try again later.");
+      showError(error.message || "Please try again.");
     } finally {
       setRefreshing(false);
     }

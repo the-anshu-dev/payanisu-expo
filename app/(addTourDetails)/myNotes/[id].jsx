@@ -1,5 +1,5 @@
 import {
-  View, Text, Alert, ScrollView,
+  View, Text, ScrollView,
   TextInput,
   TouchableOpacity,
   Dimensions,
@@ -10,7 +10,7 @@ import TrashIcon from "../../../assets/trash-04.svg";
 import { ActivityIndicator, Checkbox } from "react-native-paper";
 import { Modalize } from "react-native-modalize";
 import { Ionicons } from "@expo/vector-icons";
-
+import { showError, showSuccess, showWarning } from "../../../utils/toastHelper";
 const { height, width } = Dimensions.get("window");
 
 const Mynotes = () => {
@@ -25,7 +25,7 @@ const Mynotes = () => {
 
   const handleAddNotes = async () => {
     if (!title || !description) {
-      Alert.alert("Fields empty", "Please enter Title and Description");
+      showWarning("Please enter Title and Description");
       return;
     }
     setLoading(true);
@@ -49,12 +49,11 @@ const Mynotes = () => {
       if (response.status !== 201) {
         throw new Error("Faild to add notes");
       }
-      Alert.alert("Success", "Note Added.");
+      showSuccess("Note Added.");
       addNotesRef.current?.close();
       handleGetNotes();
     } catch (error) {
-      Alert.alert("Oops!", "Notes not added. \n\n Please try again..");
-      console.log("Error:", error);
+      showError(error.message || "Please try again.");
     } finally {
       setLoading(false);
     }
@@ -72,11 +71,10 @@ const Mynotes = () => {
       if (response.status !== 200) {
         throw new Error("Failed to delete note");
       }
-      Alert.alert("Deleted", "Note deleted successfully.");
+      showSuccess("Note deleted successfully.");
       handleGetNotes();
     } catch (error) {
-      Alert.alert("Oops!", "Note not deleted. Please try again.");
-      console.log("Error:", error);
+      showError(error.message || "Please try again.");
     }
   };
 
@@ -101,8 +99,7 @@ const Mynotes = () => {
       }
       handleGetNotes();
     } catch (error) {
-      Alert.alert("Oops!", "Note status not updated.\n\nPlease try again.");
-      console.log("Error:", error);
+      showError(error.message || "Please try again.");
     }
   };
 
@@ -120,8 +117,7 @@ const Mynotes = () => {
 
       setNotes(result);
     } catch (error) {
-      Alert.alert("Oops!", "Something went wrong\n\n Please try again...");
-      console.log("Error:", error);
+      showError(error.message || "Please try again.");
     } finally {
       setNotesLoading(false);
     }

@@ -4,7 +4,6 @@ import {
   StyleSheet,
   Dimensions,
   ScrollView,
-  Alert,
   RefreshControl,
   ActivityIndicator,
 } from "react-native";
@@ -15,6 +14,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { format } from "date-fns";
 import { Modalize } from "react-native-modalize";
 import {  Checkbox } from "react-native-paper";
+import { showError, showSuccess, showWarning } from "../../../utils/toastHelper";
 
 const { width, height } = Dimensions.get("window");
 
@@ -41,7 +41,7 @@ const TransportDetails = () => {
 
   const toggleGuestSelection = (bookingId) => {
     if (alreadyTransportAllocatedGuests.includes(bookingId)) {
-      Alert.alert("Oops", "Guest already added to transport.");
+      showWarning("Guest already added to transport.");
       return;
     }
     setSelectedGuests((prevSelected) => {
@@ -65,8 +65,7 @@ const TransportDetails = () => {
       const result = await response.json();
       setBoardingPoints(result);
     } catch (error) {
-      console.log("error:", error);
-      Alert.alert("Oops", "Something went wrong.");
+      showError(error.message || "Please try again.");
     } finally {
       setLoading(false);
     }
@@ -85,13 +84,13 @@ const TransportDetails = () => {
       const result = await response.json();
       setAllBookedGuests(result.data);
     } catch (error) {
-      console.log(error);
+      showError(error.message || "Please try again.");
     }
   };
 
   const handleAddGuests = async () => {
     if (selectedGuests.length === 0) {
-      Alert.alert("Oops", "Please select guests to add.");
+      showWarning("Please select guests to add.");
       return;
     }
 
@@ -118,12 +117,11 @@ const TransportDetails = () => {
           throw new Error("Failed to add guests.");
         }
       }
-      Alert.alert("Success", "Guests added successfully.");
+      showSuccess("Guests added successfully.");
       addGuestsRef.current?.close();
       onRefresh();
     } catch (error) {
-      console.log("Error:", error);
-      Alert.alert("Oops", "Something went wrong.\nPlease try again.");
+      showError(error.message || "Please try again.");
     } finally {
       setAddingGuests(false);
     }
@@ -141,8 +139,7 @@ const TransportDetails = () => {
       const result = await response.json();
       setTransportAllocatedGuests(result);
     } catch (error) {
-      console.log("Error:", error);
-      Alert.alert("Oops", "Something went wrong.");
+      showError(error.message || "Please try again.");
     } finally {
       setLoading(false);
     }
@@ -363,11 +360,9 @@ const BoardingPointCard = ({
       if (response.status !== 200) {
         throw new Error("Failed to delete boarding point.");
       }
-      Alert.alert("Deleted", "Boarding point successfully deleted.");
       onRefresh();
     } catch (error) {
-      console.log("Error:", error);
-      Alert.alert("Oops", "Something went wrong.\nPlease try again.");
+      showError(error.message || "Please try again.");
     } finally {
       setRefreshing(false);
     }

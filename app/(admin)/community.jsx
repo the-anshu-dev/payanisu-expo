@@ -3,7 +3,6 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Alert,
   Dimensions,
   StyleSheet,
   ActivityIndicator,
@@ -18,7 +17,7 @@ import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
 import { uploadFilesToS3 } from "../../utils/uploadFileHelper";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import { showError } from "../../utils/toastHelper";
 const { width, height } = Dimensions.get("window");
 
 const Community = () => {
@@ -100,8 +99,7 @@ const Community = () => {
       }
       addPostRef.current.close();
     } catch (error) {
-      console.log(error);
-      Alert.alert("Oops!", "Something went wrong\n\nPlease try again");
+      showError(error.message || "Please try again.");
     } finally {
       setLoading(false);
     }

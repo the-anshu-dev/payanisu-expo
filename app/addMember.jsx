@@ -3,7 +3,6 @@ import {
   View,
   Text,
   ActivityIndicator,
-  Alert,
   StyleSheet,
   TextInput,
   TouchableOpacity,
@@ -14,6 +13,7 @@ import { useRouter } from "expo-router";
 import { useSelector } from "react-redux";
 import { Picker } from "@react-native-picker/picker";
 import trekkersImg from "../assets/trekkers.jpeg";
+import { showSuccess } from "../utils/toastHelper";
 
 const AddMember = () => {
   const { user } = useSelector((state) => state.user);
@@ -34,7 +34,6 @@ const AddMember = () => {
       setError("Please fill in all the fields");
       return;
     }
-
     setLoading(true);
     try {
       const response = await fetch(
@@ -57,13 +56,13 @@ const AddMember = () => {
       );
       const data = await response.json();
       if (response.ok) {
-        Alert.alert("Success", "Member added successfully");
+        showSuccess("Member added successfully");
         router.replace("/profile");
       } else {
         throw new Error(data.message || "An error occurred");
       }
     } catch (error) {
-      console.error(error);
+      showError(error.message || "Please try again.");
       setError("An error occurred. Please try again.");
     } finally {
       setLoading(false);

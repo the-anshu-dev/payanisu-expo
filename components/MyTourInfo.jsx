@@ -5,7 +5,6 @@ import {
   TouchableOpacity,
   ScrollView,
   RefreshControl,
-  Alert,
   Dimensions,
   Modal,
   StyleSheet,
@@ -18,6 +17,7 @@ import { format } from "date-fns";
 import CarouselImageRender from "./UI/CarouselImageRender.jsx";
 import Carousel from "react-native-reanimated-carousel";
 import MapScreen from "./MapWithDirection.jsx";
+import { showError, showSuccess } from "../utils/toastHelper.js";
 
 const { width, height } = Dimensions.get("window");
 
@@ -70,8 +70,7 @@ const MyTourInfo = ({ tour }) => {
       const result = await response.json();
       setTransport(result);
     } catch (error) {
-      Alert.alert("Oops!", "Something went wrong. Please try again later.");
-      console.log("Error:", error);
+      showError(error.message || "Please try again.");
     }
   };
 
@@ -86,8 +85,7 @@ const MyTourInfo = ({ tour }) => {
       const result = await response.json();
       setBoardingPoints(result);
     } catch (error) {
-      Alert.alert("Oops!", "Something went wrong. Please try again later.");
-      console.log("Error:", error);
+      showError(error.message || "Please try again.");
     }
   };
 
@@ -104,8 +102,7 @@ const MyTourInfo = ({ tour }) => {
       const data = await response.json();
       setAccomodationDetails(data);
     } catch (error) {
-      console.log(error);
-      Alert.alert("Oops", "Something went wrong. Please try again later.");
+      showError(error.message || "Please try again.");
     }
   };
 
@@ -149,14 +146,12 @@ const MyTourInfo = ({ tour }) => {
         throw new Error("Failed to cancel booking. Please try again later.");
       }
 
-      Alert.alert("Success", "Booking has been cancelled successfully.");
+      showSuccess("Booking has been cancelled successfully.");
       router.push("/mytours");
     } catch (error) {
-      Alert.alert(
-        "Oops!",
+      showError(
         error.message || "Something went wrong. Please try again later."
       );
-      console.log("Error:", error);
     } finally {
       setCancelling(false);
     }

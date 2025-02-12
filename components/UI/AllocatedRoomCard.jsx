@@ -1,10 +1,10 @@
-import { View, Text, Alert } from "react-native";
+import { View, Text } from "react-native";
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
 import EditIcon from "../../assets/edit.svg";
-import { Image } from "expo-image";
 import { ActivityIndicator } from "react-native-paper";
+import { showError, showSuccess } from "../../utils/toastHelper";
 
 const AllocatedRoomCard = ({
   allocation,
@@ -31,13 +31,12 @@ const AllocatedRoomCard = ({
           throw new Error("Failed to delete allocation");
         }
       }
-      Alert.alert("Success", "Allocations deleted.");
+      showSuccess("Allocations deleted.");
       getAllocationsByGuestHouseId();
       getBookedUsers();
       getAllAllocations();
     } catch (error) {
-      console.log(error);
-      Alert.alert("Error", "Failed to delete allocation");
+      showError(error.message || "Please try again.");
     } finally {
       setDeleting(false);
     }

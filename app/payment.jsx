@@ -1,12 +1,9 @@
 import {
   View,
   Text,
-  Alert,
   ActivityIndicator,
   TouchableOpacity,
   Dimensions,
-  Modal,
-  Share,
 } from "react-native";
 import React, { useState, useRef } from "react";
 import { Checkbox } from "react-native-paper";
@@ -24,7 +21,7 @@ import QRCodeGenerator from "../components/admin/components/QRCodeGenerator";
 import ViewShot from "react-native-view-shot";
 import * as FileSystem from "expo-file-system";
 import { Image } from "expo-image";
-
+import { showError, showSuccess, showWarning } from "../utils/toastHelper";
 
 const { height, width } = Dimensions.get("window");
 
@@ -55,10 +52,7 @@ const Payment = () => {
     try {
       const { status } = await MediaLibrary.requestPermissionsAsync();
       if (status !== "granted") {
-        Alert.alert(
-          "Permission required",
-          "We need access to your media library to save the image."
-        );
+        showWarning("Permission not granted to save image.");
         return;
       }
 
@@ -78,10 +72,9 @@ const Payment = () => {
         await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
       }
 
-      Alert.alert("Success", `QR code saved as ${filename}`);
+      showSuccess(`QR code saved as ${filename}`);
     } catch (error) {
-      console.log("Failed to download image", error);
-      Alert.alert("Error", "Failed to download the image.");
+      showError(error.message || "Failed to download the image.");
     }
   };
 
@@ -92,19 +85,16 @@ const Payment = () => {
       if (isAvailable) {
         await Sharing.shareAsync(uri);
       } else {
-        Alert.alert("Sharing not available", "Unable to share the QR code.");
+        showWarning("Sharing is not available on this device.");
       }
     } catch (error) {
-      Alert.alert("Error", "Failed to share the QR code.");
+      showError(error.message || "Failed to share the QR code.");
     }
   };
 
   const handleReserveSeats = async () => {
     if (!image || !agree) {
-      Alert.alert(
-        "Required fields empty",
-        "1. Add payment proof.\n2. Agree to terms & conditions"
-      );
+      showWarning("Required fields empty");
       return;
     }
     setLoading(true);
@@ -119,17 +109,20 @@ const Payment = () => {
           isTrekker: member.isTrekker,
           accommodation: member.noAccommodation,
         };
-        const res = await fetch(`${process.env.EXPO_PUBLIC_BASE_URL}/api/booking/add`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body),
-        });
+        const res = await fetch(
+          `${process.env.EXPO_PUBLIC_BASE_URL}/api/booking/add`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+          }
+        );
         if (res.status !== 201) throw new Error("Failed to book tour.");
       }
-      Alert.alert("Success", "Tour booked successfully for all members.");
+      showSuccess("Tour booked successfully for all members.");
       router.replace("/(tabs)/mytours");
     } catch (error) {
-      Alert.alert("Oops!", "Something went wrong!\nPlease try again...");
+      showError(error.message || "Please try again.");
     } finally {
       setLoading(false);
     }
@@ -138,7 +131,10 @@ const Payment = () => {
   return (
     <SafeAreaView style={{ flex: 1 }} edges={["bottom", "left", "right"]}>
       <View className="h-full w-full flex justify-between px-3">
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 20, paddingHorizontal: 15 }}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 20, paddingHorizontal: 15 }}
+        >
           <View className="w-full flex justify-center items-center py-6">
             <Text className="text-xl font-semibold">{bookingTour?.name}</Text>
           </View>
@@ -148,11 +144,17 @@ const Payment = () => {
             </View>
           </ViewShot>
           <View className="flex flex-row justify-between items-center w-full px-6 mt-4">
-            <TouchableOpacity onPress={handleShareQr} className="flex flex-row items-center">
+            <TouchableOpacity
+              onPress={handleShareQr}
+              className="flex flex-row items-center"
+            >
               <ShareIcon height={20} width={20} />
               <Text className="text-base pl-3">Share QR Code</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={handleDownloadQr} className="flex flex-row items-center">
+            <TouchableOpacity
+              onPress={handleDownloadQr}
+              className="flex flex-row items-center"
+            >
               <DownloadIcon height={25} width={20} />
               <Text className="text-base pl-3">Download QR Code</Text>
             </TouchableOpacity>
@@ -164,40 +166,66 @@ const Payment = () => {
           </View>
           <View className="flex justify-center items-center mt-4 w-full">
             <Text>Please Upload screenshot post payment</Text>
-            {
-              image ? (
-                <View className="w-full flex justify-center items-center mt-2 border border-green-600 rounded-lg p-2 relative">
-                  <Image
-                    contentFit="contain"
-                    source={{ uri: image.uri }}
-                    style={{ width: width - 40, height: 200 }}
-                  />
-                  <TouchableOpacity activeOpacity={0.9} onPress={() => setImage(null)} className="absolute top-2 right-2 flex justify-center items-center">
-                    <Ionicons name="close-circle" size={28} color="red" />
-                  </TouchableOpacity>
-                </View>
-              ) : <TouchableOpacity activeOpacity={0.9} onPress={pickImage} style={{ width: "100%" }}>
+            {image ? (
+              <View className="w-full flex justify-center items-center mt-2 border border-green-600 rounded-lg p-2 relative">
+                <Image
+                  contentFit="contain"
+                  source={{ uri: image.uri }}
+                  style={{ width: width - 40, height: 200 }}
+                />
+                <TouchableOpacity
+                  activeOpacity={0.9}
+                  onPress={() => setImage(null)}
+                  className="absolute top-2 right-2 flex justify-center items-center"
+                >
+                  <Ionicons name="close-circle" size={28} color="red" />
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <TouchableOpacity
+                activeOpacity={0.9}
+                onPress={pickImage}
+                style={{ width: "100%" }}
+              >
                 <View className="border-2 h-36 rounded-xl mt-3 border-green-600 flex justify-center items-center">
-                  <Text className="text-green-800">Upload your payment proof</Text>
+                  <Text className="text-green-800">
+                    Upload your payment proof
+                  </Text>
                 </View>
               </TouchableOpacity>
-            }
+            )}
           </View>
-          <TouchableOpacity onPress={handleDownloadQr} className="flex flex-row items-center mt-2 px-3 py-1">
+          <TouchableOpacity
+            onPress={handleDownloadQr}
+            className="flex flex-row items-center mt-2 px-3 py-1"
+          >
             <DownloadIcon height={25} width={20} />
             <Text className="text-base pl-3">Download Consent Form</Text>
           </TouchableOpacity>
           <View className="flex flex-row w-full mt-2 justify-start gap-5 items-center">
-            <Checkbox onPress={() => setAgree(!agree)} status={agree ? "checked" : "unchecked"} color="green" />
-            <Text className="tracking-wide text-base">I agree to all Terms and Conditions</Text>
+            <Checkbox
+              onPress={() => setAgree(!agree)}
+              status={agree ? "checked" : "unchecked"}
+              color="green"
+            />
+            <Text className="tracking-wide text-base">
+              I agree to all Terms and Conditions
+            </Text>
           </View>
         </ScrollView>
         <View className="w-full flex flex-row justify-center gap-5 items-center h-16 bg-white px-4">
           <TouchableOpacity className="w-[50%] bg-gray-700 py-3 rounded-lg">
             <Text className="text-center text-white">Cancel</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={handleReserveSeats} className="w-[50%] border border-green-600 py-3 rounded-lg">
-            {loading ? <ActivityIndicator size="small" color="green" /> : <Text className="text-center text-green-700">Reserve Seat</Text>}
+          <TouchableOpacity
+            onPress={handleReserveSeats}
+            className="w-[50%] border border-green-600 py-3 rounded-lg"
+          >
+            {loading ? (
+              <ActivityIndicator size="small" color="green" />
+            ) : (
+              <Text className="text-center text-green-700">Reserve Seat</Text>
+            )}
           </TouchableOpacity>
         </View>
       </View>

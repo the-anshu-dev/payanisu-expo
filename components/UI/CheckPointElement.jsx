@@ -1,12 +1,12 @@
 import {
   View,
   Text,
-  Alert,
   StyleSheet,
   TouchableOpacity,
   Dimensions,
   Modal,
   Linking,
+  Alert,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
@@ -14,6 +14,7 @@ import { CameraView, useCameraPermissions } from "expo-camera";
 import { useSelector } from "react-redux";
 import { ActivityIndicator } from "react-native-paper";
 import * as Location from "expo-location";
+import { showWarning, showSuccess, showError } from "../../utils/toastHelper";
 
 const { height, width } = Dimensions.get("window");
 
@@ -50,7 +51,7 @@ const CheckPointElement = ({
 
   const handleQRCodePress = () => {
     if (!points.activated) {
-      Alert.alert("Inactive", "Checkpoint is not active.");
+      showWarning("Checkpoint is not active.");
       return;
     }
     setScanned(false);
@@ -74,11 +75,10 @@ const CheckPointElement = ({
       if (response.ok) {
         throw new Error("Failed to check in");
       }
-      Alert.alert("Successful", "You are checked in.");
+      showSuccess("You are checked in.");
       handleGetCheckPoints();
     } catch (error) {
-      console.log("Error:", error);
-      Alert.alert("Failed to check-in", "Please try again.");
+      showError(error.message || "Please try again.");
     } finally {
       setCheckInLoading(false);
     }
@@ -100,7 +100,7 @@ const CheckPointElement = ({
       try {
         const { status } = await Location.requestForegroundPermissionsAsync();
         if (status !== 'granted') {
-          Alert.alert('Permission Denied', 'Location permission is required for auto check-in');
+          showWarning('Location permission is required for auto check-in');
           return;
         }
 
@@ -263,7 +263,7 @@ const CheckPointElement = ({
                 if (points.tourId === data) {
                   handleCheckIn(body);
                 } else {
-                  Alert.alert("Invalid tour id", "Please scan right Qr.");
+                  showWarning("Please scan right Qr.");
                 }
               }
             }}

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -7,13 +7,13 @@ import {
   ScrollView,
   StyleSheet,
   Dimensions,
-  Alert,
 } from "react-native";
 import TrashIcon from "../../../assets/trash-04.svg";
 import { router, useLocalSearchParams } from "expo-router";
 import { ActivityIndicator } from "react-native-paper";
 import { useSelector } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
+import { showError, showSuccess } from "../../../utils/toastHelper";
 
 const { width, height } = Dimensions.get("window");
 
@@ -66,12 +66,11 @@ const Luggage = () => {
         throw new Error(errorText || "Failed to add item.");
       }
   
-      Alert.alert("Success", "Item added successfully.");
+      showSuccess("Item added successfully.");
       handleGet();
       setNewItem("");
     } catch (error) {
-      console.error("Error adding item:", error);
-      Alert.alert("Error", error.message || "Something went wrong. Please try again.");
+      showError(error.message || "Please try again.");
     } finally {
       setLoading(false);
     }
@@ -107,11 +106,10 @@ const Luggage = () => {
         throw new Error(errorText || "Failed to delete item.");
       }
   
-      Alert.alert("Success", "Item deleted successfully.");
+      showSuccess("Item deleted successfully.");
       handleGet();
     } catch (error) {
-      console.error("Error deleting item:", error);
-      Alert.alert("Error", error.message || "Something went wrong. Please try again.");
+      showError(error.message || "Please try again.");
     }
   };
   
@@ -136,18 +134,14 @@ const Luggage = () => {
       setBackpackItems(Array.isArray(result1) ? result1 : []);
       setCheckInItems(Array.isArray(result2) ? result2 : []);
     } catch (error) {
-      Alert.alert(
-        "Oops!",
-        "Something went wrong...\n\nPlease try again later."
-      );
-      console.error("Error fetching luggage items:", error);
+      showError(error.message || "Please try again.");
       router.back();
     } finally {
       setGetLoading(false);
     }
   };
 
-  useState(() => {
+  useEffect(() => {
     handleGet();
   }, []);
 

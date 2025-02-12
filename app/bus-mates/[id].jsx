@@ -4,11 +4,11 @@ import {
   ScrollView,
   RefreshControl,
   StyleSheet,
-  Alert,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import { shorten } from "../../utils/helpers";
+import { showError } from "../../utils/toastHelper";
 
 const BusMates = () => {
   const { id } = useLocalSearchParams();
@@ -28,8 +28,7 @@ const BusMates = () => {
       const result = await response.json();
       setMates(result);
     } catch (error) {
-      Alert.alert("Oops", "Something went wrong.");
-      console.log("error:", error);
+      showError(error.message || "Please try again.");
     }
   };
 
