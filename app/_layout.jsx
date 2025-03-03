@@ -112,7 +112,7 @@ export default function RootLayout() {
           <Stack.Screen name="login" options={{ headerShown: false }} />
           <Stack.Screen name="form" options={{ headerShown: false }} />
           <Stack.Screen name="addRoles" options={{ headerShown: false }} />
-          <Stack.Screen name="addMember" options={{ headerShown: false }} />
+          <Stack.Screen name="addMember" options={getOpt("Add Member")} />
           <Stack.Screen name="addTours" options={getOpt("Add Tour")} />
           <Stack.Screen name="addBusImg" options={getOpt("Add Bus Images")} />
           <Stack.Screen
@@ -205,10 +205,6 @@ export default function RootLayout() {
           <Stack.Screen
             name="(addTourDetails)/luggage/[id]"
             options={getOpt("Luggage Items")}
-          />
-          <Stack.Screen
-            name="(addTourDetails)/exportDetails/[id]"
-            options={getOpt("Export Details")}
           />
           <Stack.Screen
             name="(addTourDetails)/viewCheckIns/[id]"

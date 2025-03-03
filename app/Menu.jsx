@@ -107,9 +107,9 @@ const Menu = () => {
 
 const options = [
   {
-    id: "edit",
-    name: "Edit Profile",
-    route: "/updateProfile",
+    id: "home",
+    name: "Home",
+    route: "/(tabs)",
   },
   {
     id: "contact",

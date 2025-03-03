@@ -26,6 +26,7 @@
     "@rneui/themed": "^4.0.0-rc.8",
     "axios": "^1.7.7",
     "date-fns": "^4.1.0",
+    "dayjs": "^1.11.13",
     "expo": "~51.0.39",
     "expo-auth-session": "~5.5.2",
     "expo-camera": "~15.0.16",

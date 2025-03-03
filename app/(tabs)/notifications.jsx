@@ -56,6 +56,7 @@ const NotificationsScreen = () => {
               title={notification.title}
               content={notification?.content}
               seen={notification.seen}
+              createdAt={notification.createdAt}
             />
           ))}
         </View>

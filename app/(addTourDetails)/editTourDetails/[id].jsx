@@ -170,11 +170,6 @@ const EditTour = () => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollViewContent}
       >
-        <View className="flex justify-center items-center py-2 mt-3">
-          <Text style={{ fontSize: 24, fontWeight: "700", color: "green" }}>
-            Edit Tour Details
-          </Text>
-        </View>
         <View className="flex justify-center items-center">
           {error && (
             <Text className="text-red-600 font-semibold text-lg">{error}</Text>
@@ -367,7 +362,7 @@ const styles = StyleSheet.create({
   },
   innerContainer: {
     paddingHorizontal: 12,
-    paddingTop: 10,
+    paddingTop: 18,
     width: "100%",
     alignItems: "center",
   },
@@ -459,7 +454,7 @@ const styles = StyleSheet.create({
     display: "flex",
     position: "absolute",
     bottom: height * 0.02,
-    width: "80%",
+    width: "100%",
     backgroundColor: "#228B22",
     height: height * 0.045,
     borderRadius: 10,
@@ -476,6 +471,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    paddingHorizontal: width * 0.03,
   },
 });
 

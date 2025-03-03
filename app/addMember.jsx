@@ -6,14 +6,16 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  Dimensions,
 } from "react-native";
-import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useSelector } from "react-redux";
 import { Picker } from "@react-native-picker/picker";
-import trekkersImg from "../assets/trekkers.jpeg";
 import { showSuccess } from "../utils/toastHelper";
+import { SafeAreaView } from "react-native-safe-area-context";
+
+const { width, height } = Dimensions.get("window");
 
 const AddMember = () => {
   const { user } = useSelector((state) => state.user);
@@ -70,10 +72,8 @@ const AddMember = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Image style={styles.backgroundImage} source={trekkersImg} />
-      <View style={styles.overlay}>
-        <Text style={styles.title}>Add Member</Text>
+    <SafeAreaView edges={["bottom", "left", "right"]} style={{ flex: 1 }}>
+      <View style={styles.container}>
         <View style={styles.formContainer}>
           {error && (
             <View style={styles.errorContainer}>
@@ -134,6 +134,14 @@ const AddMember = () => {
             placeholderTextColor="gray"
             value={contact}
           />
+        </View>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            onPress={() => router.back()}
+            style={styles.cancelButton}
+          >
+            <Text style={styles.cancelButtonText}>Cancel</Text>
+          </TouchableOpacity>
           <TouchableOpacity onPress={handleSubmit} style={styles.submitButton}>
             {loading ? (
               <ActivityIndicator size="small" color="#fff" />
@@ -141,43 +149,32 @@ const AddMember = () => {
               <Text style={styles.submitButtonText}>Add Member</Text>
             )}
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => router.back()}
-            style={styles.cancelButton}
-          >
-            <Text style={styles.cancelButtonText}>Cancel</Text>
-          </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  backgroundImage: {
-    ...StyleSheet.absoluteFillObject,
-    width: "100%",
-    height: "100%",
-    contentFit: "cover",
+    height: height,
+    backgroundColor: "white",
   },
   overlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0, 0, 0, 0.6)",
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: "10%",
+    paddingHorizontal: 15,
   },
   title: {
-    color: "white",
     fontSize: 26,
     fontWeight: "bold",
     textAlign: "center",
     marginBottom: 20,
   },
   formContainer: {
+    paddingTop: 20,
+    paddingHorizontal: 20,
     width: "100%",
     alignItems: "center",
   },
@@ -193,35 +190,44 @@ const styles = StyleSheet.create({
   },
   input: {
     color: "white",
-    fontSize: 16,
+    fontSize: 18,
     width: "100%",
     paddingVertical: 12,
     paddingHorizontal: 15,
     borderRadius: 8,
     borderColor: "green",
-    borderWidth: 1,
+    borderWidth: 2,
     marginBottom: 12,
-    backgroundColor: "rgba(34, 139, 34, 0.4)",
   },
   pickerContainer: {
     width: "100%",
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: "green",
     borderRadius: 8,
     marginBottom: 12,
-    backgroundColor: "rgba(34, 139, 34, 0.4)",
   },
   picker: {
-    color: "white",
     height: 50,
+    fontSize: 18,
+  },
+  buttonContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 15,
+    alignItems: "center",
+    position: "absolute",
+    bottom: 10,
+    width: "100%",
+    marginTop: 20,
   },
   submitButton: {
     backgroundColor: "#228B22",
-    width: "100%",
+    height: 50,
+    width: width * 0.45,
     paddingVertical: 12,
     borderRadius: 8,
     alignItems: "center",
-    marginBottom: 12,
   },
   submitButtonText: {
     color: "white",
@@ -229,15 +235,15 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   cancelButton: {
-    width: "100%",
-    paddingVertical: 10,
+    width: width * 0.45,
+    height: 50,
     borderRadius: 8,
     borderWidth: 1.5,
     borderColor: "#228B22",
     alignItems: "center",
+    justifyContent: "center",
   },
   cancelButtonText: {
-    color: "white",
     fontSize: 16,
     fontWeight: "bold",
   },

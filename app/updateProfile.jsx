@@ -39,7 +39,7 @@ const UpdateProfile = () => {
     profile.id_number
   );
   const [gender, setGender] = useState(profile.gender);
-  const [idProofType, setIdProofType] = useState(profile.id_type);
+  const [idProofType, setIdProofType] = useState(profile.id_type || "");
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -106,7 +106,7 @@ const UpdateProfile = () => {
   };
 
   return (
-    <View style={{ flex: 1, paddingHorizontal: 10 }}>
+    <View style={{ flex: 1, paddingHorizontal: 5 }}>
       <ScrollView
         contentContainerStyle={{ paddingBottom: 50 }}
         showsVerticalScrollIndicator={false}
@@ -139,8 +139,8 @@ const UpdateProfile = () => {
           <Text
             style={{
               textAlign: "center",
-              fontSize: 18,
-              paddingVertical: 5,
+              fontSize: 24,
+              paddingVertical: 10,
               fontWeight: "600",
             }}
           >
@@ -203,8 +203,8 @@ const UpdateProfile = () => {
           />
           <View style={styles.pickerContainer}>
             <Picker
-              selectedValue={profile.idProofType}
-              onValueChange={setIdProofType}
+              selectedValue={idProofType}
+              onValueChange={(itemValue) => setIdProofType(itemValue)}            
             >
               <Picker.Item label="Select ID type" value={null} />
               <Picker.Item label="Aadhar Card" value="Aadhar" />
@@ -223,10 +223,10 @@ const UpdateProfile = () => {
       <View
         style={{
           paddingVertical: 10,
-          paddingHorizontal: 24,
+          paddingHorizontal: 10,
           display: 'flex',
           flexDirection: "row",
-          justifyContent: 'center',
+          justifyContent: 'space-between',
           alignItems: "center",
           gap: 10
         }}
@@ -234,7 +234,7 @@ const UpdateProfile = () => {
         <TouchableOpacity
           onPress={() => router.back("")}
           style={{
-            width: width * 0.4,
+            width: width * 0.45,
             height: height * 0.05,
             borderRadius: 10,
             borderColor: "#228B22",
@@ -251,7 +251,7 @@ const UpdateProfile = () => {
         <TouchableOpacity
           onPress={handleUpdate}
           style={{
-            width: width * 0.4,
+            width: width * 0.45,
             height: height * 0.05,
             backgroundColor: "#228B22",
             display: "flex",

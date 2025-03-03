@@ -10,7 +10,7 @@ const About = () => {
     >
       <Text style={styles.header}>Welcome to Payanisu</Text>
       <Text style={styles.paragraph}>
-        **XYZ Pvt Ltd**, your trusted travel companion in India! We are a
+        Payanisu, your trusted travel companion in India! We are a
         passionate team of travel enthusiasts dedicated to crafting
         unforgettable journeys for individuals and groups alike. Our mission is
         to deliver top-quality travel experiences at budget-friendly prices,
@@ -44,7 +44,7 @@ const About = () => {
       </Text>
       <Text style={styles.subHeader}>Professional Excellence</Text>
       <Text style={styles.paragraph}>
-        At Payanisu: XYZ Pvt Ltd, professionalism is our hallmark. We are
+        At Payanisu, professionalism is our hallmark. We are
         committed to transparency, reliability, and excellence in every aspect
         of our service. From booking to your safe return, you can trust us to
         deliver the highest standards of customer care.
@@ -56,20 +56,6 @@ const About = () => {
         community of explorers and discover the world with new friends who share
         your passion for adventure.
       </Text>
-      <Text style={styles.subHeader}>Contact Us</Text>
-      <View style={styles.contactSection}>
-        <Text style={styles.contactLabel}>Email:</Text>
-        <Text style={styles.contactDetail}>mahiti@Payanisu.com</Text>
-
-        <Text style={styles.contactLabel}>Phone:</Text>
-        <Text style={styles.contactDetail}>+91 98457 41910</Text>
-
-        <Text style={styles.contactLabel}>Office Address:</Text>
-        <Text style={styles.contactDetail}>
-          #6, 6th A Cross, Balaji Layout, BSK 3rd Stage, Bengaluru, Karnataka
-          560085
-        </Text>
-      </View>
 
       <Text style={styles.footer}>
         Please share your feedback at mahiti@Payanisu.com and rate us on the

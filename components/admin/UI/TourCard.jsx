@@ -4,10 +4,12 @@ import { FontAwesome6, Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { shorten } from "../../UI/PostComponent";
 import { formatDate } from "../../../utils/helpers";
+import TourStatus from "./TourStatus";
 
 const { height, width } = Dimensions.get("window");
 
 const TourCard = ({ tour }) => {
+  console.log(tour);
   return (
     <TouchableOpacity
       activeOpacity={0.9}
@@ -55,22 +57,15 @@ const TourCard = ({ tour }) => {
               </Text>
             </View>
           </View>
-          <View className="mt-5 bg-green-700/20 px-4 py-1 rounded-full">
-            <Text className="font-medium capitalize text-green-600">
-              completed
-            </Text>
-          </View>
+          <TourStatus
+            status={tour.status}
+            tourStart={tour.tour_start}
+            tourEnd={tour.tour_end}
+          />
         </View>
       </View>
     </TouchableOpacity>
   );
 };
-
-const enrolledMemberProfileImgs = [
-  "https://images.pexels.com/photos/39866/entrepreneur-startup-start-up-man-39866.jpeg?auto=compress&cs=tinysrgb&w=600",
-  "https://images.pexels.com/photos/845457/pexels-photo-845457.jpeg?auto=compress&cs=tinysrgb&w=600",
-  "https://images.pexels.com/photos/819530/pexels-photo-819530.jpeg?auto=compress&cs=tinysrgb&w=600",
-  "https://images.pexels.com/photos/886285/pexels-photo-886285.jpeg?auto=compress&cs=tinysrgb&w=600",
-];
 
 export default TourCard;

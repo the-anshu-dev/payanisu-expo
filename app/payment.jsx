@@ -23,7 +23,7 @@ import * as FileSystem from "expo-file-system";
 import { Image } from "expo-image";
 import { showError, showSuccess, showWarning } from "../utils/toastHelper";
 
-const { height, width } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 
 const Payment = () => {
   const { id } = useLocalSearchParams();
@@ -44,6 +44,18 @@ const Payment = () => {
       quality: 1,
     });
     if (!result.canceled) setImage(result.assets[0]);
+  };
+
+  const handleDowloadConsentForm = async () => { 
+    try {
+      const { status } = await MediaLibrary.requestPermissionsAsync();
+      if (status !== "granted") {
+        showWarning("Permission not granted to save image.");
+        return;
+      }
+    }catch(error){
+      showError(error.message || "Failed to download the image.");
+    }
   };
 
   const upiLink = `upi://pay?pa=8090900602@ptyes&pn=Prince%20Chaurasia&am=${totalCost}.00&cu=INR&tn=Payment%20for%20services`;
@@ -196,7 +208,7 @@ const Payment = () => {
             )}
           </View>
           <TouchableOpacity
-            onPress={handleDownloadQr}
+            onPress={handleDowloadConsentForm}
             className="flex flex-row items-center mt-2 px-3 py-1"
           >
             <DownloadIcon height={25} width={20} />

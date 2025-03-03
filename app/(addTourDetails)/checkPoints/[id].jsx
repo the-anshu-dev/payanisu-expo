@@ -35,11 +35,18 @@ const Checkpoints = () => {
   const [loading, setLoading] = useState(false);
   const [qrLoading, setQrLoading] = useState(false);
 
+  const [editingCheckPointData, setEditingCheckPointData] = useState();
+
   const editCheckPointRef = useRef(null);
   const viewMapRef = useRef(null);
   const downloadQRref = useRef(null);
 
   const dispatch = useDispatch();
+
+  const handleOpenEditSheet = (id) => {
+    setEditingCheckPointData(allCheckPoints.find((point) => point._id === id));
+    editCheckPointRef.current?.open();
+  };
 
   const handleQr = async () => {
     setQrLoading(true);
@@ -200,6 +207,7 @@ const Checkpoints = () => {
                 mapRef={viewMapRef}
                 handleCheckpointActive={handleCheckpointActive}
                 handleGetAllCheckPoints={handleGetAllCheckPoints}
+                handleOpenEditSheet={handleOpenEditSheet}
               />
             ))}
           </ScrollView>
@@ -251,7 +259,7 @@ const Checkpoints = () => {
             <View className="border mt-3 border-gray-500/50 p-1 px-2 rounded-lg w-full">
               <Text className="text-xs text-gray-500/70">Title</Text>
               <TextInput
-                placeholder="Enter Title"
+                placeholder={editingCheckPointData?.name}
                 className="text-black text-base mt-1"
               />
             </View>
@@ -261,7 +269,7 @@ const Checkpoints = () => {
                 multiline={true}
                 numberOfLines={5}
                 textAlignVertical="top"
-                placeholder="Enter description"
+                placeholder={editingCheckPointData?.description}
                 className="text-black text-base mt-1"
               />
             </View>
@@ -360,7 +368,8 @@ const CheckPointCard = ({
   idx,
   point,
   handleCheckpointActive,
-  handleGetAllCheckPoints
+  handleGetAllCheckPoints,
+  handleOpenEditSheet
 }) => {
   const [loading, setLoading] = useState(false);
 
@@ -453,7 +462,7 @@ const CheckPointCard = ({
             <Text className="text-xs text-green-700">Show On Map</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => editRef.current?.open()}>
+        <TouchableOpacity onPress={() => handleOpenEditSheet(point._id)}>
           <View className="flex flex-row gap-2 justify-center items-center">
             <EditIcon height={20} width={12} />
             <Text className="text-xs text-green-700">Edit</Text>

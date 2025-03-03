@@ -534,7 +534,7 @@ const styles = StyleSheet.create({
     bottom: height * 0.02,
     width: "100%",
     backgroundColor: "#228B22",
-    paddingVertical: height * 0.009,
+    paddingVertical: height * 0.01,
     borderRadius: 10,
     alignItems: "center",
   },

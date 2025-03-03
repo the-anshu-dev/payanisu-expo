@@ -16,6 +16,7 @@ import { useSelector } from "react-redux";
 import { sendNotificaton } from "../../utils/pushNotification";
 import { ActivityIndicator } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { showError, showSuccess } from "../../utils/toastHelper";
 
 const { width, height } = Dimensions.get("window");
 
@@ -46,8 +47,15 @@ const AnnouncementScreen = () => {
 
     try {
       const response = await sendNotificaton(body);
+      if (!response.ok) {
+        throw new Error("Failed to send announcement.");
+      }
+      setContent("");
+      setAnnouncementTitle("");
+      addAnnounceMentRef.current.close();
+      showSuccess("Announcement sent successfully.");
     } catch (error) {
-      console.log(error);
+      showError(error.message || "Failed to send announcement.");
     } finally {
       setLoading(false);
     }

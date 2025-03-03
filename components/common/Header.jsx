@@ -35,7 +35,7 @@ const Header = () => {
               activeOpacity={0.9}
               className="px-3 py-2"
             >
-              <FontAwesome6 name="bars" size={34} color="green" />
+              <FontAwesome6 name="bars" size={30} color="green" />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => router.push("/(tabs)")}
