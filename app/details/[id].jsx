@@ -359,7 +359,7 @@ const DetailsScreen = () => {
         </ScrollView>
         <View
           style={{ backgroundColor: "transparent" }}
-          className="h-fit mb-3 p-1 flex flex-row justify-center items-center w-full gap-5"
+          className="h-fit py-2 flex flex-row justify-center items-center w-full gap-5"
         >
           <TouchableOpacity onPress={handleInterested} activeOpacity={0.9}>
             <View

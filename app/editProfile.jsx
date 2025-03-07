@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   errorContainer: { display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: 16, gap: 12 },
   errorText: { color: "red", fontSize: 16 },
-  scrollContainer: { flexGrow: 1, paddingBottom: 24 },
+  scrollContainer: { flexGrow: 1, paddingBottom: 50 },
   innerContainer: { paddingHorizontal: 16 },
   input: {
     borderWidth: 1,

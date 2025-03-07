@@ -14,7 +14,11 @@ import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplet
 import { router, useLocalSearchParams } from "expo-router";
 import { apiRequest } from "../../../utils/helpers";
 import * as Location from "expo-location";
-import { showError, showSuccess, showWarning } from "../../../utils/toastHelper";
+import {
+  showError,
+  showSuccess,
+  showWarning,
+} from "../../../utils/toastHelper";
 
 const { width, height } = Dimensions.get("window");
 const apiKey = process.env.EXPO_PUBLIC_GOOGLE_API_KEY;
@@ -62,10 +66,10 @@ const Page = () => {
       setCoordinates({ latitude, longitude });
       await reverseGeocode(latitude, longitude);
     } catch (error) {
-      console.error("Error getting location:", error);
       setErrorMsg("Failed to get current location");
     }
   };
+
   const reverseGeocode = async (latitude, longitude) => {
     try {
       const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`;
@@ -156,13 +160,18 @@ const Page = () => {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
-          paddingBottom: 20,
+          paddingBottom: 80,
           flexGrow: 1,
         }}
         style={{ width: "100%", flex: 1 }}
         keyboardShouldPersistTaps="handled"
       >
         <View className="px-3 h-full w-full flex justify-between items-center pb-12">
+          {errorMsg && (
+            <Text className="mt-2 font-semibold text-lg text-red-500">
+              {errorMsg}
+            </Text>
+          )}
           <View className="w-full flex justify-start items-center gap-3">
             <View className="mt-3 p-2 rounded-lg w-full bg-white shadow-lg shadow-black/50">
               <Text className="text-xs text-gray-500/70">Title</Text>
@@ -197,48 +206,46 @@ const Page = () => {
                 </Picker>
               </View>
             </View>
-            {locationType === "Geo Tagging" && (
-              <View className="w-full flex justify-start items-center">
-                <View className="w-full">
-                  <GooglePlacesAutocomplete
-                    ref={googlePlacesRef}
-                    placeholder="Search location"
-                    minLength={2}
-                    fetchDetails={true}
-                    onPress={(data, details = null) =>
-                      handleLocationSelect(details)
-                    }
-                    query={{
-                      key: "AIzaSyAWiZa_f1BStr9sDkGGJdDvmOV76-SVoFo",
-                      language: "en",
-                    }}
-                    styles={{
-                      container: {
-                        width: "100%",
-                        zIndex: 1000,
-                      },
-                      textInput: {
-                        height: 44,
-                        paddingHorizontal: 10,
-                        backgroundColor: "#FFFFFF",
-                        color: "black",
-                        zIndex: 1000,
-                      },
-                    }}
-                  />
-                </View>
-                <View className="h-fit w-full rounded-xl overflow-hidden mt-2 border border-gray-500/50">
-                  <MapView
-                    style={{ height: height * 0.45, width: "100%" }}
-                    className="rounded-xl"
-                    region={region}
-                    onPress={handleMapPress}
-                  >
-                    <Marker coordinate={markerPosition} />
-                  </MapView>
-                </View>
+            <View className="w-full flex justify-start items-center">
+              <View className="w-full">
+                <GooglePlacesAutocomplete
+                  ref={googlePlacesRef}
+                  placeholder="Search location"
+                  minLength={2}
+                  fetchDetails={true}
+                  onPress={(data, details = null) =>
+                    handleLocationSelect(details)
+                  }
+                  query={{
+                    key: "AIzaSyAWiZa_f1BStr9sDkGGJdDvmOV76-SVoFo",
+                    language: "en",
+                  }}
+                  styles={{
+                    container: {
+                      width: "100%",
+                      zIndex: 1000,
+                    },
+                    textInput: {
+                      height: 44,
+                      paddingHorizontal: 10,
+                      backgroundColor: "#FFFFFF",
+                      color: "black",
+                      zIndex: 1000,
+                    },
+                  }}
+                />
               </View>
-            )}
+              <View className="h-fit w-full rounded-xl overflow-hidden mt-2 border border-gray-500/50">
+                <MapView
+                  style={{ height: height * 0.45, width: "100%" }}
+                  className="rounded-xl"
+                  region={region}
+                  onPress={handleMapPress}
+                >
+                  <Marker coordinate={markerPosition} />
+                </MapView>
+              </View>
+            </View>
           </View>
         </View>
       </ScrollView>

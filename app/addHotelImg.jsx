@@ -57,7 +57,8 @@ const addHotelImg = () => {
         {image.length > 0 ? (
           <ScrollView
             showsVerticalScrollIndicator={false}
-            style={{ padding: 5, width: "100%" }}
+            contentContainerStyle={{ paddingBottom: 50, width: "100%" }}
+            style={{ padding: 5 }}
           >
             {image.map((img, idx) => (
               <Image

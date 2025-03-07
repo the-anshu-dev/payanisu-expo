@@ -99,6 +99,8 @@ const Login = () => {
           const profileData = await profileResponse.json();
           if (profileData && !profileData.error) {
             dispatch(setProfile(profileData));
+          }else{
+            dispatch(setProfile(null));
           }
         }
       }

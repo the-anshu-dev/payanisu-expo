@@ -5,6 +5,8 @@ import {
   Dimensions,
   ScrollView,
   RefreshControl,
+  Pressable,
+  Alert,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
@@ -190,8 +192,31 @@ const AccomodationButton = ({
   allocatedCount,
 }) => {
   return (
-    <TouchableOpacity
+    <Pressable
       activeOpacity={0.9}
+      onLongPress={() =>
+        Alert.alert(
+          "Edit or Delete Accomodation",
+          "What would you like to do?",
+          [
+            {
+              text: "Cancel",
+              style: "cancel",
+            },
+            {
+              text: "Delete",
+              onPress: () => console.log("delete"),
+            },
+            {
+              text: "Edit",
+              onPress: () =>
+                router.push(
+                  `(addTourDetails)/editAccomodationDetails/${_id}?tourId=${tourId}`
+                ),
+            },
+          ]
+        )    
+      }
       onPress={() =>
         router.push(
           `(addTourDetails)/showAccomodationDetails/${_id}?tourId=${tourId}`
@@ -222,7 +247,7 @@ const AccomodationButton = ({
           <Text style={{ fontSize: 12 }}>/{totalOccupancy}</Text>
         </View>
       </View>
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 

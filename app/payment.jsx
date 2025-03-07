@@ -145,7 +145,7 @@ const Payment = () => {
       <View className="h-full w-full flex justify-between px-3">
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 20, paddingHorizontal: 15 }}
+          contentContainerStyle={{ paddingBottom: 50, paddingHorizontal: 15 }}
         >
           <View className="w-full flex justify-center items-center py-6">
             <Text className="text-xl font-semibold">{bookingTour?.name}</Text>

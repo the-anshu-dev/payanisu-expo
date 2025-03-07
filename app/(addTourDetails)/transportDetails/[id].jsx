@@ -6,6 +6,7 @@ import {
   ScrollView,
   RefreshControl,
   ActivityIndicator,
+  SafeAreaView,
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { TouchableOpacity } from "react-native";
@@ -13,8 +14,12 @@ import { router, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { format } from "date-fns";
 import { Modalize } from "react-native-modalize";
-import {  Checkbox } from "react-native-paper";
-import { showError, showSuccess, showWarning } from "../../../utils/toastHelper";
+import { Checkbox } from "react-native-paper";
+import {
+  showError,
+  showSuccess,
+  showWarning,
+} from "../../../utils/toastHelper";
 
 const { width, height } = Dimensions.get("window");
 
@@ -161,11 +166,12 @@ const TransportDetails = () => {
   }, []);
 
   return (
-    <>
+    <SafeAreaView style={{ height: "100%", width: "100%" }} edges={["right", "bottom", "left"]}>
       <View style={styles.screenContainer}>
         <ScrollView
           showsVerticalScrollIndicator={false}
-          style={{ width: "100%", height: "100%", paddingBottom: 120,}}
+          contentContainerStyle={{ paddingBottom: 80 }}
+          style={{ width: "100%" }}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
@@ -174,17 +180,20 @@ const TransportDetails = () => {
             />
           }
         >
-          <View className="" style={{ paddingVertical: 10, paddingHorizontal:20 }}>
+          <View style={{ paddingVertical: 10, paddingHorizontal: 20, gap: 5 }}>
             {boardingPoints.length > 0 ? (
               <>
                 {boardingPoints.map(
-                  ({
-                    boardingPointName,
-                    boardingPointTime,
-                    boardingPointDate,
-                    location,
-                    _id,
-                  }, index) => (
+                  (
+                    {
+                      boardingPointName,
+                      boardingPointTime,
+                      boardingPointDate,
+                      location,
+                      _id,
+                    },
+                    index
+                  ) => (
                     <BoardingPointCard
                       key={`${_id}-${boardingPointName}-${index}`}
                       name={boardingPointName}
@@ -311,7 +320,9 @@ const TransportDetails = () => {
                     {item?.ProfileData[0]?.gender?.charAt(0)}
                   </Text>
                 </View>
-                <Text style={{width:width*0.4}}>{item?.ProfileData[0]?.name}</Text>
+                <Text style={{ width: width * 0.4 }}>
+                  {item?.ProfileData[0]?.name}
+                </Text>
                 <Text>{item?.ProfileData[0]?.age} Yrs</Text>
               </View>
             ))}
@@ -335,7 +346,7 @@ const TransportDetails = () => {
           </View>
         </View>
       </Modalize>
-    </>
+    </SafeAreaView>
   );
 };
 
@@ -465,7 +476,7 @@ const styles = StyleSheet.create({
   screenContainer: {
     height: "100%",
     width: "100%",
-    position: "relative",
+    display: "relative",
   },
   buttonsContainer: {
     position: "absolute",
@@ -474,11 +485,12 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingHorizontal: 30,
-    paddingVertical: 20,
+    paddingHorizontal: 20,
+    backgroundColor: "white",
+    paddingVertical: 10,
   },
   buttons: {
-    width: width * 0.4,
+    width: width * 0.42,
     height: height * 0.05,
     borderRadius: 6,
     display: "flex",

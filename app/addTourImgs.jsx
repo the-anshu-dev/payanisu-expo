@@ -58,6 +58,7 @@ const addTourImgs = () => {
         {image.length > 0 ? (
           <ScrollView
             showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ paddingBottom: 50, width: "100%" }}
             style={{ padding: 5, width: "100%" }}
           >
             {image.map((img, idx) => (

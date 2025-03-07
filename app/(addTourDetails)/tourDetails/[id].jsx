@@ -14,7 +14,7 @@ const TourDetails = () => {
 
   return (
     <View className="px-3 h-full justify-between items-center">
-      <ScrollView showsVerticalScrollIndicator={false} className="w-full" contentContainerStyle={{ alignItems: "center", paddingBottom: 24 }}>
+      <ScrollView  showsVerticalScrollIndicator={false} className="w-full" contentContainerStyle={{ alignItems: "center", paddingBottom: 50 }}>
         <LabelValue label={"Tour Name"} value={tourData?.name} />
         <LabelValue label={"Location"} value={tourData?.location} />
         <LabelValue label={"Description"} value={tourData?.description} />
@@ -34,7 +34,7 @@ const TourDetails = () => {
           value={tourData?.tour_cost}
         />
         <LabelValue
-          label={"Admin can reaject ?"}
+          label={"Admin can reject ?"}
           value={tourData?.can_admin_reject ? "Yes" : "No"}
         />
         <LabelValue

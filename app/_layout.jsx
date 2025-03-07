@@ -155,10 +155,21 @@ export default function RootLayout() {
             options={getOpt("Accomodations", "(addTourDetails)/tourDetails")}
           />
           <Stack.Screen
+            name="(addTourDetails)/editAccomodationDetails/[id]"
+            options={getOpt("Edit Details", "(addTourDetails)/tourDetails")}
+          />
+          <Stack.Screen
             name="(addTourDetails)/editTourDetails/[id]"
             options={getOpt(
               "Edit Tour Details",
               "(addTourDetails)/tourDetails"
+            )}
+          />
+          <Stack.Screen
+            name="(addTourDetails)/editTransportationDetails/[id]"
+            options={getOpt(
+              "Edit Transport Details",
+              "(addTourDetails)/transportation"
             )}
           />
           <Stack.Screen

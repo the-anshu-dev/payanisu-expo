@@ -156,7 +156,7 @@ const Page = () => {
     <View className="h-full flex justify-between items-center w-full relative">
       <ScrollView
         contentContainerStyle={{
-          paddingBottom: 20,
+          paddingBottom:80,
           flexGrow: 1,
         }}
         style={{ width: "100%", flex: 1 }}

@@ -158,7 +158,7 @@ const MyTourDetails = () => {
             activeOpacity={0.9}
           >
             <View
-              style={{ width: width * 0.4 }}
+              style={{ width: width * 0.45 }}
               className={`flex flex-row justify-center items-center bg-gray-500 h-12 gap-2 rounded-lg`}
             >
               <Ionicons
@@ -179,7 +179,7 @@ const MyTourDetails = () => {
           style={{ opacity: activeTab === "tourInfo" || listView ? 0.8 : 1 }}
         >
           <View
-            style={{ width: width * 0.4 }}
+            style={{ width: width * 0.45 }}
             className={`flex flex-row justify-center items-center bg-green-700 h-12 gap-2 rounded-lg`}
           >
             <Ionicons name="locate-outline" size={20} color="white" />

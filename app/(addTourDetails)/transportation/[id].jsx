@@ -5,6 +5,8 @@ import {
   TouchableOpacity,
   ScrollView,
   RefreshControl,
+  Pressable,
+  Alert,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Dimensions } from "react-native";
@@ -12,6 +14,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { exportDataToExcel } from "../../../utils/helpers";
 import { ActivityIndicator } from "react-native-paper";
+import { showError, showSuccess } from "../../../utils/toastHelper";
 
 const { width, height } = Dimensions.get("window");
 
@@ -90,7 +93,7 @@ const Transportation = () => {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
-        <View className=" px-2">
+        <View className="px-2 gap-3">
           {transportationDetails.length > 0 ? (
             <>
               {transportationDetails?.map((item) => (
@@ -101,6 +104,7 @@ const Transportation = () => {
                   name={item?.busName}
                   totalCapacity={item?.capacity}
                   filled={item?.allocatedCount}
+                  onRefresh={onRefresh}
                 />
               ))}
             </>
@@ -114,7 +118,7 @@ const Transportation = () => {
                 alignItems: "center",
                 paddingVertical: 50,
                 backgroundColor: "white",
-                borderRadius:10
+                borderRadius: 10,
               }}
             >
               <Ionicons name="trash-bin-outline" color={"gray"} size={28} />
@@ -160,10 +164,46 @@ const Transportation = () => {
   );
 };
 
-const TransportDetailButton = ({ id, name, totalCapacity, filled, tourId }) => {
+const TransportDetailButton = ({ id, name, totalCapacity, filled, tourId, onRefresh }) => {
+
+  const handleDelete = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_BASE_URL}/api/transport/delete?id=${id}`,
+        {
+          method: "DELETE",
+        }
+      );
+      
+      if (!response.ok || response.status !== 200) {
+        throw new Error("Failed to delete transportation");
+      }
+
+      showSuccess("Transportation deleted successfully");
+      onRefresh();
+    } catch (error) {
+      showError(error.message || "Please try again.");
+    }
+  };
+
+
+  const handleLongPress = () => {
+    Alert.alert(
+      "Edit or Delete Transportation",
+      "What would you like to do?",
+      [
+        { text: "Cancel", style: "destructive" },
+        { text: "Edit", onPress: () => router.push(`(addTourDetails)/editTransportationDetails/${id}?tourId=${tourId}`) },
+        { text: "Delete", onPress: handleDelete, style: "destructive" },
+      ]
+    );
+  };
+
   return (
-    <TouchableOpacity
+    <Pressable
       activeOpacity={0.95}
+      onLongPress={handleLongPress}
+      delayLongPress={400}
       onPress={() =>
         router.push(`(addTourDetails)/transportDetails/${id}?tourId=${tourId}`)
       }
@@ -178,7 +218,7 @@ const TransportDetailButton = ({ id, name, totalCapacity, filled, tourId }) => {
           <Text>{totalCapacity}</Text>
         </View>
       </View>
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 

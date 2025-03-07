@@ -6,10 +6,9 @@ import { shorten } from "../../UI/PostComponent";
 import { formatDate } from "../../../utils/helpers";
 import TourStatus from "./TourStatus";
 
-const { height, width } = Dimensions.get("window");
+const { height } = Dimensions.get("window");
 
 const TourCard = ({ tour }) => {
-  console.log(tour);
   return (
     <TouchableOpacity
       activeOpacity={0.9}

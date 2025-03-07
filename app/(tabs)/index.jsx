@@ -69,8 +69,12 @@ export default function HomeScreen() {
         throw new Error("Failed to fetch tours due to server error.");
       }
       const tour = await response.json();
-      await AsyncStorage.setItem("tours", JSON.stringify(tour));
-      dispatch(setTour(tour));
+      const validTours = tour.filter((tour) => new Date(tour.booking_close) > new Date());
+      if(validTours.length === 0) {
+        showError("No upcoming tours available.");
+      }
+      await AsyncStorage.setItem("tours", JSON.stringify(validTours));
+      dispatch(setTour(validTours));
     } catch (error) {
       showError(error.message || "Please try again.");
     }

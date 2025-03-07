@@ -5,6 +5,7 @@ import {
   TextInput,
   TouchableOpacity,
   Dimensions,
+  RefreshControl,
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { FontAwesome6, Ionicons } from "@expo/vector-icons";
@@ -23,7 +24,11 @@ import { useDispatch } from "react-redux";
 import { setCheckPoints } from "../../../redux/slices/tourSlice";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as Location from "expo-location";
-import { showError, showSuccess, showWarning   } from "../../../utils/toastHelper";
+import {
+  showError,
+  showSuccess,
+  showWarning,
+} from "../../../utils/toastHelper";
 
 const { height, width } = Dimensions.get("window");
 
@@ -35,7 +40,10 @@ const Checkpoints = () => {
   const [loading, setLoading] = useState(false);
   const [qrLoading, setQrLoading] = useState(false);
 
-  const [editingCheckPointData, setEditingCheckPointData] = useState();
+  const [editingCheckPointData, setEditingCheckPointData] = useState({});
+
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
 
   const editCheckPointRef = useRef(null);
   const viewMapRef = useRef(null);
@@ -76,9 +84,7 @@ const Checkpoints = () => {
     try {
       const { status } = await MediaLibrary.requestPermissionsAsync();
       if (status !== "granted") {
-        showWarning(
-          "We need access to your media library to save the image."
-        );
+        showWarning("We need access to your media library to save the image.");
         return;
       }
 
@@ -96,7 +102,6 @@ const Checkpoints = () => {
         await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
       }
       showSuccess("QR code downloaded and saved to your gallery!");
-
     } catch (error) {
       showError(error.message || "Failed to download the image.");
     }
@@ -170,10 +175,37 @@ const Checkpoints = () => {
     }
   };
 
+  const handleEditCheckpoint = async (id) => {
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_BASE_URL}/api/update-point?id=${id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name, description }),
+        }
+      );
+      if (response.status !== 200) {
+        throw new Error("Failed to update checkpoint");
+      }
+      showSuccess("Checkpoint Updated.");
+      onRefresh();
+      editCheckPointRef.current?.close();
+    } catch (error) {
+      showError(error.message || "Please try again.");
+    }
+  };
+
   useEffect(() => {
     handleGetAllCheckPoints();
     getUserLocation();
   }, []);
+
+  const onRefresh = () => {
+    handleGetAllCheckPoints();
+  };
 
   if (loading) {
     return (
@@ -197,6 +229,14 @@ const Checkpoints = () => {
           <ScrollView
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ paddingBottom: 120 }}
+            refreshControl={
+              <RefreshControl
+                refreshing={loading}
+                onRefresh={onRefresh}
+                colors={["red", "green", "blue"]}
+              />
+            }
+            style={{ width: "100%" }}
           >
             {allCheckPoints?.map((point, index) => (
               <CheckPointCard
@@ -206,8 +246,8 @@ const Checkpoints = () => {
                 editRef={editCheckPointRef}
                 mapRef={viewMapRef}
                 handleCheckpointActive={handleCheckpointActive}
-                handleGetAllCheckPoints={handleGetAllCheckPoints}
                 handleOpenEditSheet={handleOpenEditSheet}
+                onRefresh={onRefresh}
               />
             ))}
           </ScrollView>
@@ -259,6 +299,7 @@ const Checkpoints = () => {
             <View className="border mt-3 border-gray-500/50 p-1 px-2 rounded-lg w-full">
               <Text className="text-xs text-gray-500/70">Title</Text>
               <TextInput
+                onChangeText={(text) => setName(text)}
                 placeholder={editingCheckPointData?.name}
                 className="text-black text-base mt-1"
               />
@@ -267,6 +308,7 @@ const Checkpoints = () => {
               <Text className="text-xs text-gray-500/70">Description</Text>
               <TextInput
                 multiline={true}
+                onChangeText={(text) => setDescription(text)}
                 numberOfLines={5}
                 textAlignVertical="top"
                 placeholder={editingCheckPointData?.description}
@@ -277,7 +319,7 @@ const Checkpoints = () => {
           <View className="w-full flex justify-center items-center mt-2">
             <TouchableOpacity
               activeOpacity={0.9}
-              onPress={() => addNotesRef.current?.open()}
+              onPress={() => handleEditCheckpoint(editingCheckPointData._id)}
               style={{
                 width: width * 0.9,
                 backgroundColor: "green",
@@ -363,13 +405,12 @@ const Checkpoints = () => {
 };
 
 const CheckPointCard = ({
-  editRef,
   mapRef,
   idx,
   point,
   handleCheckpointActive,
-  handleGetAllCheckPoints,
-  handleOpenEditSheet
+  handleOpenEditSheet,
+  onRefresh,
 }) => {
   const [loading, setLoading] = useState(false);
 
@@ -386,17 +427,20 @@ const CheckPointCard = ({
     }
   };
 
-  const handleDeleteCheckpoint = async (id) => {  
+  const handleDeleteCheckpoint = async (id) => {
     setDeleting(true);
     try {
-      const response = await fetch(`${process.env.EXPO_PUBLIC_BASE_URL}/api/delete-point?id=${id}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_BASE_URL}/api/delete-point?id=${id}`,
+        {
+          method: "DELETE",
+        }
+      );
       console.log(await response.json());
       if (!response.ok) {
         throw new Error("Failed to delete checkpoint");
       }
-      handleGetAllCheckPoints();
+      onRefresh();
       showSuccess("Checkpoint deleted successfully.");
     } catch (error) {
       showError(error.message || "Please try again.");
@@ -414,14 +458,15 @@ const CheckPointCard = ({
           <Text className="text-lg font-medium">{point.name}</Text>
         </View>
         <View className=" h-10 w-10 flex justify-center items-center">
-          <TouchableOpacity onPress={() => handleDeleteCheckpoint(point._id)} activeOpacity={0.9}>
-            {
-              deleting ? (
-                <ActivityIndicator color="red" size={"small"} />
-              ) : (
-                <FontAwesome6 name="trash" size={14} color="red" />
-              )
-            }
+          <TouchableOpacity
+            onPress={() => handleDeleteCheckpoint(point._id)}
+            activeOpacity={0.9}
+          >
+            {deleting ? (
+              <ActivityIndicator color="red" size={"small"} />
+            ) : (
+              <FontAwesome6 name="trash" size={14} color="red" />
+            )}
           </TouchableOpacity>
         </View>
       </View>

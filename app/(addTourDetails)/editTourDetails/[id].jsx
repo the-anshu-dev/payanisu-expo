@@ -136,8 +136,7 @@ const EditTour = () => {
           },
           body: JSON.stringify(formData),
         }
-      );
-
+      )
       if (response.ok) {
         router.back();
         showSuccess("Tour updated successfully");
@@ -176,43 +175,68 @@ const EditTour = () => {
           )}
         </View>
         <View style={styles.innerContainer}>
-          <TextInput
-            placeholder={tourDetails.name}
-            value={tourName}
-            placeholderTextColor="gray"
-            onChangeText={setTourName}
-            style={styles.input}
-          />
-          <TextInput
-            placeholder={tourDetails.location}
-            value={location}
-            placeholderTextColor="gray"
-            onChangeText={setLocation}
-            style={styles.input}
-          />
-          <TextInput
-            placeholder={tourDetails.state}
-            value={state}
-            placeholderTextColor="gray"
-            onChangeText={setState}
-            style={styles.input}
-          />
-          <TextInput
-            placeholder={tourDetails.description}
-            value={description}
-            onChangeText={setDescription}
-            placeholderTextColor="gray"
-            multiline
-            style={[styles.input, styles.descriptionInput]}
-          />
-          <View style={styles.pickerContainer}>
+          <View style={styles.input}>
+            <Text className="text-base font-semibold text-gray-600">
+              Tour Name
+            </Text>
+            <TextInput
+              placeholder={tourDetails.name}
+              value={tourName}
+              placeholderTextColor="gray"
+              onChangeText={setTourName}
+              className="text-black text-lg mt-1"
+            />
+          </View>
+          <View style={styles.input}>
+            <Text className="text-base font-semibold text-gray-600">
+              Location
+            </Text>
+            <TextInput
+              placeholder={tourDetails.location}
+              value={location}
+              placeholderTextColor="gray"
+              onChangeText={setLocation}
+              className="text-black text-lg mt-1"
+            />
+          </View>
+          <View style={styles.input}>
+            <Text className="text-base font-semibold text-gray-600">State</Text>
+            <TextInput
+              placeholder={tourDetails.state}
+              value={state}
+              placeholderTextColor="gray"
+              onChangeText={setState}
+              className="text-black text-lg mt-1"
+            />
+          </View>
+          <View style={styles.input}>
+            <Text className="text-base font-semibold text-gray-600">
+              Description
+            </Text>
+            <TextInput
+              placeholder={tourDetails.description}
+              value={description}
+              onChangeText={setDescription}
+              placeholderTextColor="gray"
+              multiline
+              className="text-black text-lg mt-1"
+              style={styles.descriptionInput}
+            />
+          </View>
+          <View style={styles.input}>
+            <Text className="text-base font-semibold text-gray-600">
+              Difficulty
+            </Text>
             <Picker selectedValue={difficulty} onValueChange={setDifficulty}>
               <Picker.Item label="Easy" value="Easy" />
               <Picker.Item label="Medium" value="Medium" />
               <Picker.Item label="Hard" value="Hard" />
             </Picker>
           </View>
-          <View style={styles.pickerContainer}>
+          <View style={styles.input}>
+            <Text className="text-base font-semibold text-gray-600">
+              Tour Type
+            </Text>
             <Picker selectedValue={tourType} onValueChange={setTourType}>
               <Picker.Item label="Select tour type" value={null} />
               <Picker.Item label="Trekking" value="Trekking" />
@@ -233,27 +257,40 @@ const EditTour = () => {
               <Picker.Item label="Day Outing" value="Day Outing" />
             </Picker>
           </View>
-          <TextInput
-            placeholder={tourDetails?.total_seats.toString()}
-            value={totalSeats}
-            placeholderTextColor="gray"
-            onChangeText={setTotalSeats}
-            keyboardType="numeric"
-            style={styles.input}
-          />
-          <TextInput
-            placeholder={tourDetails.distance.toString()}
-            value={distance}
-            placeholderTextColor="gray"
-            onChangeText={setDistance}
-            keyboardType="numeric"
-            style={styles.input}
-          />
-          <View style={{ width: "100%" }}>
+          <View style={styles.input}>
+            <Text className="text-base font-semibold text-gray-600">
+              Total Seats
+            </Text>
+            <TextInput
+              placeholder={tourDetails?.total_seats.toString()}
+              value={totalSeats}
+              placeholderTextColor="gray"
+              onChangeText={setTotalSeats}
+              keyboardType="numeric"
+              className="text-black text-lg mt-1"
+            />
+          </View>
+          <View style={styles.input}>
+            <Text className="text-base font-semibold text-gray-600">
+              Distance (km)
+            </Text>
+            <TextInput
+              placeholder={tourDetails.distance.toString()}
+              value={distance}
+              placeholderTextColor="gray"
+              onChangeText={setDistance}
+              keyboardType="numeric"
+              className="text-black text-lg mt-1"
+            />
+          </View>
+          <View style={styles.input}>
+            <Text className="text-base font-semibold text-gray-600">
+              Start Date
+            </Text>
             <TouchableOpacity onPress={() => setShowStartPicker(true)}>
               <TextInput
                 editable={false}
-                className={`border py-2 mb-3 w-full border-slate-500/50 rounded-lg text-black placeholder:text-base  px-3 `}
+                className="py-2 w-full rounded-lg text-black placeholder:text-base"
                 value={startDate ? format(startDate, "yyyy-MM-dd") : new Date()}
                 placeholder={format(tourDetails.tour_start, "yyyy-MM-dd")}
               />
@@ -266,10 +303,15 @@ const EditTour = () => {
                 onChange={onChangeStart}
               />
             )}
+          </View>
+          <View style={styles.input}>
+            <Text className="text-base font-semibold text-gray-600">
+              End Date
+            </Text>
             <TouchableOpacity onPress={() => setShowEndPicker(true)}>
               <TextInput
                 editable={false}
-                className={`border py-2 mb-3 w-full border-slate-500/50 rounded-lg text-black placeholder:text-base  px-3 `}
+                className=" py-2 w-full rounded-lg text-black placeholder:text-base"
                 value={endDate ? format(endDate, "yyyy-MM-dd") : new Date()}
                 placeholder={format(tourDetails.tour_end, "yyyy-MM-dd")}
               />
@@ -282,10 +324,15 @@ const EditTour = () => {
                 onChange={onChangeEnd}
               />
             )}
+          </View>
+          <View style={styles.input}>
+            <Text className="text-base font-semibold text-gray-600">
+              Booking Close Date
+            </Text>
             <TouchableOpacity onPress={() => setShowBookingClosePicker(true)}>
               <TextInput
                 editable={false}
-                className={`border py-2 mb-3 w-full border-slate-500/50 rounded-lg text-black placeholder:text-base  px-3 `}
+                className="py-2 w-full rounded-lg text-black placeholder:text-base"
                 value={
                   bookingCloseDate
                     ? format(bookingCloseDate, "yyyy-MM-dd")
@@ -303,14 +350,21 @@ const EditTour = () => {
               />
             )}
           </View>
-          <TextInput
-            placeholder={tourDetails.tour_cost.toString()}
-            value={costPerPerson}
-            placeholderTextColor="gray"
-            onChangeText={setCostPerPerson}
-            keyboardType="numeric"
-            style={styles.input}
-          />
+
+          {/* Cost Per Person */}
+          <View style={styles.input}>
+            <Text className="text-base font-semibold text-gray-600">
+              Cost Per Person
+            </Text>
+            <TextInput
+              placeholder={tourDetails.tour_cost.toString()}
+              value={costPerPerson}
+              placeholderTextColor="gray"
+              onChangeText={setCostPerPerson}
+              keyboardType="numeric"
+              className="text-black text-lg mt-1"
+            />
+          </View>
           <View style={styles.switchContainer}>
             <Text style={styles.switchLabel}>Admin Can Reject Booking?</Text>
             <Switch
@@ -382,7 +436,7 @@ const styles = StyleSheet.create({
   },
   input: {
     width: "100%",
-    paddingVertical: height * 0.015,
+    paddingVertical: height * 0.009,
     paddingHorizontal: width * 0.03,
     borderRadius: 10,
     borderColor: "gray",
