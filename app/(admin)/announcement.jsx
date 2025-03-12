@@ -13,7 +13,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { Modalize } from "react-native-modalize";
 import DropDownPicker from "react-native-dropdown-picker";
 import { useSelector } from "react-redux";
-import { sendNotificaton } from "../../utils/pushNotification";
 import { ActivityIndicator } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { showError, showSuccess } from "../../utils/toastHelper";
@@ -46,7 +45,17 @@ const AnnouncementScreen = () => {
     };
 
     try {
-      const response = await sendNotificaton(body);
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_BASE_URL}/api/notification/create`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body),
+        }
+      );
+      console.log(await response.json());
       if (!response.ok) {
         throw new Error("Failed to send announcement.");
       }

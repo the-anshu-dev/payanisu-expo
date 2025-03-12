@@ -16,9 +16,11 @@ const Header = () => {
   const { width, height } = useWindowDimensions();
 
   const data = useSelector((state) => state.user);
-  const { user } = data;
+  const { user, profile } = data;
 
   const route = user ? "/Menu" : "/login";
+
+  const profileRoute = profile ? "/profile" : "/editProfile";
 
   return (
     <SafeAreaView>
@@ -46,7 +48,7 @@ const Header = () => {
           </View>
           <TouchableOpacity
             activeOpacity={0.9}
-            onPress={() => router.push("/profile")}
+            onPress={() => router.push(profileRoute)}
           >
             <View className="h-12 w-12 rounded-full border-2 border-green-700 p-0.5 overflow-hidden">
               <Image

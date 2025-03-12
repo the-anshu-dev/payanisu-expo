@@ -76,7 +76,6 @@ const EditProfile = () => {
     setLoading(true);
 
     try {
-
       const body = JSON.stringify({
         email: user?.email,
         name,
@@ -88,15 +87,15 @@ const EditProfile = () => {
         address,
         id_type: idProofType,
         id_number: identityProofNumber,
-        info
-      })
+        info,
+      });
 
       const response = await fetch(
         `${process.env.EXPO_PUBLIC_BASE_URL}/api/users/createProfile`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body
+          body,
         }
       );
 
@@ -112,7 +111,9 @@ const EditProfile = () => {
         throw new Error(errorMessage);
       }
 
-      const { user: { email } } = result;
+      const {
+        user: { email },
+      } = result;
       await fetchProfile(email);
       showSuccess("Profile Created!");
       router.back();
@@ -130,10 +131,13 @@ const EditProfile = () => {
 
   const fetchProfile = async (email) => {
     try {
-      const profileResponse = await fetch(`${process.env.EXPO_PUBLIC_BASE_URL}/api/users/getProfile`, {
-        method: "GET",
-        headers: { "Content-Type": "application/json", email },
-      })
+      const profileResponse = await fetch(
+        `${process.env.EXPO_PUBLIC_BASE_URL}/api/users/getProfile`,
+        {
+          method: "GET",
+          headers: { "Content-Type": "application/json", email },
+        }
+      );
 
       if (profileResponse.ok) {
         const profileData = await profileResponse.json();
@@ -147,9 +151,12 @@ const EditProfile = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']}>
-      <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
-        <View style={styles.innerContainer} >
+    <SafeAreaView style={styles.container} edges={["left", "right", "bottom"]}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContainer}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.innerContainer}>
           {error && (
             <View style={styles.errorContainer}>
               <Ionicons name="warning-outline" size={24} color="red" />
@@ -214,7 +221,11 @@ const EditProfile = () => {
             value={address}
           />
           <View style={styles.pickerContainer}>
-            <Picker selectedValue={idProofType} onValueChange={setIdProofType} collapsable={true}>
+            <Picker
+              selectedValue={idProofType}
+              onValueChange={setIdProofType}
+              collapsable={true}
+            >
               <Picker.Item label="Select ID Type" value={null} />
               <Picker.Item label="Aadhar Card" value="Aadhar" />
               <Picker.Item label="Driving License" value="DL" />
@@ -246,11 +257,11 @@ const EditProfile = () => {
         >
           <Text style={styles.cancelText}>Cancel</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={handleUpdate} style={styles.submitButton} >
+        <TouchableOpacity onPress={handleUpdate} style={styles.submitButton}>
           {loading ? (
             <ActivityIndicator size={24} color="#fff" />
           ) : (
-            <Text style={styles.submitText}>Create Profile</Text>
+            <Text style={styles.submitText}>Save</Text>
           )}
         </TouchableOpacity>
       </View>
@@ -260,7 +271,14 @@ const EditProfile = () => {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  errorContainer: { display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: 16, gap: 12 },
+  errorContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 16,
+    gap: 12,
+  },
   errorText: { color: "red", fontSize: 16 },
   scrollContainer: { flexGrow: 1, paddingBottom: 50 },
   innerContainer: { paddingHorizontal: 16 },
@@ -272,13 +290,47 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginTop: 12,
   },
-  pickerContainer: { marginTop: 12, borderWidth: 1, borderRadius: 10, borderColor: "gray" },
-  buttonContainer: { display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center", paddingVertical: 5, gap: 15 },
-  submitButton: { backgroundColor: "#228B22", borderRadius: 10, width: width * 0.4, paddingVertical: 8 },
-  cancelButton: { borderColor: "#228B22", borderWidth: 1, borderRadius: 10, width: width * 0.4, paddingVertical: 8 },
-  submitText: { textAlign: "center", fontSize: 16, fontWeight: "600", color: "#fff" },
-  cancelText: { textAlign: "center", fontSize: 16, fontWeight: "600", color: "#000" },
-  textCol: { color: "#fff" }
+  pickerContainer: {
+    marginTop: 12,
+    borderWidth: 1,
+    borderRadius: 10,
+    borderColor: "gray",
+  },
+  buttonContainer: {
+    backgroundColor: "#fff",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: 5,
+    gap: 15,
+  },
+  submitButton: {
+    backgroundColor: "#228B22",
+    borderRadius: 10,
+    width: width * 0.45,
+    paddingVertical: 10,
+  },
+  cancelButton: {
+    borderColor: "#228B22",
+    borderWidth: 1,
+    borderRadius: 10,
+    width: width * 0.45,
+    paddingVertical: 10,
+  },
+  submitText: {
+    textAlign: "center",
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#fff",
+  },
+  cancelText: {
+    textAlign: "center",
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#000",
+  },
+  textCol: { color: "#fff" },
 });
 
 export default EditProfile;

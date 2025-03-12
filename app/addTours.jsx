@@ -182,7 +182,7 @@ const addTours = () => {
       router.back();
     } catch (err) {
       console.error("Error submitting tour:", err);
-      setError("Error submitting tour. Please try again.");
+      setError("Error whilte creating tour. Please try again.");
     } finally {
       setLoading(false);
     }

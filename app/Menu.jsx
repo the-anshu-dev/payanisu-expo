@@ -10,7 +10,7 @@ import { StyleSheet } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { setUser } from "../redux/slices/userSlice";
+import { setProfile, setUser } from "../redux/slices/userSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { showError, showSuccess } from "../utils/toastHelper";
 
@@ -36,6 +36,7 @@ const Menu = () => {
     try {
       await AsyncStorage.removeItem("user");
       dispatch(setUser(null));
+      dispatch(setProfile(null));
       showSuccess("Logged Out");
       router.replace("/login");
     } catch (error) {
@@ -71,7 +72,7 @@ const Menu = () => {
           {loggingOut ? (
             <ActivityIndicator size={"small"} color={"white"} />
           ) : (
-            <Text style={{ color: "black", fontWeight: "600", fontSize: 16 }}>
+            <Text style={{ color: "black", fontWeight: "600", fontSize: 18 }}>
               Log Out
             </Text>
           )}
@@ -106,17 +107,7 @@ const options = [
     id: "tc",
     name: "Terms and Conditions",
     route: "/terms",
-  },
-  {
-    id: "ntf",
-    name: "Notification",
-    route: "/notification",
-  },
-  {
-    id: "olh",
-    name: "Offline Mode",
-    route: "/(offlinemode)/mytours",
-  },
+  }
 ];
 
 const styles = StyleSheet.create({
@@ -142,20 +133,22 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 20,
     width: width,
-    height: height * 0.05,
+    height: height * 0.06,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
   },
   logOutButton: {
-    width: "70%",
+    width: "90%",
+    elevation: 0.9,
+    backgroundColor: "#fff",
     color: "#000",
     height: "100%",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "gray",
+    borderColor: "#D3D3D3",
     borderRadius: 10,
   },
 });

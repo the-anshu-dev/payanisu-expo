@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import CheckPointElement from "./UI/CheckPointElement";
+import { Ionicons } from "@expo/vector-icons";
 
 const MyTourCheckPointsListView = ({
   checkPoints,

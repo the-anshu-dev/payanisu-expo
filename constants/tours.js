@@ -2,7 +2,6 @@ export const tours = [
   {
     id: 1,
     cost: 5000,
-
     images: [
       "https://images.pexels.com/photos/2450296/pexels-photo-2450296.jpeg?auto=compress&cs=tinysrgb&w=600",
       "https://images.pexels.com/photos/2430446/pexels-photo-2430446.jpeg?auto=compress&cs=tinysrgb&w=600",

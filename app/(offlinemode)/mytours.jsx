@@ -6,7 +6,6 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
 import TourCard from '../../components/offline/TourCard';
 import { checkNetworkStatus } from '../../utils/offlineLocationHelper';
-import { router } from 'expo-router';
 
 const { height, width } = Dimensions.get("window");
 
