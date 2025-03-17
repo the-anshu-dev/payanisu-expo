@@ -256,7 +256,7 @@ const Page = () => {
               </View>
               <View className="h-fit w-full rounded-xl overflow-hidden mt-2 border border-gray-500/50">
                 <MapView
-                  className="h-[350px] w-full rounded-xl"
+                  style={{ width: "100%", height: 400 }}
                   region={region}
                   onPress={handleMapPress}
                 >
@@ -272,7 +272,7 @@ const Page = () => {
           activeOpacity={0.9}
           onPress={handleAddBoardingPoint}
           style={{
-            width: width * 0.7,
+            width: width * 0.9,
             backgroundColor: "green",
             paddingVertical: 12,
             borderRadius: 8,

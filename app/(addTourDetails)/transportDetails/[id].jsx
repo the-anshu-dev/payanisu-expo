@@ -8,9 +8,9 @@ import {
   ActivityIndicator,
   SafeAreaView,
 } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { TouchableOpacity } from "react-native";
-import { router, useLocalSearchParams } from "expo-router";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { format } from "date-fns";
 import { Modalize } from "react-native-modalize";
@@ -161,9 +161,11 @@ const TransportDetails = () => {
     }
   };
 
-  useEffect(() => {
-    onRefresh();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      onRefresh();
+    }, [])
+  );
 
   return (
     <SafeAreaView style={{ height: "100%", width: "100%" }} edges={["right", "bottom", "left"]}>
@@ -195,7 +197,7 @@ const TransportDetails = () => {
                     index
                   ) => (
                     <BoardingPointCard
-                      key={`${_id}-${boardingPointName}-${index}`}
+                      key={index}
                       name={boardingPointName}
                       date={boardingPointDate}
                       time={boardingPointTime}
