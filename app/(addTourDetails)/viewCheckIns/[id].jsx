@@ -17,6 +17,7 @@ import { format } from "date-fns";
 import { ActivityIndicator } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { showError, showSuccess } from "../../../utils/toastHelper";
+import * as Crypto from "expo-crypto";
 
 const { width, height } = Dimensions.get("window");
 
@@ -58,7 +59,7 @@ const ViewCheckIns = () => {
 
     return [
       ...members,
-      ...Array(placeholdersNeeded).fill({ _id: `placeholder`, placeholder: true }),
+      ...Array(placeholdersNeeded).fill({ _id: Crypto.randomUUID(), placeholder: true }),
     ];
   };
 

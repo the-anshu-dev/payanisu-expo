@@ -32,18 +32,12 @@ const INITIAL_REGION = {
 
 const Page = () => {
   const { id } = useLocalSearchParams();
-
   const googlePlacesRef = useRef();
+  
   const [region, setRegion] = useState(INITIAL_REGION);
-  const [markerPosition, setMarkerPosition] = useState({
-    latitude: INITIAL_REGION.latitude,
-    longitude: INITIAL_REGION.longitude,
-  });
+  const [markerPosition, setMarkerPosition] = useState(INITIAL_REGION);
   const [selectedAddress, setSelectedAddress] = useState("");
-  const [coordinates, setCoordinates] = useState({
-    latitude: null,
-    longitude: null,
-  });
+  const [coordinates, setCoordinates] = useState({ latitude: null, longitude: null });
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -61,6 +55,7 @@ const Page = () => {
       }
       const location = await Location.getCurrentPositionAsync({});
       const { latitude, longitude } = location.coords;
+
       setRegion((prev) => ({ ...prev, latitude, longitude }));
       setMarkerPosition({ latitude, longitude });
       setCoordinates({ latitude, longitude });
@@ -79,7 +74,9 @@ const Page = () => {
       if (data.results?.[0]) {
         const address = data.results[0].formatted_address;
         setSelectedAddress(address);
-        googlePlacesRef.current?.setAddressText(address);
+        if (googlePlacesRef.current) {
+          googlePlacesRef.current.setAddressText(address);
+        }
       }
     } catch (error) {
       console.error("Error fetching address:", error);
@@ -98,8 +95,8 @@ const Page = () => {
     };
 
     setRegion(newRegion);
-    setCoordinates({ latitude: lat, longitude: lng });
     setMarkerPosition({ latitude: lat, longitude: lng });
+    setCoordinates({ latitude: lat, longitude: lng });
     setSelectedAddress(details.formatted_address);
   };
 
@@ -107,20 +104,20 @@ const Page = () => {
     const { latitude, longitude } = event.nativeEvent.coordinate;
     setMarkerPosition({ latitude, longitude });
     setCoordinates({ latitude, longitude });
+    setRegion((prev) => ({ ...prev, latitude, longitude }));
     await reverseGeocode(latitude, longitude);
   };
 
   const handleAddCheckPoint = async () => {
-    const { title, description, locationType } = formData;
     const { latitude, longitude } = coordinates;
 
     if (!id || !title || !description || !locationType) {
-      showWarning("All fields required");
+      showWarning("All fields are required");
       return;
     }
 
     if (locationType === "Geo Tagging" && (!latitude || !longitude)) {
-      showWarning("Please select location.");
+      showWarning("Please select a location.");
       return;
     }
 
