@@ -33,11 +33,14 @@ const INITIAL_REGION = {
 const Page = () => {
   const { id } = useLocalSearchParams();
   const googlePlacesRef = useRef();
-  
+
   const [region, setRegion] = useState(INITIAL_REGION);
   const [markerPosition, setMarkerPosition] = useState(INITIAL_REGION);
   const [selectedAddress, setSelectedAddress] = useState("");
-  const [coordinates, setCoordinates] = useState({ latitude: null, longitude: null });
+  const [coordinates, setCoordinates] = useState({
+    latitude: null,
+    longitude: null,
+  });
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -214,7 +217,7 @@ const Page = () => {
                     handleLocationSelect(details)
                   }
                   query={{
-                    key: "AIzaSyAWiZa_f1BStr9sDkGGJdDvmOV76-SVoFo",
+                    key: apiKey,
                     language: "en",
                   }}
                   styles={{
