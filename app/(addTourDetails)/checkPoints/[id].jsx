@@ -7,7 +7,7 @@ import {
   Dimensions,
   RefreshControl,
 } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { FontAwesome6, Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import MarkerIcon from "../../../assets/marker-pin.svg";
@@ -15,7 +15,7 @@ import EditIcon from "../../../assets/edit.svg";
 import UserIcon from "../../../assets/user.svg";
 import { Modalize } from "react-native-modalize";
 import MapView, { Marker } from "react-native-maps";
-import { router, useLocalSearchParams } from "expo-router";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { shorten } from "../../../components/UI/PostComponent";
 import { ActivityIndicator } from "react-native-paper";
 import * as FileSystem from "expo-file-system";
@@ -34,14 +34,13 @@ const { height, width } = Dimensions.get("window");
 
 const Checkpoints = () => {
   const { id } = useLocalSearchParams();
+  const dispatch = useDispatch();
 
   const [qrUrl, setQrUrl] = useState();
   const [allCheckPoints, setAllCheckPoints] = useState([]);
   const [loading, setLoading] = useState(false);
   const [qrLoading, setQrLoading] = useState(false);
-
   const [editingCheckPointData, setEditingCheckPointData] = useState({});
-
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
 
@@ -49,14 +48,31 @@ const Checkpoints = () => {
   const viewMapRef = useRef(null);
   const downloadQRref = useRef(null);
 
-  const dispatch = useDispatch();
+  const [region, setRegion] = useState({
+    latitude: 12.9716,
+    longitude: 77.5946,
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+  });
+
+  const fetchAPI = useCallback(async (url, options = {}) => {
+    try {
+      const response = await fetch(url, options);
+      if (!response.ok) {
+        throw new Error("Request failed");
+      }
+      return await response.json();
+    } catch (error) {
+      showError(error.message || "Something went wrong.");
+    }
+  }, []);
 
   const handleOpenEditSheet = (id) => {
     setEditingCheckPointData(allCheckPoints.find((point) => point._id === id));
     editCheckPointRef.current?.open();
   };
 
-  const handleQr = async () => {
+  const handleQr = useCallback(async () => {
     setQrLoading(true);
     try {
       const qr = await fetch(
@@ -71,141 +87,100 @@ const Checkpoints = () => {
     } finally {
       setQrLoading(false);
     }
-  };
-
-  const handleQrModal = async () => {
-    await handleQr();
-  };
+  }, [id]);
 
   const handleDownloadQr = async () => {
-    if (!qrUrl) {
-      return;
-    }
+    if (!qrUrl) return;
+
     try {
       const { status } = await MediaLibrary.requestPermissionsAsync();
       if (status !== "granted") {
-        showWarning("We need access to your media library to save the image.");
-        return;
+        return showWarning("We need access to save the QR code.");
       }
 
       const fileUri = FileSystem.documentDirectory + "qrcode.png";
-
       const { uri } = await FileSystem.downloadAsync(qrUrl, fileUri);
-
       const asset = await MediaLibrary.createAssetAsync(uri);
-
       const album = await MediaLibrary.getAlbumAsync("Download");
 
-      if (album == null) {
-        await MediaLibrary.createAlbumAsync("Download", asset, false);
-      } else {
-        await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
-      }
-      showSuccess("QR code downloaded and saved to your gallery!");
+      album
+        ? await MediaLibrary.addAssetsToAlbumAsync([asset], album, false)
+        : await MediaLibrary.createAlbumAsync("Download", asset, false);
+
+      showSuccess("QR code saved to your gallery!");
     } catch (error) {
-      showError(error.message || "Failed to download the image.");
+      showError(error.message || "Failed to download QR code.");
     }
   };
 
-  const handleGetAllCheckPoints = async () => {
+  const handleGetAllCheckPoints = useCallback(async () => {
     setLoading(true);
-    try {
-      const res = await fetch(
-        `${process.env.EXPO_PUBLIC_BASE_URL}/api/get-points?tourId=${id}`
-      );
-
-      if (res.status !== 200) {
-        throw new Error("Failed to get checkpoints");
-      }
-      const data = await res.json();
+    const data = await fetchAPI(
+      `${process.env.EXPO_PUBLIC_BASE_URL}/api/get-points?tourId=${id}`
+    );
+    if (data) {
       setAllCheckPoints(data);
       dispatch(setCheckPoints(data));
-    } catch (error) {
-      console.log("Error:", error);
-    } finally {
-      setLoading(false);
     }
-  };
-
-  const [region, setRegion] = useState({
-    latitude: 12.9716,
-    longitude: 77.5946,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421,
-  });
+    setLoading(false);
+  }, [id, dispatch, fetchAPI]);
 
   const getUserLocation = async () => {
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
-        showWarning("Location permission is required");
-        return;
+        return showWarning("Location permission is required.");
       }
 
-      const location = await Location.getCurrentPositionAsync({});
-      setRegion({
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      });
+      const { coords } = await Location.getCurrentPositionAsync({});
+      setRegion((prev) => ({
+        ...prev,
+        latitude: coords.latitude,
+        longitude: coords.longitude,
+      }));
     } catch (error) {
-      showError(error.message || "Failed to get current location");
+      showError(error.message || "Failed to get location.");
     }
   };
 
   const handleCheckpointActive = async (id) => {
-    try {
-      const response = await fetch(
-        `${process.env.EXPO_PUBLIC_BASE_URL}/api/update-point?id=${id}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ activated: true }),
-        }
-      );
-      if (response.status !== 200) {
-        throw new Error("Failed to update checkpoint");
+    const response = await fetchAPI(
+      `${process.env.EXPO_PUBLIC_BASE_URL}/api/update-point?id=${id}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ activated: true }),
       }
-      showSuccess("Checkpoint Activated.");
-    } catch (error) {
-      showError(error.message || "Please try again.");
-    }
+    );
+    if (response) showSuccess("Checkpoint Activated.");
   };
 
   const handleEditCheckpoint = async (id) => {
-    try {
-      const response = await fetch(
-        `${process.env.EXPO_PUBLIC_BASE_URL}/api/update-point?id=${id}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ name, description }),
-        }
-      );
-      if (response.status !== 200) {
-        throw new Error("Failed to update checkpoint");
+    const response = await fetchAPI(
+      `${process.env.EXPO_PUBLIC_BASE_URL}/api/update-point?id=${id}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, description }),
       }
+    );
+    if (response) {
       showSuccess("Checkpoint Updated.");
       onRefresh();
       editCheckPointRef.current?.close();
-    } catch (error) {
-      showError(error.message || "Please try again.");
     }
   };
+
+  const onRefresh = useCallback(() => {
+    handleGetAllCheckPoints();
+  }, [handleGetAllCheckPoints]);
 
   useEffect(() => {
     handleGetAllCheckPoints();
     getUserLocation();
   }, []);
 
-  const onRefresh = () => {
-    handleGetAllCheckPoints();
-  };
+  useFocusEffect(useCallback(() => onRefresh(), [onRefresh]));
 
   if (loading) {
     return (
@@ -258,7 +233,7 @@ const Checkpoints = () => {
         >
           <TouchableOpacity
             activeOpacity={0.9}
-            onPress={handleQrModal}
+            onPress={handleQr}
             style={{
               width: width * 0.43,
               backgroundColor: "gray",
