@@ -141,7 +141,7 @@ const MyTourDetails = () => {
             activeOpacity={0.9}
           >
             <View
-              style={{ width: width * 0.4 }}
+              style={{ width: width * 0.45 }}
               className={`flex flex-row justify-center items-center bg-gray-500 h-12 gap-2 rounded-lg`}
             >
               <Ionicons

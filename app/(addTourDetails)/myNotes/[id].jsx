@@ -1,5 +1,7 @@
 import {
-  View, Text, ScrollView,
+  View,
+  Text,
+  ScrollView,
   TextInput,
   TouchableOpacity,
   Dimensions,
@@ -10,7 +12,11 @@ import TrashIcon from "../../../assets/trash-04.svg";
 import { ActivityIndicator, Checkbox } from "react-native-paper";
 import { Modalize } from "react-native-modalize";
 import { Ionicons } from "@expo/vector-icons";
-import { showError, showSuccess, showWarning } from "../../../utils/toastHelper";
+import {
+  showError,
+  showSuccess,
+  showWarning,
+} from "../../../utils/toastHelper";
 const { height, width } = Dimensions.get("window");
 
 const Mynotes = () => {
@@ -51,6 +57,8 @@ const Mynotes = () => {
       }
       showSuccess("Note Added.");
       addNotesRef.current?.close();
+      setTitle("");
+      setDescription("");
       handleGetNotes();
     } catch (error) {
       showError(error.message || "Please try again.");
@@ -167,18 +175,25 @@ const Mynotes = () => {
             </ScrollView>
           )}
         </View>
-        <View className="w-full absolute bottom-0 flex flex-row justify-center items-center h-16">
+        <View className="w-full absolute bottom-0 flex flex-row justify-center items-center h-16 mb-2">
           <TouchableOpacity
             activeOpacity={0.9}
             onPress={() => addNotesRef.current?.open()}
             style={{
-              width: width * 0.7,
+              width: width * 0.9,
               backgroundColor: "#228B22",
               paddingVertical: 12,
               borderRadius: 8,
             }}
           >
-            <Text style={{ textAlign: "center", color: "#fff" }}>
+            <Text
+              style={{
+                textAlign: "center",
+                color: "#fff",
+                fontSize: 16,
+                fontWeight: "600",
+              }}
+            >
               Add Notes
             </Text>
           </TouchableOpacity>
@@ -187,24 +202,24 @@ const Mynotes = () => {
       <Modalize ref={addNotesRef} adjustToContentHeight snapPoint={500}>
         <View className="h-96 px-6 py-4 flex justify-center gap-2 items-center">
           <View className="w-full flex justify-start items-center">
-            <Text className=" text-xl font-semibold">Add Note</Text>
+            <Text className="text-2xl font-semibold">Add Note</Text>
             <View className="border mt-6 border-gray-500/50 p-1 px-2 rounded-lg w-full">
-              <Text className="text-xs text-gray-500/70">Title</Text>
+              <Text className="text-sm text-gray-500/70">Title</Text>
               <TextInput
                 placeholder="Enter Title"
                 onChangeText={setTitle}
-                className="text-black text-base mt-1"
+                className="text-black text-lg mt-1"
               />
             </View>
             <View className="border mt-3 border-gray-500/50 p-1 px-2 rounded-lg w-full">
-              <Text className="text-xs text-gray-500/70">Description</Text>
+              <Text className="text-sm text-gray-500/70">Description</Text>
               <TextInput
                 multiline={true}
                 numberOfLines={5}
                 onChangeText={setDescription}
                 textAlignVertical="top"
                 placeholder="Enter description"
-                className="text-black text-base mt-1"
+                className="text-black text-lg mt-1"
               />
             </View>
           </View>
@@ -213,7 +228,7 @@ const Mynotes = () => {
               activeOpacity={0.9}
               onPress={handleAddNotes}
               style={{
-                width: width * 0.7,
+                width: width * 0.9,
                 backgroundColor: "#228B22",
                 paddingVertical: 12,
                 borderRadius: 8,
@@ -222,7 +237,14 @@ const Mynotes = () => {
               {loading ? (
                 <ActivityIndicator size={"small"} color="white" />
               ) : (
-                <Text style={{ textAlign: "center", color: "#fff" }}>
+                <Text
+                  style={{
+                    textAlign: "center",
+                    color: "#fff",
+                    fontWeight: 600,
+                    fontSize: 16,
+                  }}
+                >
                   Submit
                 </Text>
               )}

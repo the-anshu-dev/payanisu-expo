@@ -363,13 +363,13 @@ const DetailsScreen = () => {
         >
           <TouchableOpacity onPress={handleInterested} activeOpacity={0.9}>
             <View
-              style={{ width: width * 0.4 }}
-              className="bg-slate-500 rounded-lg h-12 flex justify-center items-center "
+              style={{ width: width * 0.45 }}
+              className="bg-slate-500 rounded-lg h-14 flex justify-center items-center "
             >
               {loading ? (
                 <ActivityIndicator color="white" size={"small"} />
               ) : (
-                <Text className="text-white text-center text-md font-semibold">
+                <Text className="text-white text-center text-md font-semibold text-lg">
                   Interested
                 </Text>
               )}
@@ -377,10 +377,10 @@ const DetailsScreen = () => {
           </TouchableOpacity>
           <TouchableOpacity onPress={handleReserveButton} activeOpacity={0.9}>
             <View
-              style={{ width: width * 0.4 }}
-              className="py-3 bg-[#228B22] rounded-lg h-12 flex justify-center items-center"
+              style={{ width: width * 0.45 }}
+              className="py-3 bg-[#228B22] rounded-lg h-14 flex justify-center items-center"
             >
-              <Text className="text-center text-white font-semibold">
+              <Text className="text-center text-white font-semibold text-lg">
                 Reserve Seat
               </Text>
             </View>
@@ -468,7 +468,7 @@ const DetailsScreen = () => {
                 }`}</Text>
               </View>
               <TouchableOpacity activeOpacity={0.9} onPress={handlePayNow}>
-                <View className="h-10 w-40 flex justify-center items-center rounded-lg bg-[#228B22]">
+                <View className="h-12 w-40 flex justify-center items-center rounded-lg bg-[#228B22]">
                   <Text className="text-white font-semibold tracking-wider">
                     Pay Now
                   </Text>

@@ -9,7 +9,7 @@ import {
   Alert,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { router, useLocalSearchParams } from "expo-router";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { exportDataToExcel } from "../../../utils/helpers";
 import { ActivityIndicator } from "react-native-paper";
 import { Ionicons } from "@expo/vector-icons";
@@ -80,9 +80,9 @@ const Accomodation = () => {
     }
   };
 
-  useEffect(() => {
-    onRefresh();
-  }, []);
+  useFocusEffect(() => {
+    getAllGuestHouses();
+  });
 
   return (
     <View

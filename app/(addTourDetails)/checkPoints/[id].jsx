@@ -229,13 +229,13 @@ const Checkpoints = () => {
         )}
         <View
           style={{ width: width }}
-          className="w-full absolute bottom-0 flex flex-row justify-between items-center h-16 bg-white px-4"
+          className="w-full absolute bottom-0 flex flex-row justify-between items-center h-fit bg-white px-4 mb-2 pt-3"
         >
           <TouchableOpacity
             activeOpacity={0.9}
             onPress={handleQr}
             style={{
-              width: width * 0.43,
+              width: width * 0.45,
               backgroundColor: "gray",
               paddingVertical: 12,
               borderRadius: 8,
@@ -244,7 +244,14 @@ const Checkpoints = () => {
             {qrLoading ? (
               <ActivityIndicator color="white" size={20} />
             ) : (
-              <Text style={{ textAlign: "center", color: "#fff" }}>
+              <Text
+                style={{
+                  textAlign: "center",
+                  color: "#fff",
+                  fontWeight: 600,
+                  fontSize: 16,
+                }}
+              >
                 Download QR code
               </Text>
             )}
@@ -253,13 +260,20 @@ const Checkpoints = () => {
             activeOpacity={0.9}
             onPress={() => router.push(`/createCheckpoints/${id}`)}
             style={{
-              width: width * 0.43,
+              width: width * 0.45,
               backgroundColor: "#228B22",
               paddingVertical: 12,
               borderRadius: 8,
             }}
           >
-            <Text style={{ textAlign: "center", color: "#fff" }}>
+            <Text
+              style={{
+                textAlign: "center",
+                color: "#fff",
+                fontWeight: 600,
+                fontSize: 16,
+              }}
+            >
               Add Check Point
             </Text>
           </TouchableOpacity>
@@ -329,6 +343,7 @@ const Checkpoints = () => {
               <MapView
                 style={{ height: "100%", width: "100%" }}
                 region={region}
+                mapType="standard"
                 showsUserLocation={true}
                 showsMyLocationButton={true}
               >

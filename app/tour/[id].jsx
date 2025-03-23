@@ -200,15 +200,16 @@ const TourDetails = () => {
           ))}
         </View>
       </ScrollView>
-      <View className="w-full flex flex-row justify-between items-center h-16 px-6">
+      <View className="w-full flex flex-row justify-between items-center h-16 px-4 mb-2">
         <TouchableOpacity
           activeOpacity={0.9}
           disabled={unPublishLoading}
           onPress={handleTourStatus}
           style={{
-            width: width * 0.4,
-            backgroundColor: tourDetail.status === false ? "#228B22" : "#414141",
-            height: 44,
+            width: width * 0.45,
+            backgroundColor:
+              tourDetail.status === false ? "#228B22" : "gray",
+            height: 48,
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
@@ -218,7 +219,14 @@ const TourDetails = () => {
           {unPublishLoading ? (
             <ActivityIndicator size={"small"} color="white" />
           ) : (
-            <Text style={{ textAlign: "center", color: "white" }}>
+            <Text
+              style={{
+                textAlign: "center",
+                color: "white",
+                fontWeight: 600,
+                fontSize: 18,
+              }}
+            >
               {tourDetail.status === false ? "Publish" : "Unpublish"} Tour
             </Text>
           )}
@@ -228,7 +236,7 @@ const TourDetails = () => {
           disabled={loading}
           onPress={handleDeleteTour}
           style={{
-            width: width * 0.4,
+            width: width * 0.45,
             height: 44,
             display: "flex",
             justifyContent: "center",
@@ -241,7 +249,14 @@ const TourDetails = () => {
           {loading ? (
             <ActivityIndicator size={"small"} color="red" />
           ) : (
-            <Text style={{ textAlign: "center", color: "red" }}>
+            <Text
+              style={{
+                textAlign: "center",
+                color: "red",
+                fontWeight: 600,
+                fontSize: 18,
+              }}
+            >
               Delete Tour
             </Text>
           )}

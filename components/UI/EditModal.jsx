@@ -34,6 +34,7 @@ const EditModal = ({
   ]);
 
   const [roomTypeValue, setRoomTypeValue] = useState(allocations[0].roomType);
+  
   const [roomTypeOptions, setRoomTypeOptions] = useState([
     { label: "AC", value: "AC" },
     { label: "Non-AC", value: "Non-AC" },
@@ -131,7 +132,9 @@ const EditModal = ({
             alignItems: "center",
           }}
         >
-          <Text style={{ fontWeight: "600", fontSize: 16 }}>Room 1</Text>
+          <Text style={{ fontWeight: "600", fontSize: 18 }}>
+            Edit Allocation
+          </Text>
         </View>
         <View
           style={{
@@ -262,6 +265,7 @@ const EditModal = ({
           display: "flex",
           justifyContent: "center",
           marginTop: 16,
+          paddingHorizontal: 8,
         }}
       >
         <TouchableOpacity
@@ -271,7 +275,7 @@ const EditModal = ({
             backgroundColor: "gray",
             height: 40,
             borderRadius: 8,
-            width: 130,
+            width: "50%",
             marginHorizontal: 5,
             display: "flex",
             justifyContent: "center",
@@ -287,7 +291,7 @@ const EditModal = ({
             backgroundColor: "#228B22",
             height: 40,
             borderRadius: 8,
-            width: 130,
+            width: "50%",
             marginHorizontal: 5,
             display: "flex",
             justifyContent: "center",

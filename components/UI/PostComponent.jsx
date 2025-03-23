@@ -30,7 +30,7 @@ const PostComponent = ({ post }) => {
         </View>
         <View className="mt-2 flex flex-row justify-start items-center gap-2">
           <Text className={`text-xs font-semibold tracking-wider `}>
-            {post.name}
+            {post.name?.split(" ")[0]}
           </Text>
           <View className="h-1.5 w-1.5 bg-gray-400 rounded-full" />
           <Text className={`text-xs font-semibold tracking-wider`}>

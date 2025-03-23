@@ -1,9 +1,4 @@
-import {
-  View,
-  ScrollView,
-  StyleSheet,
-  RefreshControl,
-} from "react-native";
+import { View, ScrollView, StyleSheet, RefreshControl } from "react-native";
 import React, { useEffect, useState } from "react";
 import Notifications from "../../components/UI/Notifications";
 import { StatusBar } from "expo-status-bar";
@@ -32,6 +27,14 @@ const NotificationsScreen = () => {
     }
   };
 
+  const onRefresh = async () => {
+    try {
+      await fetchData();
+    } catch (error) {
+      showError(error.message || "Please try again.");
+    }
+  };
+
   useEffect(() => {
     if (user) fetchData();
   }, [user]);
@@ -40,12 +43,21 @@ const NotificationsScreen = () => {
 
   return (
     <SafeAreaView style={styles.safeArea} edges={["left", "right", "bottom"]}>
-      <StatusBar style="dark" backgroundColor="#fff" translucent={true} animated />
+      <StatusBar
+        style="dark"
+        backgroundColor="#fff"
+        translucent={true}
+        animated
+      />
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContainer}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={fetchData} colors={["#228B22", "red", "blue"]} />
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={["#228B22", "red", "blue"]}
+          />
         }
       >
         <View style={styles.notificationsContainer}>
@@ -57,6 +69,7 @@ const NotificationsScreen = () => {
               content={notification?.content}
               seen={notification.seen}
               createdAt={notification.createdAt}
+              onRefresh={onRefresh}
             />
           ))}
         </View>

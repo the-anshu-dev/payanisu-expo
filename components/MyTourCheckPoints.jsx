@@ -51,7 +51,7 @@ const MyTourCheckPoints = ({ checkPoints = [] }) => {
 
   return (
     <View style={styles.screenContainer}>
-      <View className="rounded-xl overflow-hidden">
+      <View className="rounded-xl overflow-hidden px-4">
         <View className="w-full rounded-xl overflow-hidden mt-2 border border-gray-500/50">
           <MapView
             style={styles.mapViewStyle}

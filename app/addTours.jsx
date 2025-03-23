@@ -19,8 +19,8 @@ import { Image } from "expo-image";
 import { format } from "date-fns";
 import { uploadFilesToS3 } from "../utils/uploadFileHelper";
 import { Picker } from "@react-native-picker/picker";
-import * as DocumentPicker from 'expo-document-picker';
-
+import * as DocumentPicker from "expo-document-picker";
+import { showError } from "../utils/toastHelper";
 
 const { width, height } = Dimensions.get("window");
 
@@ -42,7 +42,7 @@ const addTours = () => {
   const [paymentGatewayEnabled, setPaymentGatewayEnabled] = useState(false);
   const [image, setImage] = useState([]);
 
-  const [consentForm, setConsentForm] = useState(null)
+  const [consentForm, setConsentForm] = useState(null);
 
   // date range picker
   const [startDate, setStartDate] = useState(null);
@@ -55,17 +55,15 @@ const addTours = () => {
   const pickPdf = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
-        type: 'application/pdf',
+        type: "application/pdf",
       });
       if (!result.canceled) {
-        setConsentForm(result.assets[0])
+        setConsentForm(result.assets[0]);
       }
     } catch (error) {
-      console.error('Error picking PDF:', error);
+      console.error("Error picking PDF:", error);
     }
   };
-
-  console.log(consentForm);
 
   const onChangeStart = (event, selectedDate) => {
     const currentDate = selectedDate || startDate;
@@ -103,6 +101,11 @@ const addTours = () => {
   };
 
   const submitForm = async () => {
+    if (error) {
+      showError(error);
+      return;
+    }
+
     if (
       !tourName ||
       !location ||
@@ -181,23 +184,22 @@ const addTours = () => {
       }
       router.back();
     } catch (err) {
-      console.error("Error submitting tour:", err);
       setError("Error whilte creating tour. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(()=>{
-    if(startDate && endDate && bookingCloseDate){
-      if(startDate > endDate){
-        setError("Start date should be less than end date")
+  useEffect(() => {
+    if (startDate && endDate && bookingCloseDate) {
+      if (startDate > endDate) {
+        setError("Start date should be less than end date");
       }
-      if(bookingCloseDate > startDate){
-        setError("Booking close date should be less than start date")
+      if (bookingCloseDate > startDate) {
+        setError("Booking close date should be less than start date");
       }
     }
-  },[startDate, endDate, bookingCloseDate])
+  }, [startDate, endDate, bookingCloseDate]);
 
   return (
     <View style={styles.container}>
@@ -366,25 +368,30 @@ const addTours = () => {
             />
           </View>
           <View className="w-full">
-            {
-              consentForm ?
-                <View className="flex flex-row justify-between item-center border border-[#228B22]w-full rounded-lg px-4 py-2">
-                  <View className="flex flex-row justify-center items-center gap-5">
-                    <Ionicons name="document-text-outline" color={"#228B22"} size={24} />
-                    <Text style={{ color: "#228B22", fontWeight: "400" }}>{consentForm?.name}</Text>
-                  </View>
-                  <TouchableOpacity onPress={() => setConsentForm(null)}>
-                    <Ionicons name="close-outline" size={24} color="red" />
-                  </TouchableOpacity>
+            {consentForm ? (
+              <View className="flex flex-row justify-between item-center border border-[#228B22]w-full rounded-lg px-4 py-2">
+                <View className="flex flex-row justify-center items-center gap-5">
+                  <Ionicons
+                    name="document-text-outline"
+                    color={"#228B22"}
+                    size={24}
+                  />
+                  <Text style={{ color: "#228B22", fontWeight: "400" }}>
+                    {consentForm?.name}
+                  </Text>
                 </View>
-                :
-                <View className="w-full">
-                  <TouchableOpacity onPress={pickPdf} style={styles.imagePicker}>
-                    <Ionicons name="add-circle" size={20} color="#228B22" />
-                    <Text style={styles.imagePickerText}>Add Consent Form</Text>
-                  </TouchableOpacity>
-                </View>
-            }
+                <TouchableOpacity onPress={() => setConsentForm(null)}>
+                  <Ionicons name="close-outline" size={24} color="red" />
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <View className="w-full">
+                <TouchableOpacity onPress={pickPdf} style={styles.imagePicker}>
+                  <Ionicons name="add-circle" size={20} color="#228B22" />
+                  <Text style={styles.imagePickerText}>Add Consent Form</Text>
+                </TouchableOpacity>
+              </View>
+            )}
           </View>
           <View className="w-full mt-3">
             {image.length > 0 ? (
@@ -404,9 +411,7 @@ const addTours = () => {
             ) : (
               <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
                 <Ionicons name="add-circle" size={20} color="#228B22" />
-                <Text style={styles.imagePickerText}>
-                  Add tour images
-                </Text>
+                <Text style={styles.imagePickerText}>Add tour images</Text>
               </TouchableOpacity>
             )}
           </View>

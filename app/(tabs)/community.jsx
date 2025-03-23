@@ -50,7 +50,9 @@ const Community = () => {
   const getAllPosts = async () => {
     setRefresh(true);
     try {
-      const res = await fetch(`${process.env.EXPO_PUBLIC_BASE_URL}/api/Post/get-posts`);
+      const res = await fetch(
+        `${process.env.EXPO_PUBLIC_BASE_URL}/api/Post/get-posts`
+      );
       const posts = await res.json();
       setAllPosts(posts.data);
     } catch (error) {
@@ -64,11 +66,18 @@ const Community = () => {
     if (!images.length || !text) return;
     setLoading(true);
     try {
-      const postRes = await fetch(`${process.env.EXPO_PUBLIC_BASE_URL}/api/Post/create-post`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userEmail: user.email, name: user.given_name, content: text }),
-      });
+      const postRes = await fetch(
+        `${process.env.EXPO_PUBLIC_BASE_URL}/api/Post/create-post`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userEmail: user.email,
+            name: user.given_name,
+            content: text,
+          }),
+        }
+      );
 
       if (postRes.status !== 201) throw new Error("Failed to post.");
       const res = await postRes.json();
@@ -90,7 +99,7 @@ const Community = () => {
     getAllPosts();
   }, []);
 
-  if (!user) return <Redirect href="/login" />
+  if (!user) return <Redirect href="/login" />;
 
   return (
     <SafeAreaView style={styles.safeArea} edges={["left", "right", "bottom"]}>
@@ -98,24 +107,45 @@ const Community = () => {
         <ScrollView
           contentContainerStyle={styles.scrollContainer}
           showsVerticalScrollIndicator={false}
-          refreshControl={<RefreshControl refreshing={refresh} onRefresh={getAllPosts} />}
+          refreshControl={
+            <RefreshControl refreshing={refresh} onRefresh={getAllPosts} />
+          }
         >
-          {allPosts.length > 0 ? <View className="w-full gap-3">
-            {allPosts.map((post, index) => (
-              <PostComponent key={index} post={post} />
-            ))}
-          </View> :
-            <View style={{ flex: 1, paddingVertical: 15, height: "100%", width: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
+          {allPosts.length > 0 ? (
+            <View className="w-full gap-3">
+              {allPosts.map((post, index) => (
+                <PostComponent key={index} post={post} />
+              ))}
+            </View>
+          ) : (
+            <View
+              style={{
+                flex: 1,
+                paddingVertical: 15,
+                height: "100%",
+                width: "100%",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
               <Text>No Posts Available</Text>
             </View>
-          }
+          )}
         </ScrollView>
         <View style={styles.shareButtonContainer}>
-          <TouchableOpacity onPress={() => addPostRef.current?.open()} style={styles.shareButton}>
+          <TouchableOpacity
+            onPress={() => addPostRef.current?.open()}
+            style={styles.shareButton}
+          >
             <Text style={styles.shareButtonText}>Share your experience</Text>
           </TouchableOpacity>
         </View>
-        <Modalize adjustToContentHeight ref={addPostRef} handlePosition="inside">
+        <Modalize
+          adjustToContentHeight
+          ref={addPostRef}
+          handlePosition="inside"
+        >
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Share your experience</Text>
             <TextInput
@@ -127,7 +157,10 @@ const Community = () => {
               placeholder="Write your thoughts...."
               style={styles.textInput}
             />
-            <TouchableOpacity onPress={pickImage} style={styles.addImagesButton}>
+            <TouchableOpacity
+              onPress={pickImage}
+              style={styles.addImagesButton}
+            >
               <Text style={styles.addImagesButtonText}>Add Images</Text>
             </TouchableOpacity>
             {images.length > 0 && (
@@ -135,7 +168,10 @@ const Community = () => {
                 {images.map((img, idx) => (
                   <View key={idx} style={styles.imageWrapper}>
                     <Image source={{ uri: img.uri }} style={styles.image} />
-                    <TouchableOpacity onPress={() => handleUnselect(img.uri)} style={styles.imageCloseButton}>
+                    <TouchableOpacity
+                      onPress={() => handleUnselect(img.uri)}
+                      style={styles.imageCloseButton}
+                    >
                       <Ionicons name="close-outline" size={14} color="red" />
                     </TouchableOpacity>
                   </View>
@@ -143,7 +179,11 @@ const Community = () => {
               </View>
             )}
             <TouchableOpacity onPress={handlePost} style={styles.postButton}>
-              {loading ? <ActivityIndicator color="white" /> : <Text style={styles.postButtonText}>Post</Text>}
+              {loading ? (
+                <ActivityIndicator color="white" />
+              ) : (
+                <Text style={styles.postButtonText}>Post</Text>
+              )}
             </TouchableOpacity>
           </View>
         </Modalize>
@@ -154,8 +194,19 @@ const Community = () => {
 
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: "#fff" },
-  scrollContainer: { paddingBottom: height * 0.1, display: "flex", justifyContent: "center", alignItems: "center" },
-  container: { paddingHorizontal: 12, paddingTop: 10, position: "relative", flex: 1, height: height },
+  scrollContainer: {
+    paddingBottom: height * 0.1,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  container: {
+    paddingHorizontal: 12,
+    paddingTop: 10,
+    position: "relative",
+    flex: 1,
+    height: height,
+  },
   shareButtonContainer: {
     position: "absolute",
     bottom: 0,
@@ -163,26 +214,56 @@ const styles = StyleSheet.create({
     height: height * 0.07,
     display: "flex",
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   shareButton: {
     backgroundColor: "#228B22",
     paddingVertical: 12,
     alignItems: "center",
     borderRadius: 8,
-    width: "80%"
+    width: width * 0.9,
   },
-  shareButtonText: { color: "white", fontWeight: "bold" },
+  shareButtonText: { color: "white", fontWeight: "bold", fontSize: 18 },
   modalContent: { padding: 20 },
   modalTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 10 },
-  textInput: { borderWidth: 1, borderColor: "gray", borderRadius: 8, padding: 10, height: 100 },
-  addImagesButton: { backgroundColor: "#228B22", padding: 10, borderRadius: 8, marginTop: 10, alignItems: "center" },
+  textInput: {
+    borderWidth: 1,
+    borderColor: "gray",
+    borderRadius: 8,
+    padding: 10,
+    height: 100,
+  },
+  addImagesButton: {
+    backgroundColor: "#228B22",
+    padding: 10,
+    borderRadius: 8,
+    marginTop: 10,
+    alignItems: "center",
+  },
   addImagesButtonText: { color: "white" },
-  imagesContainer: { display: "flex", flexDirection: "row", flexWrap: "wrap", marginTop: 10, justifyContent: "space-evenly" },
+  imagesContainer: {
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    marginTop: 10,
+    justifyContent: "space-evenly",
+  },
   imageWrapper: { margin: 5, position: "relative" },
   image: { width: 70, height: 70, borderRadius: 8 },
-  imageCloseButton: { position: "absolute", top: -5, right: -5, backgroundColor: "white", borderRadius: 12 },
-  postButton: { backgroundColor: "#228B22", padding: 10, borderRadius: 8, marginTop: 20, alignItems: "center" },
+  imageCloseButton: {
+    position: "absolute",
+    top: -5,
+    right: -5,
+    backgroundColor: "white",
+    borderRadius: 12,
+  },
+  postButton: {
+    backgroundColor: "#228B22",
+    padding: 10,
+    borderRadius: 8,
+    marginTop: 20,
+    alignItems: "center",
+  },
   postButtonText: { color: "white" },
 });
 

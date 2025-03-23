@@ -15,7 +15,7 @@ import { format } from "date-fns";
 
 const { height, width } = Dimensions.get("window");
 
-const Notifications = ({ id, title, content, seen, createdAt }) => {
+const Notifications = ({ id, title, content, seen, createdAt, onRefresh }) => {
   const { user } = useSelector((state) => state.user);
   const [modalVisible, setModalVisible] = useState(false);
   const [contentHeight, setContentHeight] = useState(0);
@@ -34,6 +34,7 @@ const Notifications = ({ id, title, content, seen, createdAt }) => {
       }
     }
     setModalVisible(true);
+    onRefresh();
   };
 
   const formattedDateTime = format(new Date(createdAt), "dd MMM yyyy h:mm a");

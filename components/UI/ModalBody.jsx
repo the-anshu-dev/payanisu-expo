@@ -109,9 +109,10 @@ const ModalBody = ({
             flexDirection: "row",
             justifyContent: "center",
             alignItems: "center",
+            marginBottom: 8,
           }}
         >
-          <Text style={{ fontWeight: "600", fontSize: 16 }}>Room 1</Text>
+          <Text style={{ fontWeight: "600", fontSize: 18 }}>Allocate Room</Text>
         </View>
         <View
           style={{
@@ -130,12 +131,12 @@ const ModalBody = ({
               elevation: 8,
             }}
           >
-            <Text style={{ fontSize: 12, color: "gray" }}>Room no</Text>
+            <Text style={{ fontSize: 12, color: "gray" }}>Room no.</Text>
             <TextInput
               keyboardType="number-pad"
-              placeholder="Number"
+              placeholder="Room number"
               onChangeText={(text) => setRoomNumber(text)}
-              style={{ marginTop: 4 }}
+              style={{ marginTop: 4, fontSize: 16 }}
             />
           </View>
           <View
@@ -151,6 +152,7 @@ const ModalBody = ({
             <DropDownPicker
               open={openDropdown === "occupancy"}
               setOpen={() => toggleOpen("occupancy")}
+              placeholder="Select occupancy"
               value={occupancyValue}
               items={occupancyOptions}
               setItems={setOccupancyOptions}
@@ -245,6 +247,7 @@ const ModalBody = ({
           display: "flex",
           justifyContent: "center",
           marginTop: 16,
+          paddingHorizontal: 8,
         }}
       >
         <TouchableOpacity
@@ -254,7 +257,7 @@ const ModalBody = ({
             backgroundColor: "gray",
             height: 40,
             borderRadius: 8,
-            width: 130,
+            width: "50%",
             marginHorizontal: 5,
             display: "flex",
             justifyContent: "center",
@@ -270,7 +273,7 @@ const ModalBody = ({
             backgroundColor: "#228B22",
             height: 40,
             borderRadius: 8,
-            width: 130,
+            width: "50%",
             marginHorizontal: 5,
             display: "flex",
             justifyContent: "center",

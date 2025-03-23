@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
     width: "100%",
     marginTop: height * 0.002,
     backgroundColor: "transparent",
-    paddingHorizontal: width * 0.07,
+    paddingHorizontal: width * 0.03,
   },
   actionButton: {
     display: "flex",
@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 6,
-    width: width * 0.4,
+    width: width * 0.45,
     paddingVertical: height * 0.01,
     paddingHorizontal: width * 0.01,
     marginVertical: height * 0.01,

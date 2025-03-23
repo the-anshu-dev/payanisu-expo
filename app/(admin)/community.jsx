@@ -257,6 +257,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   shareButtonText: {
+    width: "100%",
     color: "white",
     fontWeight: "bold",
     fontSize: height * 0.02,

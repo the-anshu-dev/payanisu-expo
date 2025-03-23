@@ -172,7 +172,7 @@ const EditTour = () => {
       >
         <View className="flex justify-center items-center">
           {error && (
-            <Text className="text-red-600 font-semibold text-lg">{error}</Text>
+            <Text className="text-red-600 font-semibold text-lg pt-3">{error}</Text>
           )}
         </View>
         <View style={styles.innerContainer}>
@@ -507,7 +507,7 @@ const styles = StyleSheet.create({
   submitButton: {
     display: "flex",
     position: "absolute",
-    bottom: height * 0.02,
+    bottom: height * 0.01,
     width: "100%",
     backgroundColor: "#228B22",
     height: height * 0.055,

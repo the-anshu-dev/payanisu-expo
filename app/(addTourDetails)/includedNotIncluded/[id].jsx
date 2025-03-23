@@ -165,7 +165,6 @@ const TourDetails = () => {
           )}
         </ScrollView>
       )}
-
       <TextInput
         style={styles.input}
         placeholder="Add new item"
