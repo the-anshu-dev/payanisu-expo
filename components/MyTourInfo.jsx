@@ -200,7 +200,7 @@ const MyTourInfo = ({ tour }) => {
             renderItem={CarouselImageRender}
           />
         </View>
-        <View className="flex flex-row justify-between items-center gap-2 bg-green-700 rounded-lg p-2 py-4 shadow-lg shadow-black px-4">
+        <View className="flex flex-row justify-between items-center gap-2 bg-[#228B22] rounded-lg p-2 py-4 shadow-lg shadow-black px-4">
           <View className="flex justify-center items-start gap-1">
             <Text className="text-white text-xs font-semibold">
               Booking Status :
@@ -240,7 +240,7 @@ const MyTourInfo = ({ tour }) => {
         </View>
         <View className="p-2 shadow-lg shadow-black bg-white rounded-lg">
           <View className="flex flex-row justify-left items-center gap-2 border-b border-gray-300/50 pb-1">
-            <Ionicons name="thumbs-up-outline" size={20} color={"green"} />
+            <Ionicons name="thumbs-up-outline" size={20} color={"#228B22"} />
             <Text className={`text-md font-semibold`}>What is included ?</Text>
           </View>
           <View className="px-1 mt-3 gap-2">
@@ -282,7 +282,7 @@ const MyTourInfo = ({ tour }) => {
         </View>
         <View className="p-2 shadow-lg shadow-black bg-white rounded-lg">
           <View className="flex flex-row justify-left items-center gap-2 border-b border-gray-300/50 pb-1">
-            <Ionicons name="bag-check-outline" size={20} color={"green"} />
+            <Ionicons name="bag-check-outline" size={20} color={"#228B22"} />
             <Text className={`text-md font-semibold`}>Bag Pack</Text>
           </View>
           <View className="px-1 mt-3 gap-2">
@@ -305,7 +305,7 @@ const MyTourInfo = ({ tour }) => {
             <Ionicons
               name="checkmark-done-circle-outline"
               size={20}
-              color={"green"}
+              color={"#228B22"}
             />
             <Text className={`text-md font-semibold`}>Check In Baggage</Text>
           </View>
@@ -326,7 +326,7 @@ const MyTourInfo = ({ tour }) => {
         </View>
         <View className="p-2 shadow-lg shadow-black bg-white rounded-lg">
           <View className="flex flex-row gap-2 justify-start items-center py-1 border-b border-gray-300/50">
-            <Ionicons name="bus" size={20} color={"green"} />
+            <Ionicons name="bus" size={20} color={"#228B22"} />
             <Text className={`font-bold`}>Transport Details</Text>
           </View>
           {allocatedTransport && allocatedTransport.length > 0 ? (
@@ -370,8 +370,8 @@ const MyTourInfo = ({ tour }) => {
                   activeOpacity={0.9}
                   className="mt-3 flex flex-row justify-start items-center gap-2"
                 >
-                  <Ionicons name="images" size={12} color={"green"} />
-                  <Text className={`font-semibold text-xs text-green-600`}>
+                  <Ionicons name="images" size={12} color={"#228B22"} />
+                  <Text className={`font-semibold text-xs text-[#228B22]`}>
                     View Bus Images
                   </Text>
                 </TouchableOpacity>
@@ -385,8 +385,8 @@ const MyTourInfo = ({ tour }) => {
                   }
                   className="mt-3 flex flex-row justify-start items-center gap-2"
                 >
-                  <Ionicons name="compass" size={12} color={"green"} />
-                  <Text className={`font-semibold text-xs text-green-600`}>
+                  <Ionicons name="compass" size={12} color={"#228B22"} />
+                  <Text className={`font-semibold text-xs text-[#228B22]`}>
                     View Direction
                   </Text>
                 </TouchableOpacity>
@@ -395,8 +395,8 @@ const MyTourInfo = ({ tour }) => {
                   activeOpacity={0.9}
                   className="mt-3 flex flex-row justify-start items-center gap-2"
                 >
-                  <Ionicons name="compass" size={12} color={"green"} />
-                  <Text className={`font-semibold text-xs text-green-600`}>
+                  <Ionicons name="compass" size={12} color={"#228B22"} />
+                  <Text className={`font-semibold text-xs text-[#228B22]`}>
                     Your Bus Mates
                   </Text>
                 </TouchableOpacity>
@@ -419,7 +419,7 @@ const MyTourInfo = ({ tour }) => {
         </View>
         <View className="p-2 shadow-lg shadow-black bg-white rounded-lg">
           <View className="flex flex-row gap-2 justify-start items-center py-1 border-b border-gray-300/50">
-            <Ionicons name="bed" size={20} color={"green"} />
+            <Ionicons name="bed" size={20} color={"#228B22"} />
             <Text className={`font-bold`}>Accomodation Details</Text>
           </View>
           {Object.keys(accomodationDetails).length > 0 ? (
@@ -450,7 +450,7 @@ const MyTourInfo = ({ tour }) => {
                   >{`${allocatedAccommodation[0]?.occupancy}`}</Text>
                 </View>
                 {allocatedAccommodation[0]?.occupancy !== "Single" && (
-                  <View className="flex flex-row justify-start items-center mt-2 border rounded-lg w-full border-green-600/50">
+                  <View className="flex flex-row justify-start items-center mt-2 border rounded-lg w-full border-[#228B22]/50">
                     <TouchableOpacity
                       onPress={() =>
                         router.push(
@@ -461,16 +461,16 @@ const MyTourInfo = ({ tour }) => {
                       className="flex flex-row justify-between items-center py-1 px-2 gap-2 w-full"
                     >
                       <View className="flex flex-row justify-start items-center gap-2">
-                        <Ionicons name="compass" size={20} color={"green"} />
+                        <Ionicons name="compass" size={20} color={"#228B22"} />
                         <Text
-                          className={`font-semibold text-base text-green-600`}
+                          className={`font-semibold text-base text-[#228B22]`}
                         >
                           Your Room Mates
                         </Text>
                       </View>
                       <Ionicons
                         name="chevron-forward"
-                        color={"green"}
+                        color={"#228B22"}
                         size={20}
                       />
                     </TouchableOpacity>
@@ -588,7 +588,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   closeButton: {
-    backgroundColor: "green",
+    backgroundColor: "#228B22",
     borderRadius: 5,
     padding: 5,
     width: "80%",

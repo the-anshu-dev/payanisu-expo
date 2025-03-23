@@ -110,7 +110,7 @@ const MyTourDetails = () => {
         <Animated.View style={[animatedStyles]}>
           <View
             style={{ width: barWidth }}
-            className="bg-green-600 h-1.5 rounded-t-xl absolute bottom-0"
+            className="bg-[#228B22] h-1.5 rounded-t-xl absolute bottom-0"
           />
         </Animated.View>
       </View>
@@ -133,7 +133,7 @@ const MyTourDetails = () => {
         )}
       </View>
       <View
-        className={`absolute bottom-0 w-full py-2 flex flex-row justify-center gap-10 bg-white`}
+        className={`absolute bottom-0 w-full py-2 flex flex-row justify-center gap-4 bg-white`}
       >
         {activeTab === "tourInfo" ? (
           <TouchableOpacity
@@ -180,7 +180,7 @@ const MyTourDetails = () => {
         >
           <View
             style={{ width: width * 0.45 }}
-            className={`flex flex-row justify-center items-center bg-green-700 h-12 gap-2 rounded-lg`}
+            className={`flex flex-row justify-center items-center bg-[#228B22] h-12 gap-2 rounded-lg`}
           >
             <Ionicons name="locate-outline" size={20} color="white" />
             <Text className={`font-semibold text-white`}>Open in Maps</Text>

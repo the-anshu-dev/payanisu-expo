@@ -12,7 +12,7 @@ const Contact = () => {
   return (
     <View style={styles.container}>
       <View style={styles.contactItem}>
-        <MaterialIcons name="email" size={24} color="green" />
+        <MaterialIcons name="email" size={24} color="#228B22" />
         <Text
           style={styles.contactText}
           onPress={() => Linking.openURL("mailto:mahiti@payanisu.com")}
@@ -21,7 +21,7 @@ const Contact = () => {
         </Text>
       </View>
       <View style={styles.contactItem}>
-        <MaterialIcons name="phone" size={24} color="green" />
+        <MaterialIcons name="phone" size={24} color="#228B22" />
         <Text
           style={styles.contactText}
           onPress={() => Linking.openURL("tel:+919845741910")}
@@ -30,7 +30,7 @@ const Contact = () => {
         </Text>
       </View>
       <View style={styles.contactItem}>
-        <FontAwesome name="whatsapp" size={24} color="green" />
+        <FontAwesome name="whatsapp" size={24} color="#228B22" />
         <Text
           style={styles.contactText}
           onPress={() => Linking.openURL("https://wa.me/919845741910")}
@@ -39,14 +39,14 @@ const Contact = () => {
         </Text>
       </View>
       <View style={styles.contactItem}>
-        <Feather name="map-pin" size={24} color="green" />
+        <Feather name="map-pin" size={24} color="#228B22" />
         <Text style={styles.contactText}>
           #6, 6th A Cross, Balaji Layout, BSK 3rd Stage, Bengaluru, Karnataka
           560085
         </Text>
       </View>
       <View style={styles.contactItem}>
-        <FontAwesome name="map" size={20} color="green" />
+        <FontAwesome name="map" size={20} color="#228B22" />
         <TouchableOpacity
           onPress={() => Linking.openURL("https://bit.ly/4dKmoGF")}
         >
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
   },
   link: {
-    color: "green",
+    color: "#228B22",
   },
 });
 

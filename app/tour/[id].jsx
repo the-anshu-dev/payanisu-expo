@@ -1,7 +1,13 @@
-import { View, Text, ScrollView, TouchableOpacity, Dimensions } from "react-native";
-import React, { useState } from "react";
-import { router, useLocalSearchParams } from "expo-router";
-import LinearGradient from "react-native-linear-gradient";
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Dimensions,
+  RefreshControl,
+} from "react-native";
+import React, { useCallback, useState } from "react";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,9 +17,9 @@ import { setTour } from "../../redux/slices/tourSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { showError, showSuccess, showWarning } from "../../utils/toastHelper";
 
-const { height, width } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 
-const tourDetails = () => {
+const TourDetails = () => {
   const { id } = useLocalSearchParams();
   const { tour } = useSelector((state) => state.tour);
   const { user } = useSelector((state) => state.user);
@@ -21,7 +27,7 @@ const tourDetails = () => {
   const [loading, setLoading] = useState(false);
   const [unPublishLoading, setUnPublishLoading] = useState(false);
 
-  const tourDetail = tour.find((item) => item._id === id);
+  const tourDetail = tour?.find((item) => item._id === id) ?? null;
 
   const dispatch = useDispatch();
 
@@ -35,7 +41,7 @@ const tourDetails = () => {
       }
       const tour = await response.json();
       await AsyncStorage.setItem("tours", JSON.stringify(tour));
-      dispatch(setTour(tour));
+      await dispatch(setTour(tour));
     } catch (error) {
       showWarning(error.message || "Failed to fetch tours.");
       console.log("Error fetching tours:", error);
@@ -54,15 +60,16 @@ const tourDetails = () => {
           },
         }
       );
-      if (response.status !== 200) {
-        throw new Error("Failed to delete");
+      if (!response.ok) {
+        throw new Error(
+          "Failed to delete tour. Server responded with an error."
+        );
       }
       await getAllTours();
       showSuccess("Tour deleted.");
       router.replace("/(admin)/tours");
     } catch (error) {
       showError(error.message || "Please try again.");
-      console.log("error:", error);
     } finally {
       setLoading(false);
     }
@@ -112,10 +119,25 @@ const tourDetails = () => {
     }
   };
 
+  const onRefresh = async () => {
+    try {
+      await getAllTours();
+    } catch (error) {
+      showError(error.message || "Please try again.");
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      onRefresh();
+    }, [])
+  );
+
   if (!tourDetail) {
     return (
       <View className="h-full w-full flex justify-center items-center">
-        <ActivityIndicator size={"large"} color="green" />
+        <ActivityIndicator size={"large"} color="#228B22" />
+        <Text className="mt-2 text-gray-500">Tour details not found.</Text>
       </View>
     );
   }
@@ -129,37 +151,42 @@ const tourDetails = () => {
         animated
       />
       <View className="mt-2 w-full px-4">
-        <LinearGradient
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          colors={["rgba(240, 101, 2, 0.2)", "rgba(0, 174, 255, 0.2)"]}
-          style={{ borderRadius: 10 }}
-        >
+        <View className="w-full  rounded-lg border border-[#228B22] bg-[#228B22]">
           <View
             className={`flex flex-row justify-between py-3 px-4 rounded-lg `}
           >
-            <View className="space-y-2">
-              <Text className={`font-semibold `}>{tourDetail.name}</Text>
-              <Text>{formatDate(tourDetail.tour_start)}</Text>
+            <View className="gap-2">
+              <Text className={`font-semibold text-white text-lg`}>
+                {tourDetail.name}
+              </Text>
+              <Text className={`font-semibold text-white`}>
+                {formatDate(tourDetail.tour_start)}
+              </Text>
             </View>
-            <View className="space-y-2">
+            <View className="gap-2">
               <Text
-                className={`font-semibold text-right`}
+                className={`font-semibold text-right text-white`}
               >{`${tourDetail.total_seats} Seats`}</Text>
-              <Text className={`text-right`}>
+              <Text className={`font-semibold text-right text-white`}>
                 {formatDate(tourDetail.tour_end)}
               </Text>
             </View>
           </View>
-        </LinearGradient>
+        </View>
       </View>
       <ScrollView
         contentContainerStyle={{
-          marginTop: 10,
+          marginTop: 5,
           width: "100%",
           paddingBottom: 80,
           paddingHorizontal: 15,
         }}
+        refreshControl={
+          <RefreshControl
+            refreshing={loading || unPublishLoading}
+            onRefresh={onRefresh}
+          />
+        }
         showsVerticalScrollIndicator={false}
       >
         <View className="flex space-y-5 w-full">
@@ -180,7 +207,7 @@ const tourDetails = () => {
           onPress={handleTourStatus}
           style={{
             width: width * 0.4,
-            backgroundColor: tourDetail.status === false ? "green" : "#414141",
+            backgroundColor: tourDetail.status === false ? "#228B22" : "#414141",
             height: 44,
             display: "flex",
             justifyContent: "center",
@@ -269,7 +296,7 @@ const DetailTitle = [
     id: 8,
     title: "My Notes",
     href: "/(addTourDetails)/myNotes",
-  }
+  },
 ];
 
 const DetailScreenButton = ({ title, href, id }) => {
@@ -281,10 +308,10 @@ const DetailScreenButton = ({ title, href, id }) => {
     >
       <View className="flex flex-row justify-between items-center px-2 w-full">
         <Text>{title}</Text>
-        <Ionicons size={20} name="chevron-forward-outline" color={"green"} />
+        <Ionicons size={20} name="chevron-forward-outline" color={"#228B22"} />
       </View>
     </TouchableOpacity>
   );
 };
 
-export default tourDetails;
+export default TourDetails;

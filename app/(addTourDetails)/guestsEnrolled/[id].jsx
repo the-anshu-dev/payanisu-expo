@@ -260,7 +260,7 @@ const GuestsEnrolled = () => {
           <Animated.View style={[animatedStyles]}>
             <View
               style={{ width: barWidth }}
-              className="bg-green-600 h-1.5 rounded-t-xl absolute bottom-0"
+              className="bg-[#228B22] h-1.5 rounded-t-xl absolute bottom-0"
             />
           </Animated.View>
         </View>
@@ -299,7 +299,7 @@ const GuestsEnrolled = () => {
               <>
                 {reservedMembers.length > 0 ? (
                   <View className="p-2 flex justify-center items-center">
-                    <Text className="text-center text-lg font-semibold text-green-700">
+                    <Text className="text-center text-lg font-semibold text-[#228B22]">
                       Reserved Members
                     </Text>
                     {reservedMembers.map((i) => (
@@ -391,7 +391,7 @@ const GuestsEnrolled = () => {
                 status={isTrekker ? "checked" : "unchecked"}
                 onPress={() => setIsTrekker(!isTrekker)}
                 style={{ height: 16, width: 16 }}
-                color={"green"}
+                color={"#228B22"}
               />
               <Text className={``}>Is Trekker</Text>
             </View>
@@ -400,7 +400,7 @@ const GuestsEnrolled = () => {
                 status={isAccommodationTrue ? "checked" : "unchecked"}
                 onPress={() => setIsAccommodationTrue(!isAccommodationTrue)}
                 style={{ height: 16, width: 16 }}
-                color={"green"}
+                color={"#228B22"}
               />
               <Text className={``}>Need Accommodation</Text>
             </View>
@@ -431,7 +431,7 @@ const GuestsEnrolled = () => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={handleEnrollMembers}
-              className="w-[48%] flex justify-center items-center rounded-lg bg-green-700"
+              className="w-[48%] flex justify-center items-center rounded-lg bg-[#228B22]"
             >
               {enrolling ? (
                 <ActivityIndicator size={"small"} color="white" />
@@ -484,7 +484,7 @@ const ReqCard = ({
               onPress={() => handleReserveMembers(bookingId, "accept")}
               activeOpacity={0.9}
             >
-              <Text className="text-green-700">Accept</Text>
+              <Text className="text-[#228B22]">Accept</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => handleReserveMembers(bookingId, "reject")}
@@ -500,7 +500,7 @@ const ReqCard = ({
             activeOpacity={0.9}
             style={{ marginRight: 10 }}
           >
-            <Text className="text-green-700">Enrol</Text>
+            <Text className="text-[#228B22]">Enrol</Text>
           </TouchableOpacity>
         )}
       </>

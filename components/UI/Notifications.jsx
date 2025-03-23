@@ -41,12 +41,12 @@ const Notifications = ({ id, title, content, seen, createdAt }) => {
   return (
     <>
       <TouchableOpacity activeOpacity={0.9} onPress={handleSeen}>
-        <View className="border border-green-600 h-fit rounded-lg p-2 mt-3 relative">
+        <View className="border border-[#228B22] h-fit rounded-lg p-2 mt-3 relative">
           {!seen && (
             <View className="h-2 w-2 bg-red-600 absolute right-2 top-2 rounded-full" />
           )}
           <View className="flex flex-row justify-start items-center gap-3">
-            <FontAwesome6 name="bell" size={16} color={"green"} />
+            <FontAwesome6 name="bell" size={16} color={"#228B22"} />
             <Text className="text-base font-semibold">{title}</Text>
           </View>
           {content && (
@@ -96,7 +96,7 @@ const Notifications = ({ id, title, content, seen, createdAt }) => {
               </View>
             </ScrollView>
             <TouchableOpacity
-              className="mt-3 bg-green-600 py-2 rounded-lg"
+              className="mt-3 bg-[#228B22] py-2 rounded-lg"
               onPress={() => setModalVisible(false)}
             >
               <Text className="text-white text-center font-semibold text-lg">

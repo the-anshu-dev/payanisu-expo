@@ -185,7 +185,7 @@ const Checkpoints = () => {
   if (loading) {
     return (
       <View className="w-full h-full flex justify-center items-center">
-        <ActivityIndicator color="green" size={"large"} />
+        <ActivityIndicator color="#228B22" size={"large"} />
       </View>
     );
   }
@@ -208,7 +208,7 @@ const Checkpoints = () => {
               <RefreshControl
                 refreshing={loading}
                 onRefresh={onRefresh}
-                colors={["red", "green", "blue"]}
+                colors={["red", "#228B22", "blue"]}
               />
             }
             style={{ width: "100%" }}
@@ -254,7 +254,7 @@ const Checkpoints = () => {
             onPress={() => router.push(`/createCheckpoints/${id}`)}
             style={{
               width: width * 0.43,
-              backgroundColor: "green",
+              backgroundColor: "#228B22",
               paddingVertical: 12,
               borderRadius: 8,
             }}
@@ -297,7 +297,7 @@ const Checkpoints = () => {
               onPress={() => handleEditCheckpoint(editingCheckPointData._id)}
               style={{
                 width: width * 0.9,
-                backgroundColor: "green",
+                backgroundColor: "#228B22",
                 paddingVertical: 12,
                 borderRadius: 8,
               }}
@@ -354,7 +354,7 @@ const Checkpoints = () => {
           <View className="w-full py-6 flex justify-center items-center">
             <Text className="text-base font-semibold">QR Code</Text>
           </View>
-          <View className="p-1 border border-green-700 rounded-xl">
+          <View className="p-1 border border-[#228B22] rounded-xl">
             <Image
               source={qrUrl}
               style={{
@@ -368,7 +368,7 @@ const Checkpoints = () => {
             <TouchableOpacity
               onPress={handleDownloadQr}
               activeOpacity={0.9}
-              className="h-10 w-56 bg-green-700 flex justify-center items-center rounded-lg"
+              className="h-10 w-56 bg-[#228B22] flex justify-center items-center rounded-lg"
             >
               <Text className="text-white font-semibold">Download</Text>
             </TouchableOpacity>
@@ -453,20 +453,20 @@ const CheckPointCard = ({
         </View>
         <View className="w-[20%] flex justify-center items-center">
           {loading ? (
-            <ActivityIndicator color="green" size={"small"} />
+            <ActivityIndicator color="#228B22" size={"small"} />
           ) : (
             <>
               {point.activated || point.type === "Geo Tagging" ? (
-                <Text className="text-xl font-semibold text-green-700">
+                <Text className="text-xl font-semibold text-[#228B22]">
                   {point.allCheckedCount}
                 </Text>
               ) : (
                 <TouchableOpacity
                   onPress={handleActivation}
                   activeOpacity={0.9}
-                  className=" flex justify-center items-center border px-2 py-0.5 rounded-full border-green-700"
+                  className=" flex justify-center items-center border px-2 py-0.5 rounded-full border-[#228B22]"
                 >
-                  <Text className="text-sm font-semibold text-green-700">
+                  <Text className="text-sm font-semibold text-[#228B22]">
                     Activate
                   </Text>
                 </TouchableOpacity>
@@ -479,13 +479,13 @@ const CheckPointCard = ({
         <TouchableOpacity onPress={() => mapRef.current?.open()}>
           <View className="flex flex-row gap-2 justify-center items-center">
             <MarkerIcon height={20} width={12} />
-            <Text className="text-xs text-green-700">Show On Map</Text>
+            <Text className="text-xs text-[#228B22]">Show On Map</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => handleOpenEditSheet(point._id)}>
           <View className="flex flex-row gap-2 justify-center items-center">
             <EditIcon height={20} width={12} />
-            <Text className="text-xs text-green-700">Edit</Text>
+            <Text className="text-xs text-[#228B22]">Edit</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity
@@ -495,7 +495,7 @@ const CheckPointCard = ({
         >
           <View className="flex flex-row gap-2 justify-center items-center">
             <UserIcon height={20} width={12} />
-            <Text className="text-xs text-green-700">View Check-Ins</Text>
+            <Text className="text-xs text-[#228B22]">View Check-Ins</Text>
           </View>
         </TouchableOpacity>
       </View>

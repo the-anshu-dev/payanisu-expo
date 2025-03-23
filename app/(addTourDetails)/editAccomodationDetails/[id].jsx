@@ -85,7 +85,7 @@ import {
     return (
       <View className="px-4 pt-4">
         {loading ? (
-          <ActivityIndicator size="large" color="green" />
+          <ActivityIndicator size="large" color="#228B22" />
         ) : (
           <>
             <View style={{ backgroundColor: "white", padding: 8, borderRadius: 5, elevation: 8 }}>
@@ -130,7 +130,7 @@ import {
               activeOpacity={0.9}
               onPress={handleUpdateGuestHouse}
               style={{
-                backgroundColor: "green",
+                backgroundColor: "#228B22",
                 paddingVertical: 12,
                 borderRadius: 5,
                 justifyContent: "center",

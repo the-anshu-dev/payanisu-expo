@@ -154,7 +154,7 @@ const AnnouncementScreen = () => {
               activeOpacity={0.9}
               onPress={handleCreateAnnouncement}
               style={{
-                backgroundColor: "green",
+                backgroundColor: "#228B22",
                 width: width * 0.9,
                 height: height * 0.05,
                 borderRadius: 10,
@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
     height: height * 0.06,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "green",
+    backgroundColor: "#228B22",
     borderRadius: 10,
   },
   buttonContent: {

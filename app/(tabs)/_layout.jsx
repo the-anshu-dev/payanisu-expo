@@ -10,7 +10,7 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={() => ({
-        tabBarActiveTintColor: "green",
+        tabBarActiveTintColor: "#228B22",
         tabBarInactiveTintColor: "gray",
         headerShown: true,
         tabBarLabelStyle: {
@@ -36,7 +36,7 @@ export default function TabLayout() {
             <FontAwesome6
               name={focused ? "house" : "house"}
               size={24}
-              color={focused ? "green" : "black"}
+              color={focused ? "#228B22" : "black"}
             />
           ),
         }}
@@ -49,7 +49,7 @@ export default function TabLayout() {
             <FontAwesome6
               name="person-hiking"
               size={24}
-              color={focused ? "green" : "black"}
+              color={focused ? "#228B22" : "black"}
             />
           ),
         }}
@@ -62,7 +62,7 @@ export default function TabLayout() {
             <Ionicons
               name={"chatbubbles"}
               size={24}
-              color={focused ? "green" : "black"}
+              color={focused ? "#228B22" : "black"}
             />
           ),
         }}
@@ -75,7 +75,7 @@ export default function TabLayout() {
             <Octicons
               name={"bell-fill"}
               size={24}
-              color={focused ? "green" : "black"}
+              color={focused ? "#228B22" : "black"}
             />
           ),
         }}

@@ -178,7 +178,7 @@ const EditTransport = () => {
           <Text style={styles.buttonText}>Cancel</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.buttons, { backgroundColor: "green" }]}
+          style={[styles.buttons, { backgroundColor: "#228B22" }]}
           onPress={handleUpdateBusDetails}
         >
           {loading ? (
@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "green",
+    backgroundColor: "#228B22",
   },
   buttonText: {
     fontWeight: "600",
@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
   busImageContainer: {
     width: "100%",
     borderWidth: 2,
-    borderColor: "green",
+    borderColor: "#228B22",
     height: height * 0.15,
     borderRadius: 6,
     display: "flex",

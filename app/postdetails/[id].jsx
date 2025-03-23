@@ -40,7 +40,7 @@ const postdetails = () => {
   if (!post || !images) {
     return (
       <View className="h-full w-full flex justify-center items-center">
-        <ActivityIndicator color="green" size={"large"} />
+        <ActivityIndicator color="#228B22" size={"large"} />
       </View>
     );
   }

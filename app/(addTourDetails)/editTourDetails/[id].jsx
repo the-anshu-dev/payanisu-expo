@@ -136,11 +136,12 @@ const EditTour = () => {
           },
           body: JSON.stringify(formData),
         }
-      )
+      );
       if (response.ok) {
         router.back();
         showSuccess("Tour updated successfully");
       }
+      router.push(`/tour/${id}`);
     } catch (err) {
       showError(err.message || "Please try again.");
     } finally {
@@ -368,7 +369,7 @@ const EditTour = () => {
           <View style={styles.switchContainer}>
             <Text style={styles.switchLabel}>Admin Can Reject Booking?</Text>
             <Switch
-              trackColor={{ true: "green", false: "gray" }}
+              trackColor={{ true: "#228B22", false: "gray" }}
               value={adminCanReject}
               onValueChange={setAdminCanReject}
               ios_backgroundColor="gray"
@@ -377,7 +378,7 @@ const EditTour = () => {
           <View style={styles.switchContainer}>
             <Text style={styles.switchLabel}>Payment Gateway Enabled?</Text>
             <Switch
-              trackColor={{ true: "green", false: "gray" }}
+              trackColor={{ true: "#228B22", false: "gray" }}
               value={paymentGatewayEnabled}
               onValueChange={setPaymentGatewayEnabled}
               ios_backgroundColor="gray"
@@ -436,9 +437,8 @@ const styles = StyleSheet.create({
   },
   input: {
     width: "100%",
-    paddingVertical: height * 0.009,
-    paddingHorizontal: width * 0.03,
     borderRadius: 10,
+    padding: 10,
     borderColor: "gray",
     borderWidth: 1,
     marginBottom: height * 0.015,
@@ -492,7 +492,7 @@ const styles = StyleSheet.create({
   imagePicker: {
     height: 100,
     width: "100%",
-    borderColor: "green",
+    borderColor: "#228B22",
     borderWidth: 1,
     borderRadius: 10,
     justifyContent: "center",
@@ -501,7 +501,7 @@ const styles = StyleSheet.create({
   },
   imagePickerText: {
     fontSize: width * 0.04,
-    color: "green",
+    color: "#228B22",
     marginLeft: width * 0.02,
   },
   submitButton: {
@@ -510,7 +510,7 @@ const styles = StyleSheet.create({
     bottom: height * 0.02,
     width: "100%",
     backgroundColor: "#228B22",
-    height: height * 0.045,
+    height: height * 0.055,
     borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",

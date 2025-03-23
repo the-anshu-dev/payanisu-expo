@@ -7,7 +7,7 @@ const AdminCommunityHeader = ({ title }) => {
     <View className="top-10 bg-white h-16 shadow-sm shadow-black/20 flex flex-row justify-start">
       <View className="flex flex-row justify-start items-center space-x-3 pt-3 pl-3 ">
         <CustomBackButton icon="chevron-back-outline" />
-        <Text className="text-lg font-semibold tracking-wider text-green-700">
+        <Text className="text-lg font-semibold tracking-wider text-[#228B22]">
           {title}
         </Text>
       </View>

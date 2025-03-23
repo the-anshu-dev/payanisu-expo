@@ -7,7 +7,7 @@ const LoginReqCard = () => {
     <View className="h-full w-full flex justify-center items-center">
       <View className="h-[300px] w-[300px] shadow-xl shadow-black/80 bg-white rounded-lg flex justify-center items-center">
         <TouchableOpacity onPress={() => router.push("/login")} activeOpacity={0.9}>
-          <View className="bg-green-700 px-8 py-2 rounded-lg">
+          <View className="bg-[#228B22] px-8 py-2 rounded-lg">
             <Text className="text-white text-base font-semibold">Log In</Text>
           </View>
         </TouchableOpacity>

@@ -147,7 +147,7 @@ const Login = () => {
           >
             <View style={styles.loginButtonContent}>
               {loading ? (
-                <ActivityIndicator size={24} color="green" />
+                <ActivityIndicator size={24} color="#228B22" />
               ) : (
                 <View style={styles.loginButtonTextContainer}>
                   <Ionicons name="logo-google" size={20} color="white" />

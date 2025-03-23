@@ -37,7 +37,7 @@ const Header = () => {
               activeOpacity={0.9}
               className="px-3 py-2"
             >
-              <FontAwesome6 name="bars" size={30} color="green" />
+              <FontAwesome6 name="bars" size={30} color="#228B22" />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => router.push("/(tabs)")}
@@ -50,7 +50,7 @@ const Header = () => {
             activeOpacity={0.9}
             onPress={() => router.push(profileRoute)}
           >
-            <View className="h-12 w-12 rounded-full border-2 border-green-700 p-0.5 overflow-hidden">
+            <View className="h-12 w-12 rounded-full border-2 border-[#228B22] p-0.5 overflow-hidden">
               <Image
                 source={user?.picture}
                 style={{ height: "100%", width: "100%", borderRadius: 50 }}

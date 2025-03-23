@@ -132,7 +132,7 @@ const Mynotes = () => {
   if (notesLoading) {
     return (
       <View className="w-full h-full flex justify-center items-center">
-        <ActivityIndicator color="green" size={"large"} />
+        <ActivityIndicator color="#228B22" size={"large"} />
       </View>
     );
   }
@@ -143,7 +143,7 @@ const Mynotes = () => {
         <View className="w-full">
           {notes.length === 0 ? (
             <View className="h-full w-full flex justify-center items-center -mt-10">
-              <Ionicons name="document-outline" size={48} color={"green"} />
+              <Ionicons name="document-outline" size={48} color={"#228B22"} />
               <Text className="text-xl font-semibold mt-4">
                 No notes added yet
               </Text>
@@ -173,7 +173,7 @@ const Mynotes = () => {
             onPress={() => addNotesRef.current?.open()}
             style={{
               width: width * 0.7,
-              backgroundColor: "green",
+              backgroundColor: "#228B22",
               paddingVertical: 12,
               borderRadius: 8,
             }}
@@ -214,7 +214,7 @@ const Mynotes = () => {
               onPress={handleAddNotes}
               style={{
                 width: width * 0.7,
-                backgroundColor: "green",
+                backgroundColor: "#228B22",
                 paddingVertical: 12,
                 borderRadius: 8,
               }}
@@ -248,7 +248,7 @@ const NotesCard = ({
           <Checkbox
             status={checked ? "checked" : "unchecked"}
             onPress={handleOnCheck}
-            color={checked ? "green" : "#000"}
+            color={checked ? "#228B22" : "#000"}
           />
           <Text className="text-base font-semibold">{title}</Text>
         </View>

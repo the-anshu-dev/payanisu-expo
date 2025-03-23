@@ -89,7 +89,7 @@ const MyTourCheckPoints = ({ checkPoints = [] }) => {
                   }}
                   apikey={apiKey}
                   strokeWidth={6}
-                  strokeColor="green"
+                  strokeColor="#228B22"
                   onError={(errorMessage) => {
                     if (errorMessage.includes("ZERO_RESULTS")) {
                       showWarning("No route found.");

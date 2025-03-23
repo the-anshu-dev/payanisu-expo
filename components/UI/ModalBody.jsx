@@ -205,7 +205,7 @@ const ModalBody = ({
                 showsVerticalScrollIndicator: false,
               }}
               disabledItemLabelStyle={{
-                color: "green",
+                color: "#228B22",
               }}
               listItemLabelStyle={{
                 color: "black",
@@ -267,7 +267,7 @@ const ModalBody = ({
           onPress={handleAllocateRoom}
           activeOpacity={0.9}
           style={{
-            backgroundColor: "green",
+            backgroundColor: "#228B22",
             height: 40,
             borderRadius: 8,
             width: 130,

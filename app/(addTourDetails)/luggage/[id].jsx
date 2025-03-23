@@ -146,7 +146,7 @@ const Luggage = () => {
   if (getLoading) {
     return (
       <View className="flex justify-center items-center h-full w-full">
-        <ActivityIndicator size={"large"} color="green" />
+        <ActivityIndicator size={"large"} color="#228B22" />
       </View>
     );
   }
@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
   activeTab: {
     flex: 1,
     padding: height * 0.015,
-    backgroundColor: "green",
+    backgroundColor: "#228B22",
     alignItems: "center",
   },
   tabText: {
@@ -274,7 +274,7 @@ const styles = StyleSheet.create({
   },
   addButton: {
     padding: height * 0.015,
-    backgroundColor: "green",
+    backgroundColor: "#228B22",
     alignItems: "center",
     borderRadius: 5,
   },

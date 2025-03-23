@@ -18,7 +18,7 @@ const TourCard = ({ tourName, startDate, endDate, status, distance }) => {
                 </View>
                 <View className="flex gap-2 justify-center items-end">
                     <Text>Distance</Text>
-                    <Text className="text-xl font-bold text-green-700">{distance} Kms</Text>
+                    <Text className="text-xl font-bold text-[#228B22]">{distance} Kms</Text>
                 </View>
             </View>
         </TouchableOpacity>

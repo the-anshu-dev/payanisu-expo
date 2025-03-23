@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   shareButton: {
-    backgroundColor: "green",
+    backgroundColor: "#228B22",
     paddingVertical: 12,
     alignItems: "center",
     borderRadius: 8,
@@ -176,13 +176,13 @@ const styles = StyleSheet.create({
   modalContent: { padding: 20 },
   modalTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 10 },
   textInput: { borderWidth: 1, borderColor: "gray", borderRadius: 8, padding: 10, height: 100 },
-  addImagesButton: { backgroundColor: "green", padding: 10, borderRadius: 8, marginTop: 10, alignItems: "center" },
+  addImagesButton: { backgroundColor: "#228B22", padding: 10, borderRadius: 8, marginTop: 10, alignItems: "center" },
   addImagesButtonText: { color: "white" },
   imagesContainer: { display: "flex", flexDirection: "row", flexWrap: "wrap", marginTop: 10, justifyContent: "space-evenly" },
   imageWrapper: { margin: 5, position: "relative" },
   image: { width: 70, height: 70, borderRadius: 8 },
   imageCloseButton: { position: "absolute", top: -5, right: -5, backgroundColor: "white", borderRadius: 12 },
-  postButton: { backgroundColor: "green", padding: 10, borderRadius: 8, marginTop: 20, alignItems: "center" },
+  postButton: { backgroundColor: "#228B22", padding: 10, borderRadius: 8, marginTop: 20, alignItems: "center" },
   postButtonText: { color: "white" },
 });
 

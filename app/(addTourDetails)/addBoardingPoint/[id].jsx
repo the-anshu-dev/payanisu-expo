@@ -13,7 +13,7 @@ import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplet
 import { router, useLocalSearchParams } from "expo-router";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { format } from "date-fns";
-import { showError, showSuccess } from "../../../utils/toastHelper";
+import { showError, showSuccess, showWarning } from "../../../utils/toastHelper";
 
 const { width } = Dimensions.get("window");
 const apiKey = process.env.EXPO_PUBLIC_GOOGLE_API_KEY;
@@ -156,7 +156,7 @@ const Page = () => {
     <View className="h-full flex justify-between items-center w-full relative">
       <ScrollView
         contentContainerStyle={{
-          paddingBottom:80,
+          paddingBottom: 80,
           flexGrow: 1,
         }}
         style={{ width: "100%", flex: 1 }}
@@ -236,7 +236,7 @@ const Page = () => {
                     handleLocationSelect(details)
                   }
                   query={{
-                    key: "AIzaSyAWiZa_f1BStr9sDkGGJdDvmOV76-SVoFo",
+                    key: apiKey,
                     language: "en",
                   }}
                   styles={{
@@ -273,7 +273,7 @@ const Page = () => {
           onPress={handleAddBoardingPoint}
           style={{
             width: width * 0.9,
-            backgroundColor: "green",
+            backgroundColor: "#228B22",
             paddingVertical: 12,
             borderRadius: 8,
           }}

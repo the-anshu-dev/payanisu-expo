@@ -143,13 +143,13 @@ const Transportation = () => {
           onPress={handleExport}
         >
           {exporting ? (
-            <ActivityIndicator color="green" size={"small"} />
+            <ActivityIndicator color="#228B22" size={"small"} />
           ) : (
             <Text style={styles.buttonText}>Export Excel</Text>
           )}
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.buttons, { backgroundColor: "green" }]}
+          style={[styles.buttons, { backgroundColor: "#228B22" }]}
           activeOpacity={0.9}
           onPress={() =>
             router.push(`/(addTourDetails)/addTransportDetails/${id}`)
@@ -212,7 +212,7 @@ const TransportDetailButton = ({ id, name, totalCapacity, filled, tourId, onRefr
       <View style={styles.transportButtonContainer}>
         <Text style={{ fontWeight: "500" }}>{name}</Text>
         <View style={[styles.commonFlexBox, { justifyContent: "flex-end" }]}>
-          <Text style={{ fontSize: 18, fontWeight: "600", color: "green" }}>
+          <Text style={{ fontSize: 18, fontWeight: "600", color: "#228B22" }}>
             {filled}/
           </Text>
           <Text>{totalCapacity}</Text>

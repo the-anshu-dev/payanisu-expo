@@ -74,7 +74,7 @@ const AllocatedRoomCard = ({
             {deleting ? (
               <ActivityIndicator
                 size={"small"}
-                color="green"
+                color="#228B22"
                 style={{ transform: [{ scale: 0.5 }] }}
               />
             ) : (

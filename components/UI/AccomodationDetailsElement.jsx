@@ -26,7 +26,7 @@ const AccomodationDetailsElement = ({ details, accommodation }) => {
           className={`font-bold `}
         >{`${details?.roomNumber} (${details?.roomType})`}</Text>
       </View>
-      <View className={`w-full h-[1px] "bg-green-700"`} />
+      <View className={`w-full h-[1px] "bg-[#228B22]"`} />
     </View>
   );
 };

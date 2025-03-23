@@ -226,7 +226,7 @@ const Map = () => {
             padding: 10,
             height: height * 0.6,
             borderWidth: 1,
-            borderColor: "green",
+            borderColor: "#228B22",
             borderRadius: 10,
             margin: 10,
           }}
@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
   timerText: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "green",
+    color: "#228B22",
   },
   infoContainer: {
     width: width,
@@ -439,7 +439,7 @@ export default Map;
 //     timerText: {
 //         fontSize: 16,
 //         fontWeight: 'bold',
-//         color: 'green',
+//         color: '#228B22',
 //     },
 //     infoContainer: {
 //         width: width,

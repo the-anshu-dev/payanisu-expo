@@ -179,7 +179,7 @@ const Payment = () => {
           <View className="flex justify-center items-center mt-4 w-full">
             <Text>Please Upload screenshot post payment</Text>
             {image ? (
-              <View className="w-full flex justify-center items-center mt-2 border border-green-600 rounded-lg p-2 relative">
+              <View className="w-full flex justify-center items-center mt-2 border border-[#228B22] rounded-lg p-2 relative">
                 <Image
                   contentFit="contain"
                   source={{ uri: image.uri }}
@@ -199,8 +199,8 @@ const Payment = () => {
                 onPress={pickImage}
                 style={{ width: "100%" }}
               >
-                <View className="border-2 h-36 rounded-xl mt-3 border-green-600 flex justify-center items-center">
-                  <Text className="text-green-800">
+                <View className="border-2 h-36 rounded-xl mt-3 border-[#228B22] flex justify-center items-center">
+                  <Text className="text-[#228B22]">
                     Upload your payment proof
                   </Text>
                 </View>
@@ -218,7 +218,7 @@ const Payment = () => {
             <Checkbox
               onPress={() => setAgree(!agree)}
               status={agree ? "checked" : "unchecked"}
-              color="green"
+              color="#228B22"
             />
             <Text className="tracking-wide text-base">
               I agree to all Terms and Conditions
@@ -231,12 +231,12 @@ const Payment = () => {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={handleReserveSeats}
-            className="w-[50%] border border-green-600 py-3 rounded-lg"
+            className="w-[50%] border border-[#228B22] py-3 rounded-lg"
           >
             {loading ? (
-              <ActivityIndicator size="small" color="green" />
+              <ActivityIndicator size="small" color="#228B22" />
             ) : (
-              <Text className="text-center text-green-700">Reserve Seat</Text>
+              <Text className="text-center text-[#228B22">Reserve Seat</Text>
             )}
           </TouchableOpacity>
         </View>

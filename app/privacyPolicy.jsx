@@ -79,13 +79,13 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 22,
     fontWeight: "bold",
-    color: "green",
+    color: "#228B22",
     marginBottom: 15,
   },
   subHeading: {
     fontSize: 18,
     fontWeight: "600",
-    color: "green",
+    color: "#228B22",
     marginTop: 20,
     marginBottom: 10,
   },

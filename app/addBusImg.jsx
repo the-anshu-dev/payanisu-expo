@@ -1,4 +1,10 @@
-import { View, Text, ScrollView, TouchableOpacity, Dimensions } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Dimensions,
+} from "react-native";
 import React, { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
@@ -53,7 +59,7 @@ const addBusImg = () => {
           <Text className="text-base text-red-500 font-semibold">{error}</Text>
         )}
       </View>
-      <View className="flex justify-center items-center h-[80%] w-full border-2 border-green-600 rounded-xl">
+      <View className="flex justify-center items-center h-[80%] w-full border-2 border-[#228B22] rounded-xl">
         {image.length > 0 ? (
           <ScrollView
             showsVerticalScrollIndicator={false}
@@ -62,15 +68,15 @@ const addBusImg = () => {
           >
             {image.map((img, idx) => (
               <Image
-              key={idx}
-              source={{ uri: img.uri }}
-              style={{
-                width: "100%",
-                height: 200,
-                borderRadius: 10,
-                marginBottom: 14,
-              }}
-            />
+                key={idx}
+                source={{ uri: img.uri }}
+                style={{
+                  width: "100%",
+                  height: 200,
+                  borderRadius: 10,
+                  marginBottom: 14,
+                }}
+              />
             ))}
           </ScrollView>
         ) : (
@@ -86,10 +92,10 @@ const addBusImg = () => {
         }}
       >
         <TouchableOpacity activeOpacity={0.9} onPress={pickImage}>
-          <View className="h-12 flex justify-center items-center border-2 border-dashed rounded-lg mb-3 border-green-600">
+          <View className="h-12 flex justify-center items-center border-2 border-dashed rounded-lg mb-3 border-[#228B22]">
             <View className="flex flex-row justify-center items-center space-x-3">
-              <Ionicons name="add-circle" size={20} color={"green"} />
-              <Text className="text-base font-semibold text-green-600">
+              <Ionicons name="add-circle" size={20} color={"#228B22"} />
+              <Text className="text-base font-semibold text-[#228B22]">
                 Add Bus Images
               </Text>
             </View>
@@ -100,7 +106,7 @@ const addBusImg = () => {
           containerStyle={{ height: "100%" }}
           onPress={handleBusImageUpload}
         >
-          <View className="h-12 flex justify-center items-center bg-green-600 rounded-lg">
+          <View className="h-12 flex justify-center items-center bg-[#228B22] rounded-lg">
             <Text className="text-base font-semibold text-white">
               {loading ? "Uploading..." : "Proceed"}
             </Text>

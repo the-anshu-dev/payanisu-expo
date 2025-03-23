@@ -122,7 +122,7 @@ const Accomodation = () => {
             ))
           ) : (
             <View className="h-44 w-full flex justify-center items-center mt-10">
-              <Ionicons name="document-outline" size={48} color="green" />
+              <Ionicons name="document-outline" size={48} color="#228B22" />
               <Text className="text-xl font-semibold mt-4">
                 No guest houses added yet
               </Text>
@@ -154,7 +154,7 @@ const Accomodation = () => {
           }}
         >
           {exporting ? (
-            <ActivityIndicator size={"small"} color="green" />
+            <ActivityIndicator size={"small"} color="#228B22" />
           ) : (
             <Text style={{ color: "black", fontWeight: "400" }}>
               Export Details
@@ -168,7 +168,7 @@ const Accomodation = () => {
           }
           style={{
             flex: 1,
-            backgroundColor: "green",
+            backgroundColor: "#228B22",
             paddingVertical: 12,
             borderRadius: 5,
             alignItems: "center",
@@ -241,7 +241,7 @@ const AccomodationButton = ({
       >
         <Text>{guestHouseName}</Text>
         <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
-          <Text style={{ color: "green", fontSize: 16, fontWeight: "500" }}>
+          <Text style={{ color: "#228B22", fontSize: 16, fontWeight: "500" }}>
             {allocatedCount}
           </Text>
           <Text style={{ fontSize: 12 }}>/{totalOccupancy}</Text>

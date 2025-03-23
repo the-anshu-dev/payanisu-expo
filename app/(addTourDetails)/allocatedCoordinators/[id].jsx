@@ -98,7 +98,7 @@ const AllocatedCoordinators = () => {
   if (coordinatorLoading) {
     return (
       <View className="w-full h-full flex justify-center items-center">
-        <ActivityIndicator size={"large"} color="green" />
+        <ActivityIndicator size={"large"} color="#228B22" />
       </View>
     );
   }
@@ -149,11 +149,11 @@ const AllocatedCoordinators = () => {
               paddingVertical: 12,
               borderRadius: 8,
               borderWidth: 1,
-              borderColor: "green",
+              borderColor: "#228B22",
             }}
             onPress={() => addCoordinatorRef.current?.open()}
           >
-            <Text style={{ textAlign: "center", color: "green", fontSize: 16, fontWeight: "bold" }}>
+            <Text style={{ textAlign: "center", color: "#228B22", fontSize: 16, fontWeight: "bold" }}>
               Add Coordinator
             </Text>
           </TouchableOpacity>
@@ -238,7 +238,7 @@ const AllocatedCoordinators = () => {
             onPress={handleAddCoordinator}
             style={{
               marginTop: 20,
-              backgroundColor: "green",
+              backgroundColor: "#228B22",
               paddingVertical: 12,
               borderRadius: 8,
             }}
@@ -260,10 +260,10 @@ const AllocatedCoordinators = () => {
 const CoordinatorCard = ({ gender, name, age, phone }) => {
   const col =
     gender === "Male" || gender === "male"
-      ? "bg-green-500/20"
+      ? "bg-[#228B22]/20"
       : "bg-red-500/20";
   const textCol =
-    gender === "Male" || gender === "male" ? "text-green-700" : "text-red-700";
+    gender === "Male" || gender === "male" ? "text-[#228B22]" : "text-red-700";
   return (
     <View className="w-full p-3 bg-white shadow-xl shadow-black/70 rounded-lg mt-2">
       <View className="flex flex-row justify-between items-center">

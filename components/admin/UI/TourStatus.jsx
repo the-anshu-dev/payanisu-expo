@@ -20,8 +20,8 @@ const TourStatus = ({ status, tourStart, tourEnd }) => {
     textColor = "text-yellow-600";
   } else if (isAfter(today, endDate)) {
     statusText = "Completed";
-    bgColor = "bg-green-700/20";
-    textColor = "text-green-600";
+    bgColor = "bg-[#228B22]/20";
+    textColor = "text-[#228B22]";
   } else {
     statusText = "Started";
     bgColor = "bg-blue-700/20";

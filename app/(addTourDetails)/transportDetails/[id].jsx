@@ -27,7 +27,7 @@ const TransportDetails = () => {
   const { id, tourId } = useLocalSearchParams();
 
   const [boardingPoints, setBoardingPoints] = useState([]);
-  const [loading, setLoading] = useState(false);
+
   const [refreshing, setRefreshing] = useState(false);
 
   const [bookedGuests, setAllBookedGuests] = useState([]);
@@ -59,7 +59,6 @@ const TransportDetails = () => {
   };
 
   const handleGetBoardingPoints = async () => {
-    setLoading(true);
     try {
       const response = await fetch(
         `${process.env.EXPO_PUBLIC_BASE_URL}/api/board/get?transportId=${id}`
@@ -71,8 +70,6 @@ const TransportDetails = () => {
       setBoardingPoints(result);
     } catch (error) {
       showError(error.message || "Please try again.");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -133,7 +130,6 @@ const TransportDetails = () => {
   };
 
   const handleGetAllocatedGuests = async () => {
-    setLoading(true);
     try {
       const response = await fetch(
         `${process.env.EXPO_PUBLIC_BASE_URL}/api/allocatedTransport/get?tourId=${tourId}`
@@ -145,8 +141,6 @@ const TransportDetails = () => {
       setTransportAllocatedGuests(result);
     } catch (error) {
       showError(error.message || "Please try again.");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -168,7 +162,10 @@ const TransportDetails = () => {
   );
 
   return (
-    <SafeAreaView style={{ height: "100%", width: "100%" }} edges={["right", "bottom", "left"]}>
+    <SafeAreaView
+      style={{ height: "100%", width: "100%" }}
+      edges={["right", "bottom", "left"]}
+    >
       <View style={styles.screenContainer}>
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -178,46 +175,31 @@ const TransportDetails = () => {
             <RefreshControl
               refreshing={refreshing}
               onRefresh={onRefresh}
-              colors={["green", "red"]}
+              colors={["#228B22", "red"]}
             />
           }
         >
           <View style={{ paddingVertical: 10, paddingHorizontal: 20, gap: 5 }}>
             {boardingPoints.length > 0 ? (
               <>
-                {boardingPoints.map(
-                  (
-                    {
-                      boardingPointName,
-                      boardingPointTime,
-                      boardingPointDate,
-                      location,
-                      _id,
-                    },
-                    index
-                  ) => (
-                    <BoardingPointCard
-                      key={index}
-                      name={boardingPointName}
-                      date={boardingPointDate}
-                      time={boardingPointTime}
-                      location={location}
-                      id={_id}
-                      onRefresh={onRefresh}
-                      setRefreshing={setRefreshing}
-                    />
-                  )
-                )}
+                {boardingPoints.map((boardingPoint, index) => (
+                  <BoardingPointCard
+                    key={index}
+                    boardingPoint={boardingPoint}
+                    onRefresh={onRefresh}
+                    setRefreshing={setRefreshing}
+                  />
+                ))}
               </>
             ) : (
               <View style={styles.noBoardingContainer}>
-                <Ionicons name="trash-bin-outline" color={"green"} size={28} />
+                <Ionicons name="trash-bin-outline" color={"#228B22"} size={28} />
                 <Text
                   style={{
                     marginTop: 20,
                     fontSize: 16,
                     fontWeight: "600",
-                    color: "green",
+                    color: "#228B22",
                   }}
                 >
                   No Boarding Points Added Yet
@@ -225,25 +207,6 @@ const TransportDetails = () => {
               </View>
             )}
           </View>
-          {/* <View>
-            <Text
-              style={{
-                fontSize: 18,
-                color: "green",
-                fontWeight: "600",
-                paddingBottom: 10,
-                width: "100%",
-                textAlign: "center",
-              }}
-            >
-              Allocated Guests
-            </Text>
-          </View> */}
-          {/* <View style={{ paddingHorizontal: 6 }}>
-            {alreadyAllocatedGuestDetails.map((item) => (
-              <TransportAllocatedGuests item={item} key={item._id} />
-            ))}
-          </View> */}
         </ScrollView>
         <View style={styles.buttonsContainer}>
           <TouchableOpacity
@@ -257,7 +220,7 @@ const TransportDetails = () => {
             <Text style={styles.buttonText}>Add Guests</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.buttons, { backgroundColor: "green" }]}
+            style={[styles.buttons, { backgroundColor: "#228B22" }]}
             activeOpacity={0.9}
             onPress={() =>
               router.push(`/(addTourDetails)/addBoardingPoint/${id}`)
@@ -289,7 +252,7 @@ const TransportDetails = () => {
           </Text>
           <ScrollView nestedScrollEnabled={false} contentContainerStyle={{}}>
             {bookedGuests.map((item) => (
-              <View style={styles.guestCardContainer} key={item.bookingId}>
+              <View style={styles.guestCardContainer} key={item._id}>
                 <Checkbox
                   status={
                     selectedGuests.includes(item._id) ||
@@ -301,15 +264,13 @@ const TransportDetails = () => {
                   color={
                     alreadyTransportAllocatedGuests.includes(item._id)
                       ? "gray"
-                      : "green"
+                      : "#228B22"
                   }
                 />
                 <View
                   style={{
                     backgroundColor:
-                      item?.ProfileData[0]?.gender.toLowerCase() == "male"
-                        ? "red"
-                        : "green",
+                      item?.gender.toLowerCase() == "male" ? "red" : "#228B22",
                     height: 20,
                     width: 20,
                     borderRadius: 20,
@@ -319,13 +280,11 @@ const TransportDetails = () => {
                   }}
                 >
                   <Text style={{ color: "white", fontSize: 12 }}>
-                    {item?.ProfileData[0]?.gender?.charAt(0)}
+                    {item?.gender?.charAt(0)}
                   </Text>
                 </View>
-                <Text style={{ width: width * 0.4 }}>
-                  {item?.ProfileData[0]?.name}
-                </Text>
-                <Text>{item?.ProfileData[0]?.age} Yrs</Text>
+                <Text style={{ width: width * 0.4 }}>{item?.name}</Text>
+                <Text>{item?.age} Yrs</Text>
               </View>
             ))}
           </ScrollView>
@@ -352,15 +311,15 @@ const TransportDetails = () => {
   );
 };
 
-const BoardingPointCard = ({
-  name,
-  location,
-  time,
-  date,
-  id,
-  onRefresh,
-  setRefreshing,
-}) => {
+const BoardingPointCard = ({ boardingPoint, onRefresh, setRefreshing }) => {
+  const {
+    _id: id,
+    boardingPointName: name,
+    location,
+    boardingPointDate: date,
+    boardingPointTime: time,
+  } = boardingPoint;
+
   const handleDelete = async () => {
     setRefreshing(true);
     try {
@@ -373,6 +332,7 @@ const BoardingPointCard = ({
       if (response.status !== 200) {
         throw new Error("Failed to delete boarding point.");
       }
+      showSuccess("Boarding point deleted successfully.");
       onRefresh();
     } catch (error) {
       showError(error.message || "Please try again.");
@@ -430,46 +390,6 @@ const BoardingPointCard = ({
           </Text>
         </View>
       </View>
-    </View>
-  );
-};
-
-const TransportAllocatedGuests = ({ item }) => {
-  return (
-    <View
-      style={[
-        styles.guestCardContainer,
-        {
-          marginBottom: 8,
-          paddingVertical: 5,
-          borderRadius: 6,
-        },
-      ]}
-      key={item._id}
-    >
-      <View
-        style={{
-          backgroundColor:
-            item?.bookingData?.gender.toLowerCase() === "male"
-              ? "red"
-              : "green",
-          height: 20,
-          width: 20,
-          borderRadius: 20,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Text style={{ color: "white", fontSize: 12 }}>
-          {item?.bookingData?.gender?.charAt(0)}
-        </Text>
-      </View>
-      <Text>{item?.bookingData?.name}</Text>
-      <Text>{item?.bookingData?.age} Yrs</Text>
-      <TouchableOpacity onPress={() => {}} activeOpacity={0.9}>
-        <Ionicons name="trash-outline" color={"red"} size={18} />
-      </TouchableOpacity>
     </View>
   );
 };
@@ -533,8 +453,8 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   modalizeButton: {
-    backgroundColor: "green",
-    width: width * 0.5,
+    backgroundColor: "#228B22",
+    width: width * 0.9,
     height: height * 0.05,
     display: "flex",
     justifyContent: "center",
@@ -553,9 +473,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: 12,
+    paddingHorizontal: 16,
     backgroundColor: "white",
     elevation: 8,
+    gap: 10,
   },
   noBoardingContainer: {
     width: "100%",

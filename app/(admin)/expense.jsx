@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Dimensions,
   RefreshControl,
+  StyleSheet,
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { Modalize } from "react-native-modalize";
@@ -25,6 +26,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { setTour } from "../../redux/slices/tourSlice.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { showError, showWarning } from "../../utils/toastHelper.js";
+import { Picker } from "@react-native-picker/picker";
 
 const { width } = Dimensions.get("window");
 
@@ -270,14 +272,14 @@ const expense = () => {
         </View>
         {loading ? (
           <View className="h-[85%] px-3 flex justify-center items-center">
-            <ActivityIndicator size="large" color="green" />
+            <ActivityIndicator size="large" color="#228B22" />
             <Text>Loading...</Text>
           </View>
         ) : (
           <>
             <View className="flex flex-row justify-between items-center px-4 py-3">
               <View
-                className={`w-[30%] rounded-lg flex justify-center items-center h-[70px] space-y-1 bg-green-600/30 `}
+                className={`w-[30%] rounded-lg flex justify-center items-center h-[70px] space-y-1 bg-[#228B22]/30 `}
               >
                 <Text className={` font-medium`}>Budget</Text>
                 <Text className={`text-lg font-bold text-blue-600`}>
@@ -285,7 +287,7 @@ const expense = () => {
                 </Text>
               </View>
               <View
-                className={`w-[30%] rounded-lg flex justify-center items-center h-[70px] space-y-1 bg-green-600/30 `}
+                className={`w-[30%] rounded-lg flex justify-center items-center h-[70px] space-y-1 bg-[#228B22]/30 `}
               >
                 <Text className={` font-medium`}>Spent</Text>
                 <Text
@@ -293,10 +295,10 @@ const expense = () => {
                 >{`₹${expenseData?.spent}`}</Text>
               </View>
               <View
-                className={`w-[30%] rounded-lg flex justify-center items-center h-[70px] space-y-1 bg-green-600/30 `}
+                className={`w-[30%] rounded-lg flex justify-center items-center h-[70px] space-y-1 bg-[#228B22]/30 `}
               >
                 <Text className={` font-medium`}>Balance</Text>
-                <Text className={`text-lg font-bold text-green-600`}>
+                <Text className={`text-lg font-bold text-[#228B22]`}>
                   {`₹${expenseData?.balance}`}
                 </Text>
               </View>
@@ -341,20 +343,11 @@ const expense = () => {
           </>
         )}
         <View
-          className={`flex flex-grow flex-row justify-between items-center w-full absolute bottom-16 px-6 py-2 bg-white `}
+          className={`flex flex-grow flex-row justify-between items-center w-full absolute bottom-16 px-4 py-2 bg-white `}
         >
-          <TouchableOpacity
-            activeOpacity={0.9}
-            onPress={handleExport}
-            style={{
-              width: width * 0.4,
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
+          <TouchableOpacity activeOpacity={0.9} onPress={handleExport}>
             <View
-              style={{ width: width * 0.4, backgroundColor: "green" }}
+              style={{ width: width * 0.45, backgroundColor: "#228B22" }}
               className=" py-3 rounded-lg flex justify-center items-center"
             >
               {exporting ? (
@@ -371,7 +364,7 @@ const expense = () => {
             onPress={() => addExpenseDetailRef?.current?.open()}
           >
             <View
-              style={{ width: width * 0.4, backgroundColor: "green" }}
+              style={{ width: width * 0.45, backgroundColor: "#228B22" }}
               className="py-3 rounded-lg flex justify-center  items-center"
             >
               <Text className="text-white text-base font-semibold">
@@ -383,7 +376,7 @@ const expense = () => {
       </View>
       <Modalize ref={showExpenseDetailRef} adjustToContentHeight>
         <View className="px-3">
-          <View className="flex justify-center items-center py-2">
+          <View className="flex justify-center items-center py-3">
             <Text className="text-xl font-semibold">Expense Details</Text>
           </View>
           <LabelValue label={"Category"} value={showExpenseDetails?.category} />
@@ -403,7 +396,8 @@ const expense = () => {
           <View className="w-full flex justify-center items-center mb-3">
             <TouchableOpacity
               activeOpacity={0.9}
-              className="w-56 bg-red-700 rounded-lg py-2 flex justify-center items-center"
+              style={{ width: width * 0.9 }}
+              className=" bg-red-700 rounded-lg py-3 flex justify-center items-center"
             >
               <Text className="text-white font-semibold">Delete</Text>
             </TouchableOpacity>
@@ -415,14 +409,23 @@ const expense = () => {
           <Text className="text-lg font-semibold">Add Expense Details</Text>
         </View>
         <View className="px-6 pt-3 flex justify-center items-center gap-3 w-full ">
-          <TextInput
-            placeholder="Category [e.g., Food, Accomodation]..."
-            onChangeText={setExpenseCategory}
-            autoCapitalize="none"
-            keyboardType="default"
-            className="text-base px-2 lowercase w-full outline-green-700 indent-3 border-2 border-green-700 rounded-[10px] p-1.5"
-            placeholderTextColor={"#7d7d7d"}
-          />
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={expenseCategory}
+              onValueChange={setExpenseCategory}
+              dropdownIconColor="#228B22"
+              style={styles.picker}
+            >
+              <Picker.Item label="Expense Category" value={null} />
+              <Picker.Item label="Food" value="Food" />
+              <Picker.Item label="Transport" value="Transport" />
+              <Picker.Item label="Stationary" value="Stationary" />
+              <Picker.Item label="Trekking Kit" value="Trekking Kit" />
+              <Picker.Item label="Gift" value="Gift" />
+              <Picker.Item label="Accomodation" value="Accomodation" />
+              <Picker.Item label="Miscellaneous" value="Miscellaneous" />
+            </Picker>
+          </View>
           <TextInput
             placeholder="Note"
             multiline
@@ -431,7 +434,7 @@ const expense = () => {
             onChangeText={setNote}
             autoCapitalize="none"
             keyboardType="default"
-            className="text-base px-2 lowercase w-full outline-green-700 indent-3 border-2 border-green-700 rounded-[10px] p-1.5"
+            className="text-lg h-16 px-2 lowercase w-full outline-[#228B22] indent-3 border-2 border-[#228B22] rounded-[10px] p-1.5"
             placeholderTextColor={"#7d7d7d"}
           />
           <View className="w-full">
@@ -443,10 +446,10 @@ const expense = () => {
                 placeholder="Select Date"
                 value={date}
                 editable={false}
-                className="text-base px-2 lowercase w-full outline-green-700 indent-3 border-2 border-green-700 rounded-[10px] p-1.5"
+                className="text-lg px-2 h-16 lowercase w-full outline-[#228B22] indent-3 border-2 border-[#228B22] rounded-[10px] p-1.5"
                 style={{
                   width: "100%",
-                  borderColor: "green",
+                  borderColor: "#228B22",
                   borderWidth: 2,
                   borderRadius: 10,
                   paddingVertical: 6,
@@ -471,7 +474,7 @@ const expense = () => {
             autoCapitalize="none"
             onChangeText={setAmount}
             keyboardType="number-pad"
-            className="text-base px-2 lowercase w-full outline-green-700 indent-3 border-2 border-green-700 rounded-[10px] p-1.5"
+            className="text-lg px-2 h-16 lowercase w-full outline-[#228B22] indent-3 border-2 border-[#228B22] rounded-[10px] p-1.5"
             placeholderTextColor={"#7d7d7d"}
           />
           <TouchableOpacity
@@ -479,7 +482,7 @@ const expense = () => {
             style={{ width: "100%" }}
             onPress={pickImage}
           >
-            <View className="h-32 flex justify-center items-center border-2 border-dashed rounded-lg mb-3 border-green-600 w-full overflow-hidden">
+            <View className="h-32 flex justify-center items-center border-2 border-dashed rounded-lg mb-3 border-[#228B22] w-full overflow-hidden">
               {image ? (
                 <View className="w-full h-full">
                   <Image
@@ -492,8 +495,8 @@ const expense = () => {
                 </View>
               ) : (
                 <View className="flex flex-row justify-center items-center space-x-3 w-full">
-                  <Ionicons name="add-circle" size={20} color={"green"} />
-                  <Text className="text-base font-semibold text-green-600">
+                  <Ionicons name="add-circle" size={20} color={"#228B22"} />
+                  <Text className="text-base font-semibold text-[#228B22]">
                     Upload Receipt Image ( optional )
                   </Text>
                 </View>
@@ -504,10 +507,10 @@ const expense = () => {
         <View className="w-full flex justify-center items-center mb-3">
           <TouchableOpacity
             activeOpacity={0.9}
-            style={{ width: width * 0.7 }}
+            style={{ width: width * 0.9 }}
             onPress={handleAddExpense}
           >
-            <View className="flex justify-center items-center mt-2 bg-green-600 w-full py-2 rounded-[10px]">
+            <View className="flex justify-center items-center mt-2 bg-[#228B22] w-full py-3 rounded-[10px]">
               {loading ? (
                 <ActivityIndicator size={"small"} color={"white"} />
               ) : (
@@ -529,7 +532,7 @@ const ExpenseCard = ({ getIconName, item, handleShowExpenseDetails }) => {
       className={`flex flex-row w-full justify-between items-center px-2 py-2 bg-white shadow-xl shadow-black/50 rounded-lg mb-2`}
     >
       <View className="flex flex-row w-[40%] justify-start items-center gap-3">
-        <Ionicons name={getIconName(item.category)} size={24} color={"green"} />
+        <Ionicons name={getIconName(item.category)} size={24} color={"#228B22"} />
         <View>
           <Text className={`font-semibold`}>{shorten(item.category, 20)}</Text>
           <Text className="text-xs text-gray-500">
@@ -544,11 +547,24 @@ const ExpenseCard = ({ getIconName, item, handleShowExpenseDetails }) => {
           activeOpacity={0.9}
           onPress={() => handleShowExpenseDetails(item._id)}
         >
-          <Ionicons name="eye-outline" size={20} color={"green"} />
+          <Ionicons name="eye-outline" size={20} color={"#228B22"} />
         </TouchableOpacity>
       </View>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  pickerContainer: {
+    width: "100%",
+    borderWidth: 2,
+    borderColor: "#228B22",
+    borderRadius: 8,
+  },
+  picker: {
+    height: 50,
+    fontSize: 18,
+  },
+});
 
 export default expense;

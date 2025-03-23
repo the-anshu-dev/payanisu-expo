@@ -10,7 +10,7 @@ const CustomBackButton = ({ icon }) => {
       activeOpacity={0.9}
       className={`mr-4 p-1`}
     >
-      <Ionicons name={icon} size={24} color={"green"} />
+      <Ionicons name={icon} size={24} color={"#228B22"} />
     </TouchableOpacity>
   );
 };

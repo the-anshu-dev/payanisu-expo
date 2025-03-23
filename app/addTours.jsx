@@ -350,7 +350,7 @@ const addTours = () => {
           <View style={styles.switchContainer}>
             <Text style={styles.switchLabel}>Admin Can Reject Booking?</Text>
             <Switch
-              trackColor={{ true: "green", false: "gray" }}
+              trackColor={{ true: "#228B22", false: "gray" }}
               value={adminCanReject}
               onValueChange={setAdminCanReject}
               ios_backgroundColor="gray"
@@ -359,7 +359,7 @@ const addTours = () => {
           <View style={styles.switchContainer}>
             <Text style={styles.switchLabel}>Payment Gateway Enabled?</Text>
             <Switch
-              trackColor={{ true: "green", false: "gray" }}
+              trackColor={{ true: "#228B22", false: "gray" }}
               value={paymentGatewayEnabled}
               onValueChange={setPaymentGatewayEnabled}
               ios_backgroundColor="gray"
@@ -368,10 +368,10 @@ const addTours = () => {
           <View className="w-full">
             {
               consentForm ?
-                <View className="flex flex-row justify-between item-center border border-green-700 w-full rounded-lg px-4 py-2">
+                <View className="flex flex-row justify-between item-center border border-[#228B22]w-full rounded-lg px-4 py-2">
                   <View className="flex flex-row justify-center items-center gap-5">
-                    <Ionicons name="document-text-outline" color={"green"} size={24} />
-                    <Text style={{ color: "green", fontWeight: "400" }}>{consentForm?.name}</Text>
+                    <Ionicons name="document-text-outline" color={"#228B22"} size={24} />
+                    <Text style={{ color: "#228B22", fontWeight: "400" }}>{consentForm?.name}</Text>
                   </View>
                   <TouchableOpacity onPress={() => setConsentForm(null)}>
                     <Ionicons name="close-outline" size={24} color="red" />
@@ -380,7 +380,7 @@ const addTours = () => {
                 :
                 <View className="w-full">
                   <TouchableOpacity onPress={pickPdf} style={styles.imagePicker}>
-                    <Ionicons name="add-circle" size={20} color="green" />
+                    <Ionicons name="add-circle" size={20} color="#228B22" />
                     <Text style={styles.imagePickerText}>Add Consent Form</Text>
                   </TouchableOpacity>
                 </View>
@@ -403,7 +403,7 @@ const addTours = () => {
               </View>
             ) : (
               <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
-                <Ionicons name="add-circle" size={20} color="green" />
+                <Ionicons name="add-circle" size={20} color="#228B22" />
                 <Text style={styles.imagePickerText}>
                   Add tour images
                 </Text>
@@ -517,7 +517,7 @@ const styles = StyleSheet.create({
   imagePicker: {
     height: 100,
     width: "100%",
-    borderColor: "green",
+    borderColor: "#228B22",
     borderWidth: 1,
     borderRadius: 10,
     justifyContent: "center",
@@ -526,7 +526,7 @@ const styles = StyleSheet.create({
   },
   imagePickerText: {
     fontSize: width * 0.04,
-    color: "green",
+    color: "#228B22",
     marginLeft: width * 0.02,
   },
   submitButton: {

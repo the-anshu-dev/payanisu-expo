@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
   modalText: {
     fontSize: 24,
     fontWeight: "bold",
-    color: "green",
+    color: "#228B22",
     marginTop: 10,
   },
   modalSubText: {
@@ -206,7 +206,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   retryButton: {
-    backgroundColor: "green",
+    backgroundColor: "#228B22",
     width: "45%",
     paddingVertical: 10,
     borderRadius: 5,

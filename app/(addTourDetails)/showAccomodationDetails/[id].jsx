@@ -100,7 +100,7 @@ const showAccomodationDetails = () => {
           alignItems: "center",
         }}
       >
-        <ActivityIndicator size="large" color="green" />
+        <ActivityIndicator size="large" color="#228B22" />
       </View>
     );
   }
@@ -137,7 +137,7 @@ const showAccomodationDetails = () => {
           onPress={() => setModalVisible(true)}
           style={{
             width: width * 0.9,
-            backgroundColor: "green",
+            backgroundColor: "#228B22",
             borderRadius: 6,
             paddingVertical: 12,
             display: "flex",

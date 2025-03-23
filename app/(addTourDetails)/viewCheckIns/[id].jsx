@@ -197,7 +197,7 @@ const ViewCheckIns = () => {
     <SafeAreaView style={{ flex: 1 }} edges={["bottom", "left", "right"]}>
       {checkedInMembersLoading ?
         <View className="h-full w-full flex justify-center items-center">
-          <ActivityIndicator size={"large"} color="green" />
+          <ActivityIndicator size={"large"} color="#228B22" />
         </View> :
         <View className="p-2 mt-2 h-full relative flex justify-center items-center">
           <View className="mb-3 w-full px-2">
@@ -219,7 +219,7 @@ const ViewCheckIns = () => {
                 <View className="gap-2">
                   <Text>Checked In Members</Text>
                   <Text
-                    className={`text-xl text-green-700 font-medium text-right`}
+                    className={`text-xl text-[#228B22] font-medium text-right`}
                   >
                     {checkedInMembers?.length}
                   </Text>
@@ -409,7 +409,7 @@ const ViewCheckIns = () => {
             }}
           >
             {absenting ? (
-              <ActivityIndicator color="green" size={"small"} />
+              <ActivityIndicator color="#228B22" size={"small"} />
             ) : (
               <Text style={{ color: "black", fontWeight: "500" }}>
                 Mark as absent
@@ -420,7 +420,7 @@ const ViewCheckIns = () => {
             disabled={allReadyCheckedIn}
             onPress={() => handleCheckIn(modalDetails?.email)}
             style={{
-              backgroundColor: allReadyCheckedIn ? "gray" : "green",
+              backgroundColor: allReadyCheckedIn ? "gray" : "#228B22",
               height: height * 0.05,
               width: width * 0.45,
               borderRadius: 5,
@@ -489,7 +489,7 @@ const CheckedInUserCard = ({
           style={[
             styles.text,
             {
-              color: checkedInEmails.includes(email) ? "green" : "red",
+              color: checkedInEmails.includes(email) ? "#228B22" : "red",
               fontWeight: 600,
             },
           ]}

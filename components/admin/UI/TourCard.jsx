@@ -24,20 +24,20 @@ const TourCard = ({ tour }) => {
             {shorten(tour?.name, 20)}
           </Text>
           <View className="flex flex-row mt-4 gap-2 justify-start items-center">
-            <Ionicons name="calendar-outline" size={16} color="green" />
+            <Ionicons name="calendar-outline" size={16} color="#228B22" />
             <Text>{`${formatDate(tour?.tour_start)} - ${formatDate(
               tour?.tour_end
             )}`}</Text>
           </View>
           <View className="flex flex-row justify-between items-center mt-4 py-2">
             <View className="flex flex-row gap-1 items-center">
-              <Ionicons name="location" size={18} color="green" />
+              <Ionicons name="location" size={18} color="#228B22" />
               <Text className="text-base font-medium text-gray-600">
-                {tour?.location}
+                {tour?.location?.split(" ")[0]}
               </Text>
             </View>
             <View className="flex flex-row gap-1 items-center justify-center">
-              <FontAwesome6 name="route" size={16} color="green" />
+              <FontAwesome6 name="route" size={16} color="#228B22" />
               <Text className="text-base font-medium text-gray-600">
                 {tour?.distance} KM
               </Text>
@@ -48,7 +48,7 @@ const TourCard = ({ tour }) => {
           <View>
             <Text className="text-gray-600 font-medium">Seats Booked</Text>
             <View className="flex flex-row justify-end items-center mt-2">
-              <Text className="text-3xl font-medium text-green-700">
+              <Text className="text-3xl font-medium text-[#228B22]">
                 {tour?.bookedCount}/
               </Text>
               <Text className="-mb-1 text-lg font-medium">

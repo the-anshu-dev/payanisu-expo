@@ -255,7 +255,7 @@ const Page = () => {
           onPress={handleAddCheckPoint}
           style={{
             width: width * 0.9,
-            backgroundColor: "green",
+            backgroundColor: "#228B22",
             paddingVertical: 12,
             borderRadius: 8,
           }}

@@ -55,7 +55,7 @@ const addTourImgs = () => {
           <Text className="text-base font-semibold text-red-500">{error}</Text>
         )}
       </View>
-      <View className="flex justify-center items-center h-[80%] w-full border-2 border-green-600 rounded-xl">
+      <View className="flex justify-center items-center h-[80%] w-full border-2 border-[#228B22] rounded-xl">
         {image.length > 0 ? (
           <ScrollView
             showsVerticalScrollIndicator={false}
@@ -88,10 +88,10 @@ const addTourImgs = () => {
         }}
       >
         <TouchableOpacity activeOpacity={0.9} onPress={pickImage}>
-          <View className="h-12 flex justify-center items-center border-2 border-dashed rounded-lg mb-3 border-green-600">
+          <View className="h-12 flex justify-center items-center border-2 border-dashed rounded-lg mb-3 border-[#228B22]">
             <View className="flex flex-row justify-center items-center space-x-3">
-              <Ionicons name="add-circle" size={20} color={"green"} />
-              <Text className="text-base font-semibold text-green-600">
+              <Ionicons name="add-circle" size={20} color={"#228B22"} />
+              <Text className="text-base font-semibold text-[#228B22]">
                 Add Tour Images
               </Text>
             </View>
@@ -102,7 +102,7 @@ const addTourImgs = () => {
           containerStyle={{ height: "100%" }}
           onPress={handleTourImageUpload}
         >
-          <View className="h-12 flex justify-center items-center bg-green-600 rounded-lg">
+          <View className="h-12 flex justify-center items-center bg-[#228B22] rounded-lg">
             <Text className="text-base font-semibold text-white">
               {loading ? "Uploading..." : "Proceed"}
             </Text>

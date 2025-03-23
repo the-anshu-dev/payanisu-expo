@@ -193,17 +193,17 @@ const CheckPointElement = ({
             <Text style={styles.pointName}>{points?.name}</Text>
           </View>
           <View style={styles.qrIconContainer}>
-            {checkInLoading && <ActivityIndicator color="green" size="small" />}
+            {checkInLoading && <ActivityIndicator color="#228B22" size="small" />}
             {!checkInLoading &&
               points.type === "Geo Tagging" &&
               (points.checked ? (
                 <Ionicons
                   name="checkmark-circle-outline"
                   size={32}
-                  color="green"
+                  color="#228B22"
                 />
               ) : (
-                <Ionicons name="time-outline" size={28} color="green" />
+                <Ionicons name="time-outline" size={28} color="#228B22" />
               ))}
             {!checkInLoading &&
               points.type !== "Geo Tagging" &&
@@ -211,7 +211,7 @@ const CheckPointElement = ({
                 <Ionicons
                   name="checkmark-circle-outline"
                   size={32}
-                  color="green"
+                  color="#228B22"
                 />
               )}
             {!checkInLoading &&
@@ -221,9 +221,9 @@ const CheckPointElement = ({
                 <TouchableOpacity
                   activeOpacity={0.9}
                   onPress={handleQRCodePress}
-                  className="border-2 border-green-700 rounded-full px-2"
+                  className="border-2 border-[#228B22] rounded-full px-2"
                 >
-                  <Text className="font-semibold text-green-700 text-xl">
+                  <Text className="font-semibold text-[#228B22] text-xl">
                     Scan QR
                   </Text>
                 </TouchableOpacity>
@@ -355,7 +355,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     padding: 10,
     borderRadius: 5,
-    backgroundColor: "green",
+    backgroundColor: "#228B22",
   },
 });
 

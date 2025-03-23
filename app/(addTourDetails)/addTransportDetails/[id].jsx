@@ -181,7 +181,7 @@ const TransportDetails = () => {
             ) : (
               <TouchableOpacity
                 activeOpacity={0.9}
-                style={[styles.buttons, { backgroundColor: "green" }]}
+                style={[styles.buttons, { backgroundColor: "#228B22" }]}
                 onPress={pickImage}
               >
                 <Text style={{ color: "white" }}>Upload Bus Image</Text>
@@ -201,7 +201,7 @@ const TransportDetails = () => {
           <Text style={styles.buttonText}>Cancel</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.buttons, { backgroundColor: "green" }]}
+          style={[styles.buttons, { backgroundColor: "#228B22" }]}
           activeOpacity={0.9}
           onPress={handleAddBusDetails}
         >
@@ -264,7 +264,7 @@ const styles = StyleSheet.create({
   busImageContainer: {
     width: "100%",
     borderWidth: 2,
-    borderColor: "green",
+    borderColor: "#228B22",
     height: height * 0.15,
     borderRadius: 6,
     display: "flex",

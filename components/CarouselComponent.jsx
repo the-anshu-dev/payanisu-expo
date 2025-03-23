@@ -26,7 +26,7 @@ const CarouselComponent = () => {
           contentContainerStyle={styles.scrollViewContent}
         >
           <View style={styles.noTourAvailable}>
-            <Ionicons name="alert-circle-outline" color="green" size={80} />
+            <Ionicons name="alert-circle-outline" color="#228B22" size={80} />
             <Text style={{ fontSize: 18, marginTop: 18, fontWeight: "bold" }}>
               No Active Tours Available
             </Text>

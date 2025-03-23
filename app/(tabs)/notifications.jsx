@@ -45,7 +45,7 @@ const NotificationsScreen = () => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContainer}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={fetchData} colors={["green", "red", "blue"]} />
+          <RefreshControl refreshing={refreshing} onRefresh={fetchData} colors={["#228B22", "red", "blue"]} />
         }
       >
         <View style={styles.notificationsContainer}>

@@ -67,7 +67,7 @@ const AddRoles = () => {
             items={roles}
             textStyle={{ color: "white", fontWeight: "bold", fontSize: width * 0.04 }}
             dropDownContainerStyle={styles.dropDownContainer}
-            badgeStyle={{ backgroundColor: "green" }}
+            badgeStyle={{ backgroundColor: "#228B22" }}
             tickIconStyle={{ color: "white" }}
             arrowIconStyle={{ color: "white" }}
             setOpen={setOpen}
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
     marginBottom: height * 0.02,
   },
   dropDownContainer: {
-    backgroundColor: "green",
+    backgroundColor: "#228B22",
   },
   textInput: {
     color: "white",
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
     paddingVertical: height * 0.015,
     paddingHorizontal: width * 0.03,
     borderRadius: 10,
-    borderColor: "green",
+    borderColor: "#228B22",
     borderWidth: 1,
     marginBottom: height * 0.03,
   },

@@ -7,7 +7,7 @@ import Header from "@/components/common/Header";
 export default function OfflineLayout() {
     return <Tabs
         screenOptions={({ route }) => ({
-            tabBarActiveTintColor: "green",
+            tabBarActiveTintColor: "#228B22",
             tabBarInactiveTintColor: "gray",
             tabBarLabelStyle: {
                 fontSize: 12,
@@ -24,7 +24,7 @@ export default function OfflineLayout() {
                     <FontAwesome6
                         name="person-hiking"
                         size={24}
-                        color={focused ? "green" : "black"}
+                        color={focused ? "#228B22" : "black"}
                     />
                 ),
             }}
@@ -38,7 +38,7 @@ export default function OfflineLayout() {
                     <Ionicons
                         name={focused ? "navigate-circle" : "navigate-circle-outline"}
                         size={24}
-                        color={focused ? "green" : "black"}
+                        color={focused ? "#228B22" : "black"}
                     />
                 ),
             }}

@@ -112,7 +112,7 @@ const Community = () => {
   if (allPosts.length === 0) {
     return (
       <View style={styles.loaderContainer}>
-        <ActivityIndicator color="green" size="large" />
+        <ActivityIndicator color="#228B22" size="large" />
       </View>
     );
   }
@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
     right: width * 0.05,
   },
   shareButton: {
-    backgroundColor: "green",
+    backgroundColor: "#228B22",
     height: height * 0.06,
     justifyContent: "center",
     alignItems: "center",
@@ -282,7 +282,7 @@ const styles = StyleSheet.create({
   },
   textInput: {
     borderWidth: 1,
-    borderColor: "green",
+    borderColor: "#228B22",
     borderRadius: 8,
     padding: 10,
     width: "100%",
@@ -315,7 +315,7 @@ const styles = StyleSheet.create({
   },
   addImagesPlaceholder: {
     borderWidth: 1,
-    borderColor: "green",
+    borderColor: "#228B22",
     borderRadius: 8,
     width: "100%",
     height: height * 0.15,
@@ -331,7 +331,7 @@ const styles = StyleSheet.create({
     marginBottom: height * 0.02,
   },
   postButton: {
-    backgroundColor: "green",
+    backgroundColor: "#228B22",
     width: width * 0.6,
     paddingVertical: height * 0.01,
     display: "flex",
@@ -344,7 +344,7 @@ const styles = StyleSheet.create({
     fontSize: height * 0.02,
   },
   addImagesButton: {
-    backgroundColor: "green",
+    backgroundColor: "#228B22",
     paddingHorizontal: 24,
     marginTop: 10,
     paddingVertical: 10,

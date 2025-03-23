@@ -275,7 +275,7 @@ const DetailsScreen = () => {
             </View>
             <View className="p-2 rounded-lg shadow-lg shadow-black/50 bg-white">
               <View className="flex flex-row justify-left items-center gap-3 border-b border-gray-300 pb-1 px-1">
-                <Ionicons name="thumbs-up-outline" size={24} color={"green"} />
+                <Ionicons name="thumbs-up-outline" size={24} color={"#228B22"} />
                 <Text className={`text-base  font-semibold`}>
                   What is included ?
                 </Text>
@@ -315,7 +315,7 @@ const DetailsScreen = () => {
             </View>
             <View className="p-2 rounded-lg shadow-lg shadow-black/50 bg-white">
               <View className="flex flex-row justify-left items-center gap-3 border-b border-gray-300 pb-1 px-1">
-                <Ionicons name="bag-check-outline" size={24} color={"green"} />
+                <Ionicons name="bag-check-outline" size={24} color={"#228B22"} />
                 <Text className={`text-base  font-semibold`}>Bag Pack</Text>
               </View>
               <View className="px-1 mt-3 gap-2">
@@ -336,7 +336,7 @@ const DetailsScreen = () => {
                 <Ionicons
                   name="checkmark-done-circle-outline"
                   size={24}
-                  color={"green"}
+                  color={"#228B22"}
                 />
                 <Text className={`text-base font-semibold`}>
                   Check In Baggage
@@ -378,7 +378,7 @@ const DetailsScreen = () => {
           <TouchableOpacity onPress={handleReserveButton} activeOpacity={0.9}>
             <View
               style={{ width: width * 0.4 }}
-              className="py-3 bg-green-700 rounded-lg h-12 flex justify-center items-center"
+              className="py-3 bg-[#228B22] rounded-lg h-12 flex justify-center items-center"
             >
               <Text className="text-center text-white font-semibold">
                 Reserve Seat
@@ -389,7 +389,7 @@ const DetailsScreen = () => {
       </SafeAreaView>
       <Modalize
         ref={interestedRef}
-        handleStyle={{ backgroundColor: "green" }}
+        handleStyle={{ backgroundColor: "#228B22" }}
         handlePosition="inside"
         adjustToContentHeight
       >
@@ -413,7 +413,7 @@ const DetailsScreen = () => {
       <Modalize
         ref={reserveRef}
         handlePosition="inside"
-        handleStyle={{ backgroundColor: "green" }}
+        handleStyle={{ backgroundColor: "#228B22" }}
         adjustToContentHeight
       >
         <View className="h-full relative">
@@ -448,7 +448,7 @@ const DetailsScreen = () => {
                 <TouchableOpacity
                   activeOpacity={0.9}
                   onPress={() => router.push("/addMember")}
-                  className="bg-green-600 py-3 flex flex-row justify-center items-center rounded-lg mt-3"
+                  className="bg-[#228B22] py-3 flex flex-row justify-center items-center rounded-lg mt-3"
                 >
                   <Ionicons name="add-circle-outline" color="white" size={20} />
                   <Text className="font-semibold ml-1 text-white">
@@ -468,7 +468,7 @@ const DetailsScreen = () => {
                 }`}</Text>
               </View>
               <TouchableOpacity activeOpacity={0.9} onPress={handlePayNow}>
-                <View className="h-10 w-40 flex justify-center items-center rounded-lg bg-green-600">
+                <View className="h-10 w-40 flex justify-center items-center rounded-lg bg-[#228B22]">
                   <Text className="text-white font-semibold tracking-wider">
                     Pay Now
                   </Text>
@@ -495,7 +495,7 @@ const BookingMembers = ({
         <Checkbox
           onPress={() => handleSelectMember(member.id)}
           status={isSelected && "checked"}
-          color="green"
+          color="#228B22"
         />
       </View>
       <View className="flex flex-row w-full justify-between mt-2">
@@ -504,7 +504,7 @@ const BookingMembers = ({
             status={member.isTrekker ? "checked" : "unchecked"}
             onPress={() => handleCheckboxChange(member.id, "isTrekker")}
             style={{ height: 16, width: 16 }}
-            color={"green"}
+            color={"#228B22"}
           />
           <Text className={``}>I am a Trekker</Text>
         </View>
@@ -513,7 +513,7 @@ const BookingMembers = ({
             status={member.noAccommodation ? "checked" : "unchecked"}
             onPress={() => handleCheckboxChange(member.id, "noAccommodation")}
             style={{ height: 16, width: 16 }}
-            color={"green"}
+            color={"#228B22"}
           />
           <Text className={``}>No Accommodation</Text>
         </View>

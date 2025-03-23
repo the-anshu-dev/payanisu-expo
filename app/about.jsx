@@ -74,14 +74,14 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 24,
     fontWeight: "bold",
-    color: "green",
+    color: "#228B22",
     marginBottom: 10,
     textAlign: "center",
   },
   subHeader: {
     fontSize: 18,
     fontWeight: "600",
-    color: "green",
+    color: "#228B22",
     marginTop: 20,
     marginBottom: 10,
   },

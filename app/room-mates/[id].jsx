@@ -62,7 +62,7 @@ const RoomMates = () => {
 const MateCard = ({ mate }) => {
   return (
     <View style={styles.matesCardContainer}>
-      <Text style={{ width: "30%", fontWeight: "500", color: "green" }}>
+      <Text style={{ width: "30%", fontWeight: "500", color: "#228B22" }}>
         {mate.name.split(" ")[0]}
       </Text>
       <Text style={{ width: "10%", fontWeight: "900" }}>

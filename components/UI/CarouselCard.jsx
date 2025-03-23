@@ -37,31 +37,31 @@ const CarouselCard = ({ tour }) => {
               <Text className="text-md text-gray-600">{calculateDuration(tour.tour_start, tour.tour_end)}</Text>
             </View>
             <View className="flex flex-col justify-center items-end">
-              <Text className="text-lg font-semibold text-green-600">{`₹${tour.tour_cost}`}</Text>
+              <Text className="text-lg font-semibold text-[#228B22]">{`₹${tour.tour_cost}`}</Text>
               <Text className="text-sm text-gray-500">per seat</Text>
             </View>
           </View>
           <View className="px-2 py-3 gap-3">
             <View className="flex flex-row items-center gap-3">
-              <Ionicons name="calendar-outline" size={16} color="green" />
+              <Ionicons name="calendar-outline" size={16} color="#228B22" />
               <Text className="text-gray-700">{`${formatDate(tour.tour_start)} - ${formatDate(tour.tour_end)}`}</Text>
             </View>
             <View className="flex flex-row items-center gap-3">
-              <FontAwesome6 name="person-hiking" size={16} color="green" />
+              <FontAwesome6 name="person-hiking" size={16} color="#228B22" />
               <Text className="text-gray-700">{tour.difficulty}</Text>
             </View>
             <View className="flex flex-row items-center gap-3">
-              <FontAwesome6 name="route" size={16} color="green" />
+              <FontAwesome6 name="route" size={16} color="#228B22" />
               <Text className="text-gray-700">{`${tour.distance} Km`}</Text>
             </View>
             <View className="flex flex-row items-center gap-3">
-              <Ionicons name="person-outline" size={16} color="green" />
+              <Ionicons name="person-outline" size={16} color="#228B22" />
               <Text className="text-gray-700">{`${tour.total_seats} seats`}</Text>
             </View>
           </View>
         </View>
         <View className="absolute -bottom-6 w-full flex items-center">
-          <View className="bg-green-700 shadow-md shadow-green-800/40 px-8 py-3 rounded-lg">
+          <View className="bg-[#228B22] shadow-md shadow-[#228B22]/40 px-8 py-3 rounded-lg">
             <Text className="text-white font-medium">Explore more</Text>
           </View>
         </View>

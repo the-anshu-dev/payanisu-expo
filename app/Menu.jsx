@@ -59,7 +59,7 @@ const Menu = () => {
             <Text style={{ fontSize: 16, fontWeight: "600" }}>
               {option.name}
             </Text>
-            <Ionicons name="chevron-forward" size={24} color={"green"} />
+            <Ionicons name="chevron-forward" size={24} color={"#228B22"} />
           </TouchableOpacity>
         ))}
       </View>

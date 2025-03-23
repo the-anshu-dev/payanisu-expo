@@ -68,7 +68,7 @@ const form = () => {
               placeholderTextColor={"#8c92ac"}
               keyboardAppearance="light"
               keyboardType="email-address"
-              cursorColor={"green"}
+              cursorColor={"#228B22"}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -76,7 +76,7 @@ const form = () => {
               type="password"
               className="w-full h-[50px] p-2 rounded-[10px] text-lg border-2 border-[#228B22] mt-5 text-white lowercase"
               placeholder="Password"
-              cursorColor={"green"}
+              cursorColor={"#228B22"}
               placeholderTextColor={"#8c92ac"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}

@@ -63,7 +63,7 @@ const MyTourCard = ({ tour, status }) => {
           <View
             className={`w-28 ${
               status === 1
-                ? "bg-green-700"
+                ? "bg-[#228B22]"
                 : status === 2
                   ? "bg-orange-500"
                   : "bg-red-500"
@@ -87,23 +87,23 @@ const MyTourCard = ({ tour, status }) => {
         </View>
         <View className="p-3 gap-3 mt-2 mb-2">
           <View className="flex flex-row gap-3">
-            <Ionicons name="calendar-outline" size={16} color="green" />
+            <Ionicons name="calendar-outline" size={16} color="#228B22" />
             <Text>{`${formatDate(tour?.tour_start)} - ${formatDate(
               tour.tour_end
             )}`}</Text>
           </View>
           <View className="flex flex-row gap-3">
-            <FontAwesome6 name="person-hiking" size={16} color="green" />
+            <FontAwesome6 name="person-hiking" size={16} color="#228B22" />
             <Text>{tour?.difficulty}</Text>
           </View>
 
           <View className="flex flex-row gap-3">
-            <FontAwesome6 name="route" size={16} color="green" />
+            <FontAwesome6 name="route" size={16} color="#228B22" />
             <Text>{tour?.distance} Kms</Text>
           </View>
 
           <View className="flex flex-row gap-3">
-            <Ionicons name="person-outline" size={16} color="green" />
+            <Ionicons name="person-outline" size={16} color="#228B22" />
             <Text>{`${tour?.total_seats} seats`}</Text>
           </View>
         </View>
