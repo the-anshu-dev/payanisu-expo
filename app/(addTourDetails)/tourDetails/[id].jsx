@@ -5,16 +5,30 @@ import { useSelector } from "react-redux";
 import LabelValue from "../../../components/UI/LabelValue";
 import { formatDate } from "../../../utils/helpers";
 import { ScrollView } from "react-native-gesture-handler";
+import { showError } from "../../../utils/toastHelper";
 
 const TourDetails = () => {
   const { id } = useLocalSearchParams();
   const { tour } = useSelector((state) => state.tour);
+  const { user } = useSelector((state) => state.user);
 
   const tourData = tour.find((item) => item._id === id);
 
+  const handleEditTour = () => {
+    if (tourData.email !== user.email) {
+      showError("You are not authorized to edit this tour");
+      return;
+    }
+    router.push(`/(addTourDetails)/editTourDetails/${id}`);
+  };
+
   return (
     <View className="px-3 h-full justify-between items-center">
-      <ScrollView  showsVerticalScrollIndicator={false} className="w-full" contentContainerStyle={{ alignItems: "center", paddingBottom: 50 }}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        className="w-full"
+        contentContainerStyle={{ alignItems: "center", paddingBottom: 50 }}
+      >
         <LabelValue label={"Tour Name"} value={tourData?.name} />
         <LabelValue label={"Location"} value={tourData?.location} />
         <LabelValue label={"Description"} value={tourData?.description} />
@@ -43,7 +57,7 @@ const TourDetails = () => {
         />
       </ScrollView>
       <TouchableOpacity
-        onPress={() => router.push(`/(addTourDetails)/editTourDetails/${id}`)}
+        onPress={handleEditTour}
         activeOpacity={0.9}
         className="w-full py-2 flex flex-row justify-center items-center bg-[#228B22] h-14 gap-2 rounded-lg mb-4"
       >

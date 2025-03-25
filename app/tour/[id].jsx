@@ -49,6 +49,16 @@ const TourDetails = () => {
   };
 
   const handleDeleteTour = async () => {
+    if (tourDetail.status === true) {
+      showWarning("Published tours cannot be deleted.");
+      return;
+    }
+
+    if (tourDetail.email !== user.email) {
+      showError("You are not authorized to delete this tour.");
+      return;
+    }
+
     setLoading(true);
     try {
       const response = await fetch(
@@ -207,8 +217,7 @@ const TourDetails = () => {
           onPress={handleTourStatus}
           style={{
             width: width * 0.45,
-            backgroundColor:
-              tourDetail.status === false ? "#228B22" : "gray",
+            backgroundColor: tourDetail.status === false ? "#228B22" : "gray",
             height: 48,
             display: "flex",
             justifyContent: "center",

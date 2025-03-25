@@ -13,11 +13,11 @@ import ListComponent from "./UI/ListComponent";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { formatDate } from "../utils/helpers.js";
-import { format } from "date-fns";
 import CarouselImageRender from "./UI/CarouselImageRender.jsx";
 import Carousel from "react-native-reanimated-carousel";
 import MapScreen from "./MapWithDirection.jsx";
 import { showError, showSuccess } from "../utils/toastHelper.js";
+import BoardingPointCard from "./UI/BoardingPointCard.jsx";
 
 const { width, height } = Dimensions.get("window");
 
@@ -35,6 +35,7 @@ const MyTourInfo = ({ tour }) => {
   } = tour;
 
   const images = tourDetails?.images.map((i) => i.url);
+
   const busImages = tourDetails?.images
     .filter((i) => i.type === "bus")
     .map((i) => i.url);
@@ -44,6 +45,7 @@ const MyTourInfo = ({ tour }) => {
   const [transport, setTransport] = useState({});
   const [boardingPoints, setBoardingPoints] = useState([]);
   const [accomodationDetails, setAccomodationDetails] = useState([]);
+  const [destination, setDestination] = useState({});
 
   const [cancelling, setCancelling] = useState(false);
 
@@ -53,6 +55,14 @@ const MyTourInfo = ({ tour }) => {
     busImageModal: false,
     directionModal: false,
   });
+
+  const handleBusModal = () => {
+    setIsModalVisible((prev) => ({ ...prev, busImageModal: true }));
+  };
+
+  const handleDirectionModal = () => {
+    setIsModalVisible((prev) => ({ ...prev, directionModal: true }));
+  };
 
   const { transportId } = allocatedTransport[0] || {};
   const { accommodationId } = allocatedAccommodation[0] || [];
@@ -107,12 +117,9 @@ const MyTourInfo = ({ tour }) => {
   };
 
   const { busName, busNumber, driverNumber } = transport || {};
-  const { boardingPointDate, boardingPointName, boardingPointTime, location } =
-    boardingPoints[0] || {};
 
   const onRefresh = async () => {
     setRefresh(true);
-
     try {
       if (transportId) {
         await getBoardingPoints();
@@ -155,11 +162,6 @@ const MyTourInfo = ({ tour }) => {
     } finally {
       setCancelling(false);
     }
-  };
-
-  const destination = {
-    latitude: boardingPoints[0]?.latitude || 12.9716,
-    longitude: boardingPoints[0]?.longitude || 77.5946,
   };
 
   const statusText = {
@@ -332,7 +334,7 @@ const MyTourInfo = ({ tour }) => {
           {allocatedTransport && allocatedTransport.length > 0 ? (
             <View className="ml-2 mt-2">
               <View>
-                <Text className={` mt-2 font-semibold`}>{busName}</Text>
+                <Text className={` mt-2 font-semibold`}>Name: {busName}</Text>
                 <Text
                   className={`mt-1 font-semibold`}
                 >{`Bus No : ${busNumber}`}</Text>
@@ -343,63 +345,19 @@ const MyTourInfo = ({ tour }) => {
                   className={`mt-1 font-semibold`}
                 >{`Mob No: ${driverNumber}`}</Text>
               </View>
-              <View className="mt-2">
-                <Text>Boarding Point</Text>
-                <Text
-                  className={`mt-1 font-semibold`}
-                >{`${boardingPointName}`}</Text>
-              </View>
-              <View className="mt-2">
-                <Text>Boarding Location</Text>
-                <Text className={`mt-1 font-semibold`}>{`${location}`}</Text>
-              </View>
-              <View className="mt-2">
-                <Text>Boarding Time</Text>
-                <Text
-                  className={`mt-1 font-semibold`}
-                >{`${boardingPointDate && format(new Date(boardingPointDate), "dd MMM yyyy")} - ${boardingPointTime && format(new Date(boardingPointTime), "hh:mm a")}`}</Text>
-              </View>
-              <View className="flex flex-row justify-between items-center mt-2">
-                <TouchableOpacity
-                  onPress={() =>
-                    setIsModalVisible((prev) => ({
-                      ...prev,
-                      busImageModal: true,
-                    }))
-                  }
-                  activeOpacity={0.9}
-                  className="mt-3 flex flex-row justify-start items-center gap-2"
-                >
-                  <Ionicons name="images" size={12} color={"#228B22"} />
-                  <Text className={`font-semibold text-xs text-[#228B22]`}>
-                    View Bus Images
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  activeOpacity={0.9}
-                  onPress={() =>
-                    setIsModalVisible((prev) => ({
-                      ...prev,
-                      directionModal: true,
-                    }))
-                  }
-                  className="mt-3 flex flex-row justify-start items-center gap-2"
-                >
-                  <Ionicons name="compass" size={12} color={"#228B22"} />
-                  <Text className={`font-semibold text-xs text-[#228B22]`}>
-                    View Direction
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => router.push(`/bus-mates/${transportId}`)}
-                  activeOpacity={0.9}
-                  className="mt-3 flex flex-row justify-start items-center gap-2"
-                >
-                  <Ionicons name="compass" size={12} color={"#228B22"} />
-                  <Text className={`font-semibold text-xs text-[#228B22]`}>
-                    Your Bus Mates
-                  </Text>
-                </TouchableOpacity>
+              <View className="mt-2 gap-3">
+                {boardingPoints.length > 0 &&
+                  boardingPoints.map((point, index) => (
+                    <BoardingPointCard
+                      key={point._id}
+                      point={point}
+                      index={index + 1}
+                      handleBusModal={handleBusModal}
+                      handleDirectionModal={handleDirectionModal}
+                      setDestination={setDestination}
+                      transportId={transportId}
+                    />
+                  ))}
               </View>
               <View className="w-full h-[1px] mt-2" />
             </View>

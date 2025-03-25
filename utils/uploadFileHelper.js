@@ -20,7 +20,7 @@ export const uploadFilesToS3 = async (files, id = 12, type) => {
       if (!response.ok) {
         throw new Error(
           "Failed to get the pre-signed URL for " + file.fileName
-        ); 
+        );
       }
 
       const result = await response.json();
@@ -40,13 +40,15 @@ export const uploadFilesToS3 = async (files, id = 12, type) => {
       });
 
       if (uploadResponse.status === 200) {
-        const newImage = await axios.post(
+        console.log(
+          "https://trekies.s3.ap-south-1.amazonaws.com/uploads/" + fileName
+        );
+        await axios.post(
           `${process.env.EXPO_PUBLIC_BASE_URL}/api/image/create-image`,
           {
             id,
             url:
-              "https://s3.ap-south-1.amazonaws.com/sanathana.sarthi/uploads/" +
-              fileName,
+              "https://trekies.s3.ap-south-1.amazonaws.com/uploads/" + fileName,
             type,
           }
         );
@@ -61,7 +63,8 @@ export const uploadFilesToS3 = async (files, id = 12, type) => {
 
 export const uploadFileToS3 = async (file) => {
   try {
-    const fileName = file.fileName + Date.now();
+    const fileName =
+      file.name.split(" ")[0] + Date.now() + `.${file?.mimeType.split("/")[1]}`;
 
     const response = await fetch(
       `${process.env.EXPO_PUBLIC_BASE_URL}/api/putObject`,
@@ -75,7 +78,7 @@ export const uploadFileToS3 = async (file) => {
     );
 
     if (!response.ok) {
-      throw new Error("Failed to get the pre-signed URL for " + file.fileName);
+      throw new Error("Failed to get the pre-signed URL for " + file.name);
     }
 
     const result = await response.json();
@@ -94,8 +97,7 @@ export const uploadFileToS3 = async (file) => {
 
     if (uploadResponse.status === 200) {
       const url =
-        "https://s3.ap-south-1.amazonaws.com/sanathana.sarthi/uploads/" +
-        fileName;
+        "https://trekies.s3.ap-south-1.amazonaws.com/uploads/" + fileName;
       return url;
     }
   } catch (error) {

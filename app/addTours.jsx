@@ -17,7 +17,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import * as ImagePicker from "expo-image-picker";
 import { Image } from "expo-image";
 import { format } from "date-fns";
-import { uploadFilesToS3 } from "../utils/uploadFileHelper";
+import { uploadFilesToS3, uploadFileToS3 } from "../utils/uploadFileHelper";
 import { Picker } from "@react-native-picker/picker";
 import * as DocumentPicker from "expo-document-picker";
 import { showError } from "../utils/toastHelper";
@@ -57,6 +57,7 @@ const addTours = () => {
       const result = await DocumentPicker.getDocumentAsync({
         type: "application/pdf",
       });
+      console.log("result", result.assets[0]);
       if (!result.canceled) {
         setConsentForm(result.assets[0]);
       }
@@ -64,6 +65,9 @@ const addTours = () => {
       console.error("Error picking PDF:", error);
     }
   };
+
+  console.log("consent form", consentForm);
+
 
   const onChangeStart = (event, selectedDate) => {
     const currentDate = selectedDate || startDate;
@@ -119,7 +123,9 @@ const addTours = () => {
       !difficulty ||
       !state ||
       !tourType ||
-      image.length === 0
+      image.length === 0 ||
+      !consentForm ||
+      !user
     ) {
       setError("Please fill all required fields & add tour images.");
       return;
@@ -128,6 +134,11 @@ const addTours = () => {
     setLoading(true);
     try {
       setError("");
+
+      const res = await uploadFileToS3(consentForm);
+
+      const url = res.json();
+
       const formData = {
         name: tourName,
         location,
@@ -143,6 +154,7 @@ const addTours = () => {
         difficulty,
         state,
         tourType,
+        email: user?.email,
       };
 
       const response = await fetch(
@@ -166,6 +178,7 @@ const addTours = () => {
       };
 
       if (response.status === 201) {
+        await uploadFileToS3(consentForm, result._id);
         await uploadFilesToS3(image, result._id);
         const notify = await fetch(
           `${process.env.EXPO_PUBLIC_BASE_URL}/api/notification/create`,
