@@ -23,6 +23,7 @@
           "apiKey": "AIzaSyCsSJ8KZ_1mB44pVnIjcqzx_lWV87kuHRc"
         }
       },
+      "jsEngine": "hermes",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"

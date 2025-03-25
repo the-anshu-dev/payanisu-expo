@@ -18,6 +18,8 @@ const MyTourCheckPoints = ({ checkPoints = [] }) => {
     (cp) => cp.type === "Geo Tagging"
   );
 
+  console.log(filteredCheckPoints)
+
   useEffect(() => {
     const getUserLocation = async () => {
       const { status } = await Location.requestForegroundPermissionsAsync();
@@ -56,7 +58,8 @@ const MyTourCheckPoints = ({ checkPoints = [] }) => {
           <MapView
             style={styles.mapViewStyle}
             region={
-              userLocation || {
+              userLocation ||
+               {
                 latitude: 12.9716,
                 longitude: 77.5946,
                 latitudeDelta: 0.05,
@@ -82,7 +85,13 @@ const MyTourCheckPoints = ({ checkPoints = [] }) => {
               filteredCheckPoints.map((checkpoint, index) => (
                 <MapViewDirections
                   key={index}
-                  origin={userLocation}
+                  // origin={userLocation}
+                  origin={{
+                    latitude: 27.3965,
+                    longitude: 80.1252,
+                    latitudeDelta: 0.05,
+                    longitudeDelta: 0.05,
+                  }}
                   destination={{
                     latitude: checkpoint.latitude,
                     longitude: checkpoint.longitude,
