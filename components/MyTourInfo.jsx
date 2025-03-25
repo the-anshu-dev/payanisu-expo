@@ -48,9 +48,7 @@ const MyTourInfo = ({ tour }) => {
   const [destination, setDestination] = useState({});
 
   const [cancelling, setCancelling] = useState(false);
-
-  // modal
-
+  
   const [isModalVisible, setIsModalVisible] = useState({
     busImageModal: false,
     directionModal: false,
@@ -116,7 +114,7 @@ const MyTourInfo = ({ tour }) => {
     }
   };
 
-  const { busName, busNumber, driverNumber } = transport || {};
+  const { busName, busNumber, driverNumber, driverName } = transport || {};
 
   const onRefresh = async () => {
     setRefresh(true);
@@ -340,11 +338,38 @@ const MyTourInfo = ({ tour }) => {
                 >{`Bus No : ${busNumber}`}</Text>
               </View>
               <View className="mt-2">
+                <Text>Driver</Text>
+                <Text className={`mt-1 font-semibold`}>{`${driverName}`}</Text>
+              </View>
+              <View className="mt-2">
                 <Text>Contact Details</Text>
                 <Text
                   className={`mt-1 font-semibold`}
                 >{`Mob No: ${driverNumber}`}</Text>
               </View>
+              <View className="flex flex-row justify-between items-center gap-3">
+                <TouchableOpacity
+                  onPress={() => router.push(`/bus-mates/${transportId}`)}
+                  activeOpacity={0.9}
+                  className="mt-3 flex flex-row justify-center items-center gap-2 border px-8 py-1 rounded-md border-[#228B22]/50"
+                >
+                  <Ionicons name="compass" size={16} color={"#228B22"} />
+                  <Text className={`font-semibold text-sm text-[#228B22]`}>
+                    Your Bus Mates
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={handleBusModal}
+                  activeOpacity={0.9}
+                  className="mt-3 flex flex-row justify-center items-center gap-2 border px-8 py-1 rounded-md border-[#228B22]/50"
+                >
+                  <Ionicons name="images" size={16} color={"#228B22"} />
+                  <Text className={`font-semibold text-sm text-[#228B22]`}>
+                    View Bus Images
+                  </Text>
+                </TouchableOpacity>
+              </View>
+
               <View className="mt-2 gap-3">
                 {boardingPoints.length > 0 &&
                   boardingPoints.map((point, index) => (
@@ -352,10 +377,8 @@ const MyTourInfo = ({ tour }) => {
                       key={point._id}
                       point={point}
                       index={index + 1}
-                      handleBusModal={handleBusModal}
                       handleDirectionModal={handleDirectionModal}
                       setDestination={setDestination}
-                      transportId={transportId}
                     />
                   ))}
               </View>
