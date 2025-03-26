@@ -31,9 +31,15 @@ const MyTourDetails = () => {
   const { bookedTour } = useSelector((state) => state.tour);
 
   const tour = bookedTour?.find((t) => t.tourDetails._id === id);
+// console.log(tour?.tourDetails.tour_start, new Date())
+  // const isTourCurrentlyActive =
+  //   tour?.tourDetails.tour_start > new Date() ? true : false;
 
   const isTourCurrentlyActive =
-    tour?.tourDetails.tour_start > new Date() ? true : false;
+  new Date() >= new Date(tour?.tourDetails.tour_start) &&
+  new Date() <= new Date(tour?.tourDetails.tour_end);
+
+  console.log("isTourCurrentlyActive x==>", isTourCurrentlyActive)
 
   const [loading, setLoading] = useState();
   const [checkPoints, setCheckPoints] = useState();

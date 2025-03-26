@@ -59,6 +59,8 @@ const CheckPointElement = ({
   };
 
   const handleCheckIn = async (body) => {
+
+    console.log('CheckedIn run...')
     setCheckInLoading(true);
     try {
       const response = await fetch(
@@ -72,7 +74,7 @@ const CheckPointElement = ({
         }
       );
 
-      if (response.ok) {
+      if (!response.ok) {
         throw new Error("Failed to check in");
       }
       showSuccess("You are checked in.");
@@ -93,7 +95,71 @@ const CheckPointElement = ({
     checkAndRequestPermission();
   }, [permission]);
 
+  // useEffect(() => {
+  //   let watchId;
+
+  //   const startLocationTracking = async () => {
+  //     try {
+  //       const { status } = await Location.requestForegroundPermissionsAsync();
+  //       if (status !== "granted") {
+  //         showWarning("Location permission is required for auto check-in");
+  //         return;
+  //       }
+
+  //       watchId = await Location.watchPositionAsync(
+  //         {
+  //           accuracy: Location.Accuracy.High,
+  //           distanceInterval: 10,
+  //         },
+  //         (location) => {
+  //           setLocation(location);
+
+  //           if (points.type === "Geo Tagging" && !points.checked) {
+  //             const distance = getDistance(
+  //               location.coords.latitude,
+  //               location.coords.longitude,
+  //               points.latitude,
+  //               points.longitude
+  //             );
+
+  //             if (distance <= 100) {
+  //               const body = {
+  //                 email: user?.email,
+  //                 tourId: points.tourId,
+  //                 checkPointId: points._id,
+  //               };
+  //               handleCheckIn(body);
+  //             }
+  //           }
+  //         }
+  //       );
+  //     } catch (error) {
+  //       showError("Error getting location:", error);
+  //     }
+  //   };
+
+  //   if (
+  //     points.type === "Geo Tagging" &&
+  //     !points.checked &&
+  //     isTourCurrentlyActive
+  //   ) {
+  //     startLocationTracking();
+  //   }
+
+  //   return () => {
+  //     if (watchId) {
+  //       watchId.remove();
+  //     }
+  //   };
+  // }, [points]);
+
+
+
+
+
   useEffect(() => {
+
+    console.log("USE EFFECT run!", isTourCurrentlyActive)
     let watchId;
 
     const startLocationTracking = async () => {
@@ -104,52 +170,63 @@ const CheckPointElement = ({
           return;
         }
 
+        console.log("STATUS x==>",status)
+
         watchId = await Location.watchPositionAsync(
           {
             accuracy: Location.Accuracy.High,
-            distanceInterval: 10,
+            distanceInterval: 100, // Update every 100 meters
           },
           (location) => {
-            setLocation(location);
-
-            if (points.type === "Geo Tagging" && !points.checked) {
-              const distance = getDistance(
-                location.coords.latitude,
-                location.coords.longitude,
-                points.latitude,
-                points.longitude
-              );
-
-              if (distance <= 100) {
-                const body = {
-                  email: user?.email,
-                  tourId: points.tourId,
-                  checkPointId: points._id,
-                };
-                handleCheckIn(body);
+            const { latitude, longitude } = location.coords;
+  
+            // Ensure `points` is always treated as an array
+            const safePoints = Array.isArray(points) ? points : [points];
+  
+            safePoints.forEach((point) => {
+              if (point.type === "Geo Tagging" && !point.checked) {
+                const distance = getDistance(latitude, longitude, point.latitude, point.longitude);
+                console.log("distance==>", distance);
+  
+                if (distance <= 100) {
+                  const body = {
+                    email: user?.email,
+                    tourId: point.tourId,
+                    checkPointId: point._id,
+                  };
+                  handleCheckIn(body);
+                }
               }
-            }
+            });
           }
         );
+
+        console.log("watchId x==>",watchId)
       } catch (error) {
         showError("Error getting location:", error);
       }
     };
 
+    // Start tracking only if conditions are met
     if (
-      points.type === "Geo Tagging" &&
-      !points.checked &&
-      isTourCurrentlyActive
+      isTourCurrentlyActive &&
+      points?.type === "Geo Tagging" &&
+      points?.checked === false
     ) {
+      console.log("START TRACKING....")
       startLocationTracking();
     }
-
+    
+    
     return () => {
       if (watchId) {
         watchId.remove();
       }
     };
-  }, [points]);
+  }, [points, isTourCurrentlyActive]);
+
+
+  console.log("Points==>",points)
 
   if (!permission) {
     return <View />;
@@ -268,7 +345,7 @@ const CheckPointElement = ({
                 };
                 if (points.tourId === data) {
                   handleCheckIn(body);
-                } else {
+                } else { 
                   showWarning("Please scan right Qr.");
                 }
               }

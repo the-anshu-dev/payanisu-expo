@@ -99,7 +99,7 @@ const ViewCheckIns = () => {
       setCheckedInMembersLoading(false);
     }
   };
-
+ 
   const handleCheckIn = async (email) => {
     setCheckingIn(true);
     try {
