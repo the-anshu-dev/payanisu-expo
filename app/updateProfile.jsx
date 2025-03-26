@@ -99,7 +99,6 @@ const UpdateProfile = () => {
       setLoading(false);
       router.push("/Menu");
     } catch (error) {
-      console.log(error?.message);
       setError("An error occurred. Please try again.");
       setLoading(false);
     }

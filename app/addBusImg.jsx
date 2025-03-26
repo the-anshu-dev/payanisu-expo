@@ -11,6 +11,7 @@ import * as ImagePicker from "expo-image-picker";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import { uploadFilesToS3 } from "../utils/uploadFileHelper";
+import { showError } from "../utils/toastHelper";
 
 const { width: deviceWidth } = Dimensions.get("window");
 
@@ -46,7 +47,7 @@ const addBusImg = () => {
       const res = await uploadFilesToS3(image, id, "bus");
       router.replace(`/addHotelImg?id=${id}`);
     } catch (error) {
-      console.log(error);
+      showError(error?.message || "Failed to upload image");
     } finally {
       setLoading(false);
     }

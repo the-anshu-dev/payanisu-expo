@@ -57,7 +57,6 @@ const addTours = () => {
       const result = await DocumentPicker.getDocumentAsync({
         type: "application/pdf",
       });
-      console.log("result", result.assets[0]);
       if (!result.canceled) {
         setConsentForm(result.assets[0]);
       }
@@ -65,9 +64,6 @@ const addTours = () => {
       console.error("Error picking PDF:", error);
     }
   };
-
-  console.log("consent form", consentForm);
-
 
   const onChangeStart = (event, selectedDate) => {
     const currentDate = selectedDate || startDate;
@@ -135,9 +131,7 @@ const addTours = () => {
     try {
       setError("");
 
-      const res = await uploadFileToS3(consentForm);
-
-      const url = res.json();
+      const consentFormUrl = await uploadFileToS3(consentForm);
 
       const formData = {
         name: tourName,
@@ -155,6 +149,7 @@ const addTours = () => {
         state,
         tourType,
         email: user?.email,
+        consentFormUrl,
       };
 
       const response = await fetch(
@@ -178,7 +173,6 @@ const addTours = () => {
       };
 
       if (response.status === 201) {
-        await uploadFileToS3(consentForm, result._id);
         await uploadFilesToS3(image, result._id);
         const notify = await fetch(
           `${process.env.EXPO_PUBLIC_BASE_URL}/api/notification/create`,
@@ -206,10 +200,13 @@ const addTours = () => {
   useEffect(() => {
     if (startDate && endDate && bookingCloseDate) {
       if (startDate > endDate) {
-        setError("Start date should be less than end date");
-      }
-      if (bookingCloseDate > startDate) {
-        setError("Booking close date should be less than start date");
+        setError("Start date should be before the end date.");
+        setEndDate(null);
+      } else if (bookingCloseDate > startDate) {
+        setError("Booking close date should be before the start date.");
+        setBookingCloseDate(null);
+      } else {
+        setError(null);
       }
     }
   }, [startDate, endDate, bookingCloseDate]);

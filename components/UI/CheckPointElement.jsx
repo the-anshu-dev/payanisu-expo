@@ -99,8 +99,8 @@ const CheckPointElement = ({
     const startLocationTracking = async () => {
       try {
         const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== 'granted') {
-          showWarning('Location permission is required for auto check-in');
+        if (status !== "granted") {
+          showWarning("Location permission is required for auto check-in");
           return;
         }
 
@@ -120,7 +120,7 @@ const CheckPointElement = ({
                 points.longitude
               );
 
-              if (distance <= 100) { 
+              if (distance <= 100) {
                 const body = {
                   email: user?.email,
                   tourId: points.tourId,
@@ -132,11 +132,15 @@ const CheckPointElement = ({
           }
         );
       } catch (error) {
-        console.log('Error getting location:', error);
+        showError("Error getting location:", error);
       }
     };
 
-    if (points.type === "Geo Tagging" && !points.checked && isTourCurrentlyActive) {
+    if (
+      points.type === "Geo Tagging" &&
+      !points.checked &&
+      isTourCurrentlyActive
+    ) {
       startLocationTracking();
     }
 
@@ -193,7 +197,9 @@ const CheckPointElement = ({
             <Text style={styles.pointName}>{points?.name}</Text>
           </View>
           <View style={styles.qrIconContainer}>
-            {checkInLoading && <ActivityIndicator color="#228B22" size="small" />}
+            {checkInLoading && (
+              <ActivityIndicator color="#228B22" size="small" />
+            )}
             {!checkInLoading &&
               points.type === "Geo Tagging" &&
               (points.checked ? (

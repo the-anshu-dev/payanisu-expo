@@ -55,7 +55,6 @@ const AnnouncementScreen = () => {
           body: JSON.stringify(body),
         }
       );
-      console.log(await response.json());
       if (!response.ok) {
         throw new Error("Failed to send announcement.");
       }

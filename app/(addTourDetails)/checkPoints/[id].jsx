@@ -426,7 +426,6 @@ const CheckPointCard = ({
           method: "DELETE",
         }
       );
-      console.log(await response.json());
       if (!response.ok) {
         throw new Error("Failed to delete checkpoint");
       }
@@ -434,7 +433,6 @@ const CheckPointCard = ({
       showSuccess("Checkpoint deleted successfully.");
     } catch (error) {
       showError(error.message || "Please try again.");
-      console.log("Error:", error);
     } finally {
       setDeleting(false);
     }

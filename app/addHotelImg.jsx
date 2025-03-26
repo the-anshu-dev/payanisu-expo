@@ -11,6 +11,7 @@ import * as ImagePicker from "expo-image-picker";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import { uploadFilesToS3 } from "../utils/uploadFileHelper";
+import { showError } from "../utils/toastHelper";
 
 const { width: deviceWidth } = Dimensions.get("window");
 
@@ -47,7 +48,7 @@ const addHotelImg = () => {
       await uploadFilesToS3(image, id, "hotel");
       router.replace(`/(admin)/tour`);
     } catch (error) {
-      console.log(error);
+      showError(error);
     } finally {
       setLoading(false);
     }

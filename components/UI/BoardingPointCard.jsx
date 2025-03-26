@@ -39,7 +39,7 @@ const BoardingPointCard = (props) => {
             setDestination({ latitude, longitude });
             handleDirectionModal();
           }}
-          className="mt-3 flex flex-row justify-center items-center gap-2 border px-8 py-1 rounded-md border-[#228B22]/50"
+          className="mt-3 flex flex-row justify-center items-center gap-2 px-2 py-1 rounded-md"
         >
           <Ionicons name="compass" size={16} color={"#228B22"} />
           <Text className={`font-semibold text-sm text-[#228B22]`}>

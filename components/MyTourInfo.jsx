@@ -18,6 +18,7 @@ import Carousel from "react-native-reanimated-carousel";
 import MapScreen from "./MapWithDirection.jsx";
 import { showError, showSuccess } from "../utils/toastHelper.js";
 import BoardingPointCard from "./UI/BoardingPointCard.jsx";
+import { Image } from "expo-image";
 
 const { width, height } = Dimensions.get("window");
 
@@ -34,6 +35,8 @@ const MyTourInfo = ({ tour }) => {
     allocatedTransport,
   } = tour;
 
+  const { faqUrl, name, description, tour_start, tour_end } = tourDetails;
+
   const images = tourDetails?.images.map((i) => i.url);
 
   const busImages = tourDetails?.images
@@ -41,6 +44,7 @@ const MyTourInfo = ({ tour }) => {
     .map((i) => i.url);
 
   const [refresh, setRefresh] = useState(false);
+  const [viewFAQ, setViewFAQ] = useState(false);
 
   const [transport, setTransport] = useState({});
   const [boardingPoints, setBoardingPoints] = useState([]);
@@ -48,7 +52,7 @@ const MyTourInfo = ({ tour }) => {
   const [destination, setDestination] = useState({});
 
   const [cancelling, setCancelling] = useState(false);
-  
+
   const [isModalVisible, setIsModalVisible] = useState({
     busImageModal: false,
     directionModal: false,
@@ -221,21 +225,19 @@ const MyTourInfo = ({ tour }) => {
         <View className="bg-white p-2 rounded-lg shadow-lg shadow-black">
           <View>
             <Text className={`text-md font-semibold`}>Tour Name</Text>
-            <Text className={`text-base mt-1 tracking-wider`}>
-              {tourDetails.name}
-            </Text>
+            <Text className={`text-base mt-1 tracking-wider`}>{name}</Text>
           </View>
           <View className="mt-2">
             <Text className={`text-md font-semibold`}>Description</Text>
             <Text className={`text-base mt-1 tracking-wide text-justify`}>
-              {tourDetails.description}
+              {description}
             </Text>
           </View>
           <View className="mt-2">
             <Text className={`text-md font-semibold`}>Date</Text>
             <Text className={`text-base mt-1 tracking-wider`}>{`${formatDate(
-              tourDetails.tour_start
-            )} - ${formatDate(tourDetails.tour_start)}`}</Text>
+              tour_start
+            )} - ${formatDate(tour_end)}`}</Text>
           </View>
         </View>
         <View className="p-2 shadow-lg shadow-black bg-white rounded-lg">
@@ -351,7 +353,7 @@ const MyTourInfo = ({ tour }) => {
                 <TouchableOpacity
                   onPress={() => router.push(`/bus-mates/${transportId}`)}
                   activeOpacity={0.9}
-                  className="mt-3 flex flex-row justify-center items-center gap-2 border px-8 py-1 rounded-md border-[#228B22]/50"
+                  className="mt-3 flex flex-row justify-center items-center gap-2 px-2 py-1 rounded-md"
                 >
                   <Ionicons name="compass" size={16} color={"#228B22"} />
                   <Text className={`font-semibold text-sm text-[#228B22]`}>
@@ -361,7 +363,7 @@ const MyTourInfo = ({ tour }) => {
                 <TouchableOpacity
                   onPress={handleBusModal}
                   activeOpacity={0.9}
-                  className="mt-3 flex flex-row justify-center items-center gap-2 border px-8 py-1 rounded-md border-[#228B22]/50"
+                  className="mt-3 flex flex-row justify-center items-center gap-2 px-8 py-1 rounded-md"
                 >
                   <Ionicons name="images" size={16} color={"#228B22"} />
                   <Text className={`font-semibold text-sm text-[#228B22]`}>
@@ -472,6 +474,39 @@ const MyTourInfo = ({ tour }) => {
               <Text>Accommodation not allocated. </Text>
             </View>
           )}
+        </View>
+        <TouchableOpacity
+          onPress={() => setViewFAQ(!viewFAQ)}
+          activeOpacity={0.9}
+          className="p-2 rounded-lg shadow-lg shadow-black/50 bg-white flex flex-row justify-between"
+        >
+          <View className="flex flex-row justify-left items-center gap-3 border-gray-300 px-1">
+            <Ionicons name="help-circle-outline" size={24} color={"#228B22"} />
+            <Text className={`text-base font-semibold`}>
+              Frequently Asked Questions (FAQs)
+            </Text>
+          </View>
+          <Ionicons
+            name={viewFAQ ? "chevron-down-outline" : "chevron-forward-outline"}
+            size={24}
+            color={"#228B22"}
+          />
+        </TouchableOpacity>
+        <View>
+          {viewFAQ ? (
+            faqUrl ? (
+              <Image
+                style={{ height: height * 0.8, borderRadius: 10 }}
+                source={{ uri: faqUrl }}
+              />
+            ) : (
+              <View>
+                <Text className="text-center text-lg font-semibold mt-4">
+                  FAQs not available
+                </Text>
+              </View>
+            )
+          ) : null}
         </View>
         {status === 1 && (
           <TouchableOpacity

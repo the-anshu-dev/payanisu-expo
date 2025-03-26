@@ -155,6 +155,10 @@ export default function RootLayout() {
             options={getOpt("Accomodations", "(addTourDetails)/tourDetails")}
           />
           <Stack.Screen
+            name="(addTourDetails)/uploadFaq/[id]"
+            options={getOpt("Upload FAQs", "(addTourDetails)/tourDetails")}
+          />
+          <Stack.Screen
             name="(addTourDetails)/editAccomodationDetails/[id]"
             options={getOpt("Edit Details", "(addTourDetails)/tourDetails")}
           />

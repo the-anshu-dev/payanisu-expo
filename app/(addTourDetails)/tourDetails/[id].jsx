@@ -6,6 +6,7 @@ import LabelValue from "../../../components/UI/LabelValue";
 import { formatDate } from "../../../utils/helpers";
 import { ScrollView } from "react-native-gesture-handler";
 import { showError } from "../../../utils/toastHelper";
+import { Image } from "expo-image";
 
 const TourDetails = () => {
   const { id } = useLocalSearchParams();
@@ -55,11 +56,24 @@ const TourDetails = () => {
           label={"Payment gateway enabled ?"}
           value={tourData?.enable_payment_getway ? "Yes" : "No"}
         />
+        {tourData.images.map((image, index) => (
+          <Image
+            key={index}
+            source={image.url}
+            alt="tour"
+            style={{
+              height: 200,
+              width: "100%",
+              borderRadius: 10,
+              marginVertical: 10,
+            }}
+          />
+        ))}
       </ScrollView>
       <TouchableOpacity
         onPress={handleEditTour}
         activeOpacity={0.9}
-        className="w-full py-2 flex flex-row justify-center items-center bg-[#228B22] h-14 gap-2 rounded-lg mb-4"
+        className="w-full py-2 flex flex-row justify-center items-center bg-[#228B22] h-14 gap-2 rounded-lg mb-3"
       >
         <Text className="text-white text-xl font-semibold">Edit Tour</Text>
       </TouchableOpacity>

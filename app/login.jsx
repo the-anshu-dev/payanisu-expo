@@ -34,7 +34,6 @@ const Login = () => {
   const storeUserData = async (user) => {
     try {
       await AsyncStorage.setItem("user", JSON.stringify(user));
-      console.log("User stored successfully");
     } catch (error) {
       console.error("Error storing user data:", error);
     }

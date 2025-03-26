@@ -4,6 +4,8 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Dimensions,
+  Platform,
+  Alert,
 } from "react-native";
 import React, { useState, useRef } from "react";
 import { Checkbox } from "react-native-paper";
@@ -46,15 +48,59 @@ const Payment = () => {
     if (!result.canceled) setImage(result.assets[0]);
   };
 
-  const handleDowloadConsentForm = async () => { 
+  const handleDownloadConsentForm = async () => {
     try {
-      const { status } = await MediaLibrary.requestPermissionsAsync();
-      if (status !== "granted") {
-        showWarning("Permission not granted to save image.");
-        return;
+      const pdfUrl = bookingTour.consentFormUrl;
+      const fileName = "consent_form.pdf";
+      const fileUri = FileSystem.cacheDirectory + fileName;
+
+      const { uri } = await FileSystem.downloadAsync(pdfUrl, fileUri);
+
+      if (Platform.OS === "android") {
+        const { status } = await MediaLibrary.requestPermissionsAsync();
+        if (status !== "granted") {
+          Alert.alert(
+            "Permission Denied",
+            "Permission to access storage is required!"
+          );
+          return;
+        }
+
+        const permissions =
+          await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
+        if (!permissions.granted) {
+          Alert.alert(
+            "Permission required",
+            "Cannot save file without permission"
+          );
+          return;
+        }
+
+        await FileSystem.StorageAccessFramework.createFileAsync(
+          permissions.directoryUri,
+          fileName,
+          "application/pdf"
+        ).then(async (uri) => {
+          await FileSystem.writeAsStringAsync(
+            uri,
+            await FileSystem.readAsStringAsync(fileUri, {
+              encoding: FileSystem.EncodingType.Base64,
+            }),
+            {
+              encoding: FileSystem.EncodingType.Base64,
+            }
+          );
+          showSuccess("PDF saved successfully!");
+        });
+      } else {
+        if (await Sharing.isAvailableAsync()) {
+          await Sharing.shareAsync(uri);
+        } else {
+          showError("Sharing is not available on this device.");
+        }
       }
-    }catch(error){
-      showError(error.message || "Failed to download the image.");
+    } catch (error) {
+      showError("Oops!", "Something went wrong. Please try again.");
     }
   };
 
@@ -208,7 +254,7 @@ const Payment = () => {
             )}
           </View>
           <TouchableOpacity
-            onPress={handleDowloadConsentForm}
+            onPress={handleDownloadConsentForm}
             className="flex flex-row items-center mt-2 px-3 py-1"
           >
             <DownloadIcon height={25} width={20} />

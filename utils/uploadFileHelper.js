@@ -63,8 +63,9 @@ export const uploadFilesToS3 = async (files, id = 12, type) => {
 
 export const uploadFileToS3 = async (file) => {
   try {
+    const name = file.fileName || file.name;
     const fileName =
-      file.name.split(" ")[0] + Date.now() + `.${file?.mimeType.split("/")[1]}`;
+      name.split(" ")[0] + Date.now() + `.${file?.mimeType.split("/")[1]}`;
 
     const response = await fetch(
       `${process.env.EXPO_PUBLIC_BASE_URL}/api/putObject`,
