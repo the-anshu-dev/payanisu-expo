@@ -12,12 +12,34 @@ import { Platform } from "react-native";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
+import { registerForPushNotificationsAsync } from "../utils/notification";
 
 export default function RootLayout() {
   const [expoPushToken, setExpoPushToken] = useState("");
   const [notification, setNotification] = useState(undefined);
   const notificationListener = useRef();
   const responseListener = useRef();
+
+
+  Notifications.setNotificationHandler({
+    handleNotification:async()=>({
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: false,
+    })
+  })
+
+
+
+  useEffect(() => {
+    async function getToken() {
+      const token = await registerForPushNotificationsAsync();
+      if (token) setExpoPushToken(token);
+    }
+    getToken();
+  }, []);
+
+  console.log("NOTIFICATION DEVICE TOKEN ==>", expoPushToken)
 
   // Notifications.setNotificationHandler({
   //   handleNotification: async () => ({

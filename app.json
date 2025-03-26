@@ -54,6 +54,16 @@
       "output": "static"
     },
     "plugins": [
+
+      [
+        "expo-notifications",
+        {
+          "color": "#ffffff",
+          "defaultChannel": "default",
+          "enableBackgroundRemoteNotifications": true
+        }
+      ],
+
       [
         "expo-router"
       ],

@@ -15,6 +15,7 @@ import { useSelector } from "react-redux";
 import { ActivityIndicator } from "react-native-paper";
 import * as Location from "expo-location";
 import { showWarning, showSuccess, showError } from "../../utils/toastHelper";
+import { sendLocalNotification } from "../../utils/notification";
 
 const { height, width } = Dimensions.get("window");
 
@@ -59,8 +60,7 @@ const CheckPointElement = ({
   };
 
   const handleCheckIn = async (body) => {
-
-    console.log('CheckedIn run...')
+    console.log("CheckedIn run...");
     setCheckInLoading(true);
     try {
       const response = await fetch(
@@ -78,6 +78,8 @@ const CheckPointElement = ({
         throw new Error("Failed to check in");
       }
       showSuccess("You are checked in.");
+      sendLocalNotification("Check-in Successful", "You have successfully reached the checkpoint.");
+
       handleGetCheckPoints();
     } catch (error) {
       showError(error.message || "Please try again.");
@@ -153,13 +155,8 @@ const CheckPointElement = ({
   //   };
   // }, [points]);
 
-
-
-
-
   useEffect(() => {
-
-    console.log("USE EFFECT run!", isTourCurrentlyActive)
+    console.log("USE EFFECT run!", isTourCurrentlyActive);
     let watchId;
 
     const startLocationTracking = async () => {
@@ -170,7 +167,7 @@ const CheckPointElement = ({
           return;
         }
 
-        console.log("STATUS x==>",status)
+        console.log("STATUS x==>", status);
 
         watchId = await Location.watchPositionAsync(
           {
@@ -179,15 +176,20 @@ const CheckPointElement = ({
           },
           (location) => {
             const { latitude, longitude } = location.coords;
-  
+
             // Ensure `points` is always treated as an array
             const safePoints = Array.isArray(points) ? points : [points];
-  
+
             safePoints.forEach((point) => {
               if (point.type === "Geo Tagging" && !point.checked) {
-                const distance = getDistance(latitude, longitude, point.latitude, point.longitude);
+                const distance = getDistance(
+                  latitude,
+                  longitude,
+                  point.latitude,
+                  point.longitude
+                );
                 console.log("distance==>", distance);
-  
+
                 if (distance <= 100) {
                   const body = {
                     email: user?.email,
@@ -201,7 +203,7 @@ const CheckPointElement = ({
           }
         );
 
-        console.log("watchId x==>",watchId)
+        console.log("watchId x==>", watchId);
       } catch (error) {
         showError("Error getting location:", error);
       }
@@ -213,11 +215,10 @@ const CheckPointElement = ({
       points?.type === "Geo Tagging" &&
       points?.checked === false
     ) {
-      console.log("START TRACKING....")
+      console.log("START TRACKING....");
       startLocationTracking();
     }
-    
-    
+
     return () => {
       if (watchId) {
         watchId.remove();
@@ -225,8 +226,7 @@ const CheckPointElement = ({
     };
   }, [points, isTourCurrentlyActive]);
 
-
-  console.log("Points==>",points)
+  console.log("Points==>", points);
 
   if (!permission) {
     return <View />;
@@ -272,6 +272,13 @@ const CheckPointElement = ({
               style={styles.checkpointText}
             >{`Check Point ${index + 1}`}</Text>
             <Text style={styles.pointName}>{points?.name}</Text>
+            <TouchableOpacity
+              onPress={() =>
+                sendLocalNotification("Hello", "This is a local notification")
+              }
+            >
+              <Text>Notifications</Text>
+            </TouchableOpacity>
           </View>
           <View style={styles.qrIconContainer}>
             {checkInLoading && (
@@ -345,7 +352,7 @@ const CheckPointElement = ({
                 };
                 if (points.tourId === data) {
                   handleCheckIn(body);
-                } else { 
+                } else {
                   showWarning("Please scan right Qr.");
                 }
               }
