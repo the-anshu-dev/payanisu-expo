@@ -190,7 +190,7 @@ const expense = () => {
 
       await exportDataToExcel(formattedData, `expenseDetail`);
     } catch (error) {
-      console.log("Error exporting expense data: ", error);
+      showError("Failed to export expense details");
     } finally {
       setExporting(false);
     }
@@ -220,7 +220,7 @@ const expense = () => {
       setShowExpenseDetails(dataToShow);
       showExpenseDetailRef.current?.open();
     } catch (error) {
-      console.log("Failed to find data", error);
+      showError("Failed to find data");
     }
   };
 
@@ -532,7 +532,11 @@ const ExpenseCard = ({ getIconName, item, handleShowExpenseDetails }) => {
       className={`flex flex-row w-full justify-between items-center px-2 py-2 bg-white shadow-xl shadow-black/50 rounded-lg mb-2`}
     >
       <View className="flex flex-row w-[40%] justify-start items-center gap-3">
-        <Ionicons name={getIconName(item.category)} size={24} color={"#228B22"} />
+        <Ionicons
+          name={getIconName(item.category)}
+          size={24}
+          color={"#228B22"}
+        />
         <View>
           <Text className={`font-semibold`}>{shorten(item.category, 20)}</Text>
           <Text className="text-xs text-gray-500">

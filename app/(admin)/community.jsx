@@ -57,7 +57,7 @@ const Community = () => {
       const posts = await res.json();
       setAllPosts(posts.data);
     } catch (error) {
-      console.log("Failed to get posts", error);
+      showError("Failed to get posts", error);
     }
   };
 

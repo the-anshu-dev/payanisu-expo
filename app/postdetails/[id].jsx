@@ -7,6 +7,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import { StatusBar } from "expo-status-bar";
 import CarouselImageRender from "../../components/UI/CarouselImageRender";
 import { formatDate } from "../../utils/helpers";
+import { showError } from "../../utils/toastHelper";
 
 const width = Dimensions.get("window").width;
 
@@ -29,7 +30,7 @@ const postdetails = () => {
       const imgs = postData.data[0].images.map((i) => i.url);
       setImages(imgs);
     } catch (error) {
-      console.log("Error:", error);
+      showError("Failed to get post.");
     }
   };
 
@@ -70,7 +71,7 @@ const postdetails = () => {
         </View>
         <Text className="text-base mt-2 text-justify">{post?.content}</Text>
       </View>
-    </ScrollView> 
+    </ScrollView>
   );
 };
 

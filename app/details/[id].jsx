@@ -28,6 +28,7 @@ import {
 } from "../../redux/slices/bookingSlice.js";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { showError, showWarning } from "../../utils/toastHelper";
+
 const { width, height } = Dimensions.get("window");
 
 const DetailsScreen = () => {
@@ -35,11 +36,14 @@ const DetailsScreen = () => {
   const { tour } = useSelector((state) => state.tour);
   const { user, profile, members } = useSelector((state) => state.user);
 
+  const [viewFAQ, setViewFAQ] = useState(false);
+
   const [loading, setLoading] = useState(false);
 
   const [filteredMembers, setFilteredMembers] = useState([]);
 
   const tourData = tour.find((tourData) => tourData._id === id) || {};
+
   const {
     backpacks = [],
     checkinbagages = [],
@@ -275,7 +279,11 @@ const DetailsScreen = () => {
             </View>
             <View className="p-2 rounded-lg shadow-lg shadow-black/50 bg-white">
               <View className="flex flex-row justify-left items-center gap-3 border-b border-gray-300 pb-1 px-1">
-                <Ionicons name="thumbs-up-outline" size={24} color={"#228B22"} />
+                <Ionicons
+                  name="thumbs-up-outline"
+                  size={24}
+                  color={"#228B22"}
+                />
                 <Text className={`text-base  font-semibold`}>
                   What is included ?
                 </Text>
@@ -315,7 +323,11 @@ const DetailsScreen = () => {
             </View>
             <View className="p-2 rounded-lg shadow-lg shadow-black/50 bg-white">
               <View className="flex flex-row justify-left items-center gap-3 border-b border-gray-300 pb-1 px-1">
-                <Ionicons name="bag-check-outline" size={24} color={"#228B22"} />
+                <Ionicons
+                  name="bag-check-outline"
+                  size={24}
+                  color={"#228B22"}
+                />
                 <Text className={`text-base  font-semibold`}>Bag Pack</Text>
               </View>
               <View className="px-1 mt-3 gap-2">
@@ -354,6 +366,45 @@ const DetailsScreen = () => {
                   );
                 })}
               </View>
+            </View>
+            <TouchableOpacity
+              onPress={() => setViewFAQ(!viewFAQ)}
+              activeOpacity={0.9}
+              className="p-2 rounded-lg shadow-lg shadow-black/50 bg-white flex flex-row justify-between"
+            >
+              <View className="flex flex-row justify-left items-center gap-3 border-gray-300 px-1">
+                <Ionicons
+                  name="help-circle-outline"
+                  size={24}
+                  color={"#228B22"}
+                />
+                <Text className={`text-base font-semibold`}>
+                  Frequently Asked Questions (FAQs)
+                </Text>
+              </View>
+              <Ionicons
+                name={
+                  viewFAQ ? "chevron-down-outline" : "chevron-forward-outline"
+                }
+                size={24}
+                color={"#228B22"}
+              />
+            </TouchableOpacity>
+            <View>
+              {viewFAQ ? (
+                tourData?.faqUrl ? (
+                  <Image
+                    style={{ height: height * 0.8, borderRadius: 10 }}
+                    source={{ uri: tourData?.faqUrl }}
+                  />
+                ) : (
+                  <View>
+                    <Text className="text-center text-lg font-semibold mt-4">
+                      FAQs not available
+                    </Text>
+                  </View>
+                )
+              ) : null}
             </View>
           </View>
         </ScrollView>
@@ -458,7 +509,9 @@ const DetailsScreen = () => {
               </View>
             </ScrollView>
           </View>
-          <View className={`px-4 absolute bottom-0 py-3 bg-white flex justify-center items-center`}>
+          <View
+            className={`px-4 absolute bottom-0 py-3 bg-white flex justify-center items-center`}
+          >
             <View className="flex flex-row w-full justify-between items-center">
               <View>
                 <Text className={`text-xs `}>Total Payable</Text>

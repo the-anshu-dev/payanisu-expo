@@ -29,6 +29,7 @@ const MyTourDetails = () => {
   const { mapLink } = useSelector((state) => state.map);
 
   const { bookedTour } = useSelector((state) => state.tour);
+
   const tour = bookedTour?.find((t) => t.tourDetails._id === id);
 
   const isTourCurrentlyActive =
@@ -63,7 +64,10 @@ const MyTourDetails = () => {
       const geoTaggedData = result.filter(
         (i) => i.type === "Geo Tagging" && i.checked === false
       );
-      await AsyncStorage.setItem("geoTaggedCheckPoints", JSON.stringify(geoTaggedData));
+      await AsyncStorage.setItem(
+        "geoTaggedCheckPoints",
+        JSON.stringify(geoTaggedData)
+      );
       setGeoTaggedCheckPoints(geoTaggedData);
     } catch (error) {
       showError(error.message || "Please try again.");

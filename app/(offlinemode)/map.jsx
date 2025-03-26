@@ -103,7 +103,7 @@ const Map = () => {
         const networkState = await Network.getNetworkStateAsync();
         setIsOffline(!networkState.isConnected);
       } catch (error) {
-        console.log("Network status check failed", error);
+        showError("Network status check failed");
         setIsOffline(true);
       }
     };

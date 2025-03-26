@@ -102,7 +102,6 @@ const EditTransport = () => {
       router.back();
       showSuccess("Transport details updated successfully");
     } catch (error) {
-        console.log("first error", error);
       showError(error.message || "Update failed. Try again.");
     } finally {
       setLoading(false);

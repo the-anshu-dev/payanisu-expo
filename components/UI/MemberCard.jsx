@@ -1,6 +1,7 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import TrashIcon from "../../assets/trash-04.svg";
+import { showError, showSuccess } from "../../utils/toastHelper";
 
 const MemberCard = ({ data }) => {
   const id = data._id;
@@ -14,16 +15,15 @@ const MemberCard = ({ data }) => {
         }
       );
       if (response.ok) {
-        console.log("Member deleted successfully !");
+        showSuccess("Member deleted successfully !");
       } else {
-        console.log("Failed to delete member");
+        showError("Failed to delete member");
       }
     } catch (error) {
-      console.log("Some error occured!");
+      showError("Some error occured!");
     }
   };
 
-  
   return (
     <View className="h-48 w-full mt-4 bg-white shadow-xl shadow-black/70 rounded-lg justify-start items-center px-2 ">
       <View className="flex flex-row w-full justify-between items-center pr-3 ">

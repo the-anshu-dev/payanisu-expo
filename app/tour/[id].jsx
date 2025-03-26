@@ -44,7 +44,6 @@ const TourDetails = () => {
       await dispatch(setTour(tour));
     } catch (error) {
       showWarning(error.message || "Failed to fetch tours.");
-      console.log("Error fetching tours:", error);
     }
   };
 
@@ -123,7 +122,6 @@ const TourDetails = () => {
       router.push("/(admin)/tours");
     } catch (error) {
       showError(error.message || "Please try again.");
-      console.log("error:", error);
     } finally {
       setUnPublishLoading(false);
     }
@@ -320,6 +318,11 @@ const DetailTitle = [
     id: 8,
     title: "My Notes",
     href: "/(addTourDetails)/myNotes",
+  },
+  {
+    id: 10,
+    title: "Upload FAQ",
+    href: "/(addTourDetails)/uploadFaq",
   },
 ];
 

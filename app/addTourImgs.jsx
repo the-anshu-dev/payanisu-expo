@@ -1,10 +1,17 @@
-import { View, Text, ScrollView, TouchableOpacity, Dimensions } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Dimensions,
+} from "react-native";
 import React, { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import { uploadFilesToS3 } from "../utils/uploadFileHelper";
+import { showError } from "../utils/toastHelper";
 
 const { width: deviceWidth } = Dimensions.get("window");
 
@@ -42,7 +49,7 @@ const addTourImgs = () => {
       router.push(`/addBusImg?id=${id}`);
     } catch (error) {
       setError(error?.message);
-      console.log(error);
+      showError(error?.message || "Failed to upload image");
     } finally {
       setLoading(false);
     }

@@ -5,7 +5,7 @@ import MapViewDirections from "react-native-maps-directions";
 import * as Location from "expo-location";
 import { useDispatch } from "react-redux";
 import { setMapLink } from "../redux/slices/mapSlice";
-import { showWarning } from "../utils/toastHelper";
+import { showError, showWarning } from "../utils/toastHelper";
 
 const { height } = Dimensions.get("window");
 const apiKey = process.env.EXPO_PUBLIC_GOOGLE_API_KEY;
@@ -24,7 +24,7 @@ const MyTourCheckPoints = ({ checkPoints = [] }) => {
     const getUserLocation = async () => {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
-        console.log("Permission denied");
+        showError("Permission denied");
         return;
       }
       const location = await Location.getCurrentPositionAsync({});

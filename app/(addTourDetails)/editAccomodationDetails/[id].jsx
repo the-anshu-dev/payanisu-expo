@@ -33,7 +33,6 @@ import {
           throw new Error("Failed to fetch accommodation details");
         }
         const data = await response.json();
-        console.log("data", data);
         setGuestHouseName(data.guestHouseName);
         setLocation(data.location);
         setNumberOfRooms(data.numberOfRoom.toString());

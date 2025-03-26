@@ -40,7 +40,7 @@ const Transportation = () => {
       const result = await response.json();
       setTransportationDetails(result);
     } catch (error) {
-      console.log("Error:", error);
+      showError("Failed to get transportation details."); 
     } finally {
       setLoading(false);
     }
@@ -68,7 +68,7 @@ const Transportation = () => {
 
       await exportDataToExcel(formattedData, "tranportDetails");
     } catch (error) {
-      console.log("Failed to export tranport details", error);
+      showError("Failed to export tranport details");
     } finally {
       setExporting(false);
     }
