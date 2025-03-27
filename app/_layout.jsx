@@ -8,18 +8,11 @@ import store from "@/redux/store.js";
 import CustomBackButton from "@/components/UI/CustomBackButton";
 import "react-native-get-random-values";
 import { useState, useEffect, useRef } from "react";
-import { Platform } from "react-native";
-import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
-import Constants from "expo-constants";
 import { registerForPushNotificationsAsync } from "../utils/notification";
 
 export default function RootLayout() {
   const [expoPushToken, setExpoPushToken] = useState("");
-  const [notification, setNotification] = useState(undefined);
-  const notificationListener = useRef();
-  const responseListener = useRef();
-
 
   Notifications.setNotificationHandler({
     handleNotification:async()=>({
@@ -29,8 +22,6 @@ export default function RootLayout() {
     })
   })
 
-
-
   useEffect(() => {
     async function getToken() {
       const token = await registerForPushNotificationsAsync();
@@ -39,88 +30,6 @@ export default function RootLayout() {
     getToken();
   }, []);
 
-  console.log("NOTIFICATION DEVICE TOKEN ==>", expoPushToken)
-
-  // Notifications.setNotificationHandler({
-  //   handleNotification: async () => ({
-  //     shouldShowAlert: true,
-  //     shouldPlaySound: true,
-  //     shouldSetBadge: true,
-  //   }),
-  // });
-
-  // async function registerForPushNotificationsAsync() {
-  //   let token;
-
-  //   if (Platform.OS === "android") {
-  //     await Notifications.setNotificationChannelAsync("myNotificationChannel", {
-  //       name: "A channel is needed for the permissions prompt to appear",
-  //       importance: Notifications.AndroidImportance.MAX,
-  //       vibrationPattern: [0, 250, 250, 250],
-  //       lightColor: "#FF231F7C",
-  //     });
-  //   }
-
-  //   if (Device.isDevice) {
-  //     const { status: existingStatus } =
-  //     await Notifications.getPermissionsAsync();
-  //     let finalStatus = existingStatus;
-  //     if (existingStatus !== "granted") {
-  //       const { status } = await Notifications.requestPermissionsAsync();
-  //       finalStatus = status;
-  //     }
-  //     if (finalStatus !== "granted") {
-  //       alert(
-  //         "Permission not granted to get push token for push notification!"
-  //       );
-  //       return;
-  //     }
-  //     try {
-  //       const projectId =
-  //       Constants?.expoConfig?.extra?.eas?.projectId ??
-  //       Constants?.easConfig?.projectId;
-  //       if (!projectId) {
-  //         throw new Error("Project ID not found");
-  //       }
-  //       token = (
-  //         await Notifications.getExpoPushTokenAsync({
-  //           projectId,
-  //         })
-  //       ).data;
-  //       console.log(token);
-  //     } catch (e) {
-  //       token = `${e}`;
-  //     }
-  //   } else {
-  //     alert("Must use physical device for Push Notifications");
-  //   }
-
-  //   return token;
-  // }
-
-  // useEffect(() => {
-  //   registerForPushNotificationsAsync().then(
-  //     (token) => token && setExpoPushToken(token)
-  //   );
-  //   notificationListener.current =
-  //     Notifications.addNotificationReceivedListener((notification) => {
-  //       setNotification(notification);
-  //     });
-
-  //   responseListener.current =
-  //     Notifications.addNotificationResponseReceivedListener((response) => {
-  //       console.log(response);
-  //     });
-
-  //   return () => {
-  //     notificationListener.current &&
-  //       Notifications.removeNotificationSubscription(
-  //         notificationListener.current
-  //       );
-  //     responseListener.current &&
-  //       Notifications.removeNotificationSubscription(responseListener.current);
-  //   };
-  // }, []);
 
   return (
     <Provider store={store}>

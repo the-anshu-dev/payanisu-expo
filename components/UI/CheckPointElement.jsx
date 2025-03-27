@@ -25,6 +25,7 @@ const CheckPointElement = ({
   handleGetCheckPoints,
   isTourCurrentlyActive,
 }) => {
+
   const [permission, requestPermission] = useCameraPermissions();
   const [showCameraModal, setShowCameraModal] = useState(false);
   const [scanned, setScanned] = useState(false);
@@ -33,10 +34,8 @@ const CheckPointElement = ({
 
   const { user } = useSelector((state) => state.user);
 
-  const [location, setLocation] = useState(null);
-
   const getDistance = (lat1, lon1, lat2, lon2) => {
-    const R = 6371e3; // Earth's radius in meters
+    const R = 6371e3;
     const φ1 = (lat1 * Math.PI) / 180;
     const φ2 = (lat2 * Math.PI) / 180;
     const Δφ = ((lat2 - lat1) * Math.PI) / 180;
@@ -97,66 +96,8 @@ const CheckPointElement = ({
     checkAndRequestPermission();
   }, [permission]);
 
-  // useEffect(() => {
-  //   let watchId;
-
-  //   const startLocationTracking = async () => {
-  //     try {
-  //       const { status } = await Location.requestForegroundPermissionsAsync();
-  //       if (status !== "granted") {
-  //         showWarning("Location permission is required for auto check-in");
-  //         return;
-  //       }
-
-  //       watchId = await Location.watchPositionAsync(
-  //         {
-  //           accuracy: Location.Accuracy.High,
-  //           distanceInterval: 10,
-  //         },
-  //         (location) => {
-  //           setLocation(location);
-
-  //           if (points.type === "Geo Tagging" && !points.checked) {
-  //             const distance = getDistance(
-  //               location.coords.latitude,
-  //               location.coords.longitude,
-  //               points.latitude,
-  //               points.longitude
-  //             );
-
-  //             if (distance <= 100) {
-  //               const body = {
-  //                 email: user?.email,
-  //                 tourId: points.tourId,
-  //                 checkPointId: points._id,
-  //               };
-  //               handleCheckIn(body);
-  //             }
-  //           }
-  //         }
-  //       );
-  //     } catch (error) {
-  //       showError("Error getting location:", error);
-  //     }
-  //   };
-
-  //   if (
-  //     points.type === "Geo Tagging" &&
-  //     !points.checked &&
-  //     isTourCurrentlyActive
-  //   ) {
-  //     startLocationTracking();
-  //   }
-
-  //   return () => {
-  //     if (watchId) {
-  //       watchId.remove();
-  //     }
-  //   };
-  // }, [points]);
 
   useEffect(() => {
-    console.log("USE EFFECT run!", isTourCurrentlyActive);
     let watchId;
 
     const startLocationTracking = async () => {
@@ -172,12 +113,11 @@ const CheckPointElement = ({
         watchId = await Location.watchPositionAsync(
           {
             accuracy: Location.Accuracy.High,
-            distanceInterval: 100, // Update every 100 meters
+            distanceInterval: 100
           },
           (location) => {
             const { latitude, longitude } = location.coords;
 
-            // Ensure `points` is always treated as an array
             const safePoints = Array.isArray(points) ? points : [points];
 
             safePoints.forEach((point) => {
@@ -188,7 +128,6 @@ const CheckPointElement = ({
                   point.latitude,
                   point.longitude
                 );
-                console.log("distance==>", distance);
 
                 if (distance <= 100) {
                   const body = {
@@ -209,13 +148,11 @@ const CheckPointElement = ({
       }
     };
 
-    // Start tracking only if conditions are met
     if (
       isTourCurrentlyActive &&
       points?.type === "Geo Tagging" &&
       points?.checked === false
     ) {
-      console.log("START TRACKING....");
       startLocationTracking();
     }
 
@@ -225,8 +162,6 @@ const CheckPointElement = ({
       }
     };
   }, [points, isTourCurrentlyActive]);
-
-  console.log("Points==>", points);
 
   if (!permission) {
     return <View />;
