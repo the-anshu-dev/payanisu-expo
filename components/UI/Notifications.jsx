@@ -42,12 +42,19 @@ const Notifications = ({ id, title, content, seen, createdAt, onRefresh }) => {
   return (
     <>
       <TouchableOpacity activeOpacity={0.9} onPress={handleSeen}>
-        <View className="border border-[#228B22] h-fit rounded-lg p-2 mt-3 relative">
+        <View
+          style={{ borderColor: seen ? "#aeaeae" : "#228B22" }}
+          className="border  h-fit rounded-lg p-2 mt-3 relative"
+        >
           {!seen && (
             <View className="h-2 w-2 bg-red-600 absolute right-2 top-2 rounded-full" />
           )}
           <View className="flex flex-row justify-start items-center gap-3">
-            <FontAwesome6 name="bell" size={16} color={"#228B22"} />
+            <FontAwesome6
+              name="bell"
+              size={16}
+              color={seen ? "#aeaeae" : "#228B22"}
+            />
             <Text className="text-base font-semibold">{title}</Text>
           </View>
           {content && (

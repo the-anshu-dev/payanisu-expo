@@ -17,6 +17,8 @@ import { format } from "date-fns";
 import { Picker } from "@react-native-picker/picker";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { showError, showSuccess } from "../../../utils/toastHelper";
+import { Image } from "expo-image";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const { height, width } = Dimensions.get("window");
 
@@ -67,6 +69,11 @@ const EditTour = () => {
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showEndPicker, setShowEndPicker] = useState(false);
   const [showBookingClosePicker, setShowBookingClosePicker] = useState(false);
+
+  const [images, setImages] = useState(tourDetails?.images || []);
+  const [imageToRemove, setImageToRemove] = useState(null);
+  const [imageToAdd, setImageToAdd] = useState(null);
+  const [imageToAddUri, setImageToAddUri] = useState(null);
 
   const onChangeStart = (event, selectedDate) => {
     const currentDate = selectedDate || startDate;
@@ -172,7 +179,9 @@ const EditTour = () => {
       >
         <View className="flex justify-center items-center">
           {error && (
-            <Text className="text-red-600 font-semibold text-lg pt-3">{error}</Text>
+            <Text className="text-red-600 font-semibold text-lg pt-3">
+              {error}
+            </Text>
           )}
         </View>
         <View style={styles.innerContainer}>
@@ -351,8 +360,6 @@ const EditTour = () => {
               />
             )}
           </View>
-
-          {/* Cost Per Person */}
           <View style={styles.input}>
             <Text className="text-base font-semibold text-gray-600">
               Cost Per Person
@@ -385,6 +392,46 @@ const EditTour = () => {
             />
           </View>
         </View>
+        <View style={styles.imageWrapper}>
+          <Text className="text-lg mb-2 font-semibold text-gray-600">
+            Tour Images
+          </Text>
+          {tourDetails.images.map((image, index) => (
+            <View key={index} style={styles.imageWrapper}>
+              <Image
+                source={{ uri: image.url }}
+                alt="tour"
+                style={styles.image}
+              />
+              <TouchableOpacity
+                onPress={() => {
+                  // Handle image removal
+                }}
+                style={styles.closeButton}
+                activeOpacity={0.8}
+              >
+                <MaterialIcons name="close" size={16} color="white" />
+              </TouchableOpacity>
+            </View>
+          ))}
+          <TouchableOpacity
+            onPress={() => {
+              // Handle image picker
+            }}
+            style={styles.imagePicker}
+            activeOpacity={0.8}
+          >
+            <Text className="text-[#228B22] text-base font-semibold">
+              Add Images
+            </Text>
+            <MaterialIcons
+              name="add-a-photo"
+              size={24}
+              color="#228B22"
+              style={styles.imagePickerText}
+            />
+          </TouchableOpacity>
+        </View>
       </ScrollView>
       <View style={styles.buttonWrapper}>
         <TouchableOpacity
@@ -413,10 +460,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: width * 0.05,
   },
   scrollViewContent: {
-    paddingBottom: height * 0.1,
+    paddingBottom: height * 0.3,
+    paddingHorizontal: 12,
   },
   innerContainer: {
-    paddingHorizontal: 12,
     paddingTop: 18,
     width: "100%",
     alignItems: "center",

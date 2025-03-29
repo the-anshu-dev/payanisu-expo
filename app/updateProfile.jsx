@@ -203,7 +203,7 @@ const UpdateProfile = () => {
           <View style={styles.pickerContainer}>
             <Picker
               selectedValue={idProofType}
-              onValueChange={(itemValue) => setIdProofType(itemValue)}            
+              onValueChange={(itemValue) => setIdProofType(itemValue)}
             >
               <Picker.Item label="Select ID type" value={null} />
               <Picker.Item label="Aadhar Card" value="Aadhar" />
@@ -223,11 +223,11 @@ const UpdateProfile = () => {
         style={{
           paddingVertical: 10,
           paddingHorizontal: 10,
-          display: 'flex',
+          display: "flex",
           flexDirection: "row",
-          justifyContent: 'space-between',
+          justifyContent: "space-between",
           alignItems: "center",
-          gap: 10
+          gap: 10,
         }}
       >
         <TouchableOpacity

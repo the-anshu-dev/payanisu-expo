@@ -15,7 +15,7 @@ import MyTourCard from "../../components/UI/MyTourCard";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Redirect } from "expo-router";
-import { showError } from "../../utils/toastHelper";
+import { showError, showSuccess } from "../../utils/toastHelper";
 
 const { width, height } = Dimensions.get("window");
 
@@ -29,7 +29,7 @@ const MyTours = () => {
 
   const getAllBookedTours = useCallback(async () => {
     if (!user) return;
-
+    showSuccess(`${process.env.EXPO_PUBLIC_BASE_URL}`);
     setLoading(true);
     try {
       const response = await fetch(
