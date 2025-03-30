@@ -17,6 +17,7 @@ import { useDispatch } from "react-redux";
 import { setProfile, setRole, setUser } from "../redux/slices/userSlice";
 import payanisuPoster from "../assets/payanisu.png";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { showError } from "../utils/toastHelper";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -40,69 +41,48 @@ const Login = () => {
 
   const getUserProfile = async (token) => {
     if (!token) return;
+  
     setLoading(true);
     try {
-      const response = await fetch(
-        "https://www.googleapis.com/oauth2/v2/userinfo",
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
+      const response = await fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+  
       if (!response.ok) {
-        const text = await response.text();
-        console.error("Error fetching Google user data:", text);
-        throw new Error("Failed to fetch Google user data.");
+        const errorData = await response.json();
+        throw new Error(errorData?.error || "Failed to fetch Google user data.");
       }
-
+  
       const user = await response.json();
       dispatch(setUser(user));
       await storeUserData(user);
-
+  
       const userEmail = user?.email;
-
-      if (userEmail) {
-        const roleResponse = await fetch(
-          `${process.env.EXPO_PUBLIC_BASE_URL}/api/users/signin`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email: userEmail }),
-          }
-        );
-
-        if (roleResponse.ok) {
-          const roleData = await roleResponse.json();
-          dispatch(setRole(roleData));
-        }
-
-        const profileResponse = await fetch(
-          `${process.env.EXPO_PUBLIC_BASE_URL}/api/users/getProfile`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              email: userEmail,
-            },
-          }
-        );
-
-        if (profileResponse.ok) {
-          const profileData = await profileResponse.json();
-          if (profileData && !profileData.error) {
-            dispatch(setProfile(profileData));
-          } else {
-            dispatch(setProfile(null));
-          }
-        }
-      }
+      if (!userEmail) throw new Error("User email not found.");
+  
+      const [roleResponse, profileResponse] = await Promise.all([
+        fetch(`${process.env.EXPO_PUBLIC_BASE_URL}/api/users/signin`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: userEmail }),
+        }),
+        fetch(`${process.env.EXPO_PUBLIC_BASE_URL}/api/users/getProfile`, {
+          method: "GET",
+          headers: { email: userEmail },
+        }),
+      ]);
+  
+      if (!roleResponse.ok) throw new Error("Failed to fetch user role.");
+      const roleData = await roleResponse.json();
+      dispatch(setRole(roleData));
+  
+      if (!profileResponse.ok) throw new Error("Failed to fetch user profile.");
+      const profileData = await profileResponse.json();
+      dispatch(setProfile(profileData));
+  
     } catch (error) {
-      console.error("Error fetching user profile:", error);
+      showError(error.message || "An error occurred. Please try again.");
     } finally {
       setSessionActive(true);
       setLoading(false);

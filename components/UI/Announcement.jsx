@@ -2,20 +2,24 @@ import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import { shorten } from "./PostComponent";
 import { FontAwesome6 } from "@expo/vector-icons";
+import { format } from "date-fns";
 
-const Announcement = () => {
-  const text =
-    "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos fuga nesciunt, minima perferendis aut quia rem, eos id quo quod, liberodeserunt alias enim corrupti! Lorem ipsum dolor sit amet consectetur   adipisicing elit. Laboriosam fugit placeat atque ut at porro est eligendi sed possimus excepturi qui sequi omnis debitis, adipisci alias, nulla hic doloremque? Corrupti labore beatae dolor. Ipsum accusamus voluptatum exercitationem fuga, nisi doloremque, totam rerum explicabo provident consequatur corporis deserunt corrupti nostrum cupiditate.";
+const Announcement = ({ title, content, date }) => {
   return (
     <TouchableOpacity activeOpacity={0.9}>
-      <View className="border-2 h-32 rounded-lg border-[#228B22]/20 p-2 mt-3">
+      <View className="border-2 h-fit rounded-lg border-[#228B22]/20 p-2 mt-3">
         <View className="flex flex-row justify-start items-center gap-3">
           <FontAwesome6 name="bell" size={16} color={"#228B22"} />
-          <Text className={`text-base font-semibold `}>ShriShailm Trek</Text>
+          <Text className={`text-base font-semibold `}>{title}</Text>
         </View>
         <View className="mt-2">
           <Text className={`tracking-wide text-justify`}>
-            {shorten(text, 160)}
+            {shorten(content, 160)}
+          </Text>
+        </View>
+        <View className="mt-1">
+          <Text className={`text-sm text-[#228B22]/50`}>
+            {format(new Date(date), "dd MMMM yyyy")}
           </Text>
         </View>
       </View>

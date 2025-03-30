@@ -19,6 +19,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { showError, showSuccess } from "../../../utils/toastHelper";
 import { Image } from "expo-image";
 import { MaterialIcons } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
+import { uploadFilesToS3 } from "../../../utils/uploadFileHelper";
 
 const { height, width } = Dimensions.get("window");
 
@@ -31,7 +33,10 @@ const EditTour = () => {
   const tourDetails = tour.find((t) => t._id === id);
 
   const [error, setError] = useState(null);
+
   const [loading, setLoading] = useState(false);
+
+  // form data states
   const [tourName, setTourName] = useState(tourDetails?.name || "");
   const [location, setLocation] = useState(tourDetails?.location || "");
   const [state, setState] = useState(tourDetails?.state || "");
@@ -70,10 +75,23 @@ const EditTour = () => {
   const [showEndPicker, setShowEndPicker] = useState(false);
   const [showBookingClosePicker, setShowBookingClosePicker] = useState(false);
 
+  // image states
+
   const [images, setImages] = useState(tourDetails?.images || []);
-  const [imageToRemove, setImageToRemove] = useState(null);
-  const [imageToAdd, setImageToAdd] = useState(null);
-  const [imageToAddUri, setImageToAddUri] = useState(null);
+
+  const [imageToAdd, setImageToAdd] = useState([]);
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      allowsMultipleSelection: true,
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImageToAdd((prevImages) => [...prevImages, ...result.assets]);
+    }
+  };
 
   const onChangeStart = (event, selectedDate) => {
     const currentDate = selectedDate || startDate;
@@ -145,15 +163,42 @@ const EditTour = () => {
         }
       );
       if (response.ok) {
-        router.back();
+        await uploadFilesToS3(imageToAdd, id);
         showSuccess("Tour updated successfully");
+        router.push(`/tour/${id}`);
       }
-      router.push(`/tour/${id}`);
     } catch (err) {
       showError(err.message || "Please try again.");
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleRemoveImage = async (id) => {
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_BASE_URL}/api/image/delete-image?id=${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "x-user-email": user?.email,
+          },
+        }
+      );
+      if (response.ok) {
+        const updatedImages = images.filter((image) => image._id !== id);
+        setImages(updatedImages);
+        showSuccess("Image removed successfully");
+      }
+    } catch (error) {
+      showError(error.message || "Failed to remove image");
+    }
+  };
+
+  const handleRemoveImageToAdd = (uri) => {
+    const updatedImages = imageToAdd.filter((image) => image.uri !== uri);
+    setImageToAdd(updatedImages);
   };
 
   useEffect(() => {
@@ -172,10 +217,15 @@ const EditTour = () => {
   }, [startDate, endDate, bookingCloseDate, error]);
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={["left", "right", "bottom"]}>
+    <SafeAreaView edges={["left", "right", "bottom"]}>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollViewContent}
+        contentContainerStyle={{
+          alignItems: "center",
+          paddingBottom: 150,
+          paddingHorizontal: 12,
+          flexGrow: 1,
+        }}
       >
         <View className="flex justify-center items-center">
           {error && (
@@ -396,7 +446,7 @@ const EditTour = () => {
           <Text className="text-lg mb-2 font-semibold text-gray-600">
             Tour Images
           </Text>
-          {tourDetails.images.map((image, index) => (
+          {images.map((image, index) => (
             <View key={index} style={styles.imageWrapper}>
               <Image
                 source={{ uri: image.url }}
@@ -404,9 +454,7 @@ const EditTour = () => {
                 style={styles.image}
               />
               <TouchableOpacity
-                onPress={() => {
-                  // Handle image removal
-                }}
+                onPress={() => handleRemoveImage(image._id)}
                 style={styles.closeButton}
                 activeOpacity={0.8}
               >
@@ -414,10 +462,25 @@ const EditTour = () => {
               </TouchableOpacity>
             </View>
           ))}
+          {imageToAdd.length > 0 &&
+            imageToAdd.map((image, index) => (
+              <View key={index} style={styles.imageWrapper}>
+                <Image
+                  source={{ uri: image.uri }}
+                  alt="tour"
+                  style={styles.image}
+                />
+                <TouchableOpacity
+                  onPress={() => handleRemoveImageToAdd(image.uri)}
+                  style={styles.closeButton}
+                  activeOpacity={0.8}
+                >
+                  <MaterialIcons name="close" size={16} color="white" />
+                </TouchableOpacity>
+              </View>
+            ))}
           <TouchableOpacity
-            onPress={() => {
-              // Handle image picker
-            }}
+            onPress={pickImage}
             style={styles.imagePicker}
             activeOpacity={0.8}
           >
@@ -452,15 +515,13 @@ const EditTour = () => {
 };
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-  },
   container: {
     flex: 1,
     paddingHorizontal: width * 0.05,
   },
   scrollViewContent: {
-    paddingBottom: height * 0.3,
+    flexGrow: 1,
+    paddingBottom: height * 0.5,
     paddingHorizontal: 12,
   },
   innerContainer: {
@@ -520,12 +581,11 @@ const styles = StyleSheet.create({
   imageWrapper: {
     position: "relative",
     width: "100%",
-    height: 156,
     marginBottom: 10,
   },
   image: {
     width: "100%",
-    height: "100%",
+    height: 156,
     borderRadius: 10,
   },
   closeButton: {

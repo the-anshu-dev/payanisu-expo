@@ -246,12 +246,17 @@ const styles = StyleSheet.create({
   shareButtonContainer: {
     position: "absolute",
     bottom: 10,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
     left: width * 0.05,
     right: width * 0.05,
   },
   shareButton: {
     backgroundColor: "#228B22",
-    height: height * 0.06,
+    height: height * 0.055,
+    width: "100%",
+    display: "flex",
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 8,
@@ -259,6 +264,7 @@ const styles = StyleSheet.create({
   shareButtonText: {
     width: "100%",
     color: "white",
+    textAlign: "center",
     fontWeight: "bold",
     fontSize: height * 0.02,
   },

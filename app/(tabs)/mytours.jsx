@@ -15,9 +15,8 @@ import MyTourCard from "../../components/UI/MyTourCard";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Redirect } from "expo-router";
-import { showError, showSuccess } from "../../utils/toastHelper";
-
-const { width, height } = Dimensions.get("window");
+import { showError } from "../../utils/toastHelper";
+import { myTourScreenStyles } from "../../constants/Styles";
 
 const MyTours = () => {
   const { user } = useSelector((state) => state.user);
@@ -64,22 +63,22 @@ const MyTours = () => {
   }
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={["left", "right", "bottom"]}>
+    <SafeAreaView style={myTourScreenStyles.safeArea} edges={["left", "right", "bottom"]}>
       <StatusBar style="dark" backgroundColor="#fff" translucent animated />
       {loading ? (
-        <View style={styles.loadingContainer}>
+        <View style={myTourScreenStyles.loadingContainer}>
           <ActivityIndicator size="large" color="#4CAF50" />
         </View>
       ) : bookedTour?.length > 0 ? (
-        <View style={styles.container}>
+        <View style={myTourScreenStyles.container}>
           <ScrollView
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.scrollContainer}
+            contentContainerStyle={myTourScreenStyles.scrollContainer}
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
           >
-            <View style={styles.toursContainer}>
+            <View style={myTourScreenStyles.toursContainer}>
               {bookedTour.map((tour, idx) => (
                 <MyTourCard
                   key={tour.id || idx}
@@ -91,48 +90,12 @@ const MyTours = () => {
           </ScrollView>
         </View>
       ) : (
-        <View style={styles.noTourContainer}>
-          <Text style={styles.noTourText}>No booked tours available</Text>
+        <View style={myTourScreenStyles.noTourContainer}>
+          <Text style={myTourScreenStyles.noTourText}>No booked tours available</Text>
         </View>
       )}
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-  },
-  container: {
-    flex: 1,
-    width: "100%",
-    alignItems: "center",
-    backgroundColor: "#fff",
-  },
-  scrollContainer: {
-    width: "100%",
-    paddingBottom: height * 0.1,
-    paddingHorizontal: width * 0.05,
-  },
-  toursContainer: {
-    width: "100%",
-    alignItems: "center",
-  },
-  noTourContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  noTourText: {
-    fontSize: 18,
-    fontWeight: "500",
-    color: "#666",
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});
 
 export default MyTours;

@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
@@ -19,7 +19,7 @@ const { width, height } = Dimensions.get("window");
 const Menu = () => {
   const { profile } = useSelector((state) => state.user);
 
-  const [loggingOut, setLoggingOut] = React.useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -70,7 +70,7 @@ const Menu = () => {
           style={styles.logOutButton}
         >
           {loggingOut ? (
-            <ActivityIndicator size={"small"} color={"white"} />
+            <ActivityIndicator size={"small"} color={"green"} />
           ) : (
             <Text style={{ color: "black", fontWeight: "600", fontSize: 18 }}>
               Log Out
@@ -107,7 +107,7 @@ const options = [
     id: "tc",
     name: "Terms and Conditions",
     route: "/terms",
-  }
+  },
 ];
 
 const styles = StyleSheet.create({

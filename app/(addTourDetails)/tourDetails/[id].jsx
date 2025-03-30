@@ -70,13 +70,15 @@ const TourDetails = () => {
           />
         ))}
       </ScrollView>
-      <TouchableOpacity
-        onPress={handleEditTour}
-        activeOpacity={0.9}
-        className="w-full py-2 flex flex-row justify-center items-center bg-[#228B22] h-14 gap-2 rounded-lg mb-3"
-      >
-        <Text className="text-white text-xl font-semibold">Edit Tour</Text>
-      </TouchableOpacity>
+      <View className="w-full px-3 py-2">
+        <TouchableOpacity
+          onPress={handleEditTour}
+          activeOpacity={0.9}
+          className="w-full py-2 flex flex-row justify-center items-center bg-[#228B22] h-14 gap-2 rounded-lg"
+        >
+          <Text className="text-white text-xl font-semibold">Edit Tour</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };

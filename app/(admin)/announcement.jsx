@@ -7,8 +7,7 @@ import {
   Dimensions,
   StyleSheet,
 } from "react-native";
-import React, { useRef, useState } from "react";
-import Announcement from "../../components/UI/Announcement";
+import React, { useCallback, useRef, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { Modalize } from "react-native-modalize";
 import DropDownPicker from "react-native-dropdown-picker";
@@ -16,11 +15,14 @@ import { useSelector } from "react-redux";
 import { ActivityIndicator } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { showError, showSuccess } from "../../utils/toastHelper";
+import { useFocusEffect } from "expo-router";
+import Notifications from "../../components/UI/Notifications";
 
 const { width, height } = Dimensions.get("window");
 
 const AnnouncementScreen = () => {
   const { tour } = useSelector((state) => state.tour);
+  const { user } = useSelector((state) => state.user);
 
   const toursData = tour.map((t) => {
     return { label: t.name, value: t._id };
@@ -33,6 +35,8 @@ const AnnouncementScreen = () => {
   const [tours, setTours] = useState(toursData);
   const [content, setContent] = useState("");
   const [announcementTitle, setAnnouncementTitle] = useState("");
+
+  const [announcements, setAnnouncements] = useState([]);
 
   const [loading, setLoading] = useState(false);
 
@@ -69,6 +73,36 @@ const AnnouncementScreen = () => {
     }
   };
 
+  const handleGetAnnouncement = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_BASE_URL}/api/notification/get?email=${user?.email}`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch announcements.");
+      }
+      const data = await response.json();
+      const filteredData = data.filter((item) => item.id === currentTour);
+      setAnnouncements(filteredData);
+    } catch (error) {
+      showError(error.message || "Failed to fetch announcements.");
+    }
+  };
+
+  const onRefresh = async () => {
+    try {
+      await handleGetAnnouncement();
+    } catch (error) {
+      showError(error.message || "Failed to refresh announcements.");
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      handleGetAnnouncement();
+    }, [currentTour])
+  );
+
   return (
     <SafeAreaView style={{ flex: 1 }} edges={["left", "right", "bottom"]}>
       <View style={styles.container}>
@@ -102,7 +136,23 @@ const AnnouncementScreen = () => {
           contentContainerStyle={styles.scrollViewContent}
         >
           <View style={styles.announcementContainer}>
-            <Announcement />
+            {announcements.length > 0 ? (
+              announcements.map((announcement, index) => (
+                <Notifications
+                  key={announcement._id}
+                  id={announcement._id}
+                  title={announcement.title}
+                  content={announcement?.content}
+                  seen={announcement.seen}
+                  createdAt={announcement?.createdAt}
+                  onRefresh={onRefresh}
+                />
+              ))
+            ) : (
+              <Text style={{ fontSize: width * 0.04, textAlign: "center" }}>
+                No Announcements
+              </Text>
+            )}
           </View>
         </ScrollView>
       </View>

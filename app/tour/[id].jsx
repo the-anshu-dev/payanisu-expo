@@ -153,6 +153,7 @@ const TourDetails = () => {
         {
           method: "GET",
           headers: {
+            "Content-Type": "application/json",
             "x-user-email": user.email,
           },
         }
@@ -163,6 +164,7 @@ const TourDetails = () => {
       showSuccess("Tour cloned successfully.");
       router.back();
     } catch (error) {
+      console.log(error);
       showError(error.message || "Failed to clone tour.");
     } finally {
       setModalVisible(false);

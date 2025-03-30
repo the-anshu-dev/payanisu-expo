@@ -17,6 +17,9 @@ import { notificationTypes } from "../../constants/constant";
 import NotificationChips from "../../components/UI/NotificationChips";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { MaterialIcons } from "@expo/vector-icons";
+import Loader from "../../components/common/Loader";
+import NotAvailableComponent from "../../components/UI/NotAvailableComponent";
+import { notificationScreenStyles } from "../../constants/Styles";
 
 const NotificationsScreen = () => {
   const { user } = useSelector((state) => state.user);
@@ -77,12 +80,28 @@ const NotificationsScreen = () => {
 
   if (!user) return <Redirect href="/login" />;
 
+  if (refreshing) {
+    return <Loader />;
+  }
+
+  if (allData.length === 0) {
+    return (
+      <NotAvailableComponent
+        text={"No Posts Available"}
+        iconName={"alert-circle-outline"}
+      />
+    );
+  }
+
   return (
-    <SafeAreaView style={styles.safeArea} edges={["left", "right", "bottom"]}>
+    <SafeAreaView
+      style={notificationScreenStyles.safeArea}
+      edges={["left", "right", "bottom"]}
+    >
       <StatusBar style="dark" backgroundColor="#fff" translucent animated />
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContainer}
+        contentContainerStyle={notificationScreenStyles.scrollContainer}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -91,8 +110,8 @@ const NotificationsScreen = () => {
           />
         }
       >
-        <View style={styles.notificationsContainer}>
-          <View style={styles.chipContainer}>
+        <View style={notificationScreenStyles.notificationsContainer}>
+          <View style={notificationScreenStyles.chipContainer}>
             {notificationTypes.map((item) => (
               <NotificationChips
                 key={item.id}
@@ -103,28 +122,13 @@ const NotificationsScreen = () => {
               />
             ))}
           </View>
-          {data.length == 0 ? (
-            <View
-              style={{ paddingVertical: 50, alignItems: "center", gap: 10 }}
-            >
-              <MaterialIcons
-                name="mark-chat-read"
-                color={"#228B22"}
-                size={48}
-              />
-              <Text
-                style={{ fontSize: 18, fontWeight: "bold", color: "#228B22" }}
-              >
-                You are all caught up!
-              </Text>
-              <Text
-                style={{ fontSize: 18, fontWeight: "bold", color: "#228B22" }}
-              >
-                No new notifications.
-              </Text>
-            </View>
+          {data.length === 0 ? (
+            <NotAvailableComponent
+              text={"No Notifications Available"}
+              iconName={"notifications-off"}
+            />
           ) : (
-            data.map((notification) => (
+            data?.map((notification) => (
               <Notifications
                 key={notification._id}
                 id={notification._id}
@@ -141,17 +145,5 @@ const NotificationsScreen = () => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: "#fff" },
-  scrollContainer: { paddingBottom: 20 },
-  notificationsContainer: { marginTop: 10, paddingHorizontal: 16 },
-  chipContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 10,
-    justifyContent: "space-between",
-  },
-});
 
 export default NotificationsScreen;

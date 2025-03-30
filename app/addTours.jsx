@@ -174,7 +174,7 @@ const addTours = () => {
 
       if (response.status === 201) {
         await uploadFilesToS3(image, result._id);
-        const notify = await fetch(
+        await fetch(
           `${process.env.EXPO_PUBLIC_BASE_URL}/api/notification/create`,
           {
             method: "POST",
@@ -184,9 +184,8 @@ const addTours = () => {
             body: JSON.stringify(notificationData),
           }
         );
-        await notify.json();
       } else {
-        setError(result.message || "Please fill in all required fields.");
+        setError(result.message || "Something went wrong.");
         return;
       }
       router.back();

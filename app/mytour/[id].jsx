@@ -6,8 +6,8 @@ import {
   Dimensions,
   Linking,
 } from "react-native";
-import React, { useEffect, useState } from "react";
-import { useLocalSearchParams } from "expo-router";
+import React, { useCallback, useState } from "react";
+import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import Animated, {
   useSharedValue,
   withSpring,
@@ -33,8 +33,8 @@ const MyTourDetails = () => {
   const tour = bookedTour?.find((t) => t.tourDetails._id === id);
 
   const isTourCurrentlyActive =
-  new Date() >= new Date(tour?.tourDetails.tour_start) &&
-  new Date() <= new Date(tour?.tourDetails.tour_end);
+    new Date() >= new Date(tour?.tourDetails.tour_start) &&
+    new Date() <= new Date(tour?.tourDetails.tour_end);
 
   const [loading, setLoading] = useState();
   const [checkPoints, setCheckPoints] = useState();
@@ -89,9 +89,11 @@ const MyTourDetails = () => {
     Linking.openURL(mapLink);
   };
 
-  useEffect(() => {
-    handleGetCheckPoints();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      handleGetCheckPoints();
+    }, [])
+  );
 
   return (
     <View className={`relative h-full flex items-center`}>

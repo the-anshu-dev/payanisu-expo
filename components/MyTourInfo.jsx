@@ -35,7 +35,8 @@ const MyTourInfo = ({ tour }) => {
     allocatedTransport,
   } = tour;
 
-  const { faqUrl, name, description, tour_start, tour_end } = tourDetails;
+  const { faqUrl, name, description, tour_start, tour_end, booking_close } =
+    tourDetails;
 
   const images = tourDetails?.images.map((i) => i.url);
 
@@ -172,6 +173,8 @@ const MyTourInfo = ({ tour }) => {
     2: "Pending",
     3: "Cancelled",
   };
+
+  const cancelCondition = status === 1 && booking_close > new Date();
 
   useEffect(() => {
     onRefresh();
@@ -508,7 +511,7 @@ const MyTourInfo = ({ tour }) => {
             )
           ) : null}
         </View>
-        {status === 1 && (
+        {cancelCondition && (
           <TouchableOpacity
             onPress={handleCancelBooking}
             activeOpacity={0.9}

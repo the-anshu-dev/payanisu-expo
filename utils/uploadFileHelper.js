@@ -1,107 +1,92 @@
-import axios from "axios";
 import * as FileSystem from "expo-file-system";
+
+const BASE_URL = process.env.EXPO_PUBLIC_BASE_URL;
+const S3_BASE_URL = "https://trekies.s3.ap-south-1.amazonaws.com/uploads/";
 
 export const uploadFilesToS3 = async (files, id = 12, type) => {
   try {
-    for (const file of files) {
-      const fileName = file.fileName + Date.now();
+    const uploadPromises = files.map(async (file) => {
+      const fileName = `${file.fileName}_${Date.now()}`;
+      const preSignedUrlResponse = await fetch(`${BASE_URL}/api/putObject`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fileName, contentType: file.mimeType }),
+      });
 
-      const response = await fetch(
-        `${process.env.EXPO_PUBLIC_BASE_URL}/api/putObject`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ fileName, contentType: file?.mimeType }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(
-          "Failed to get the pre-signed URL for " + file.fileName
-        );
+      if (!preSignedUrlResponse.ok) {
+        throw new Error(`Failed to get pre-signed URL for ${file.fileName}`);
       }
 
-      const result = await response.json();
-      const presignedUrl = result;
-
+      const presignedUrl = await preSignedUrlResponse.json();
       const fileData = await FileSystem.readAsStringAsync(file.uri, {
         encoding: FileSystem.EncodingType.Base64,
       });
-      const binaryData = Uint8Array.from(atob(fileData), (c) =>
-        c.charCodeAt(0)
-      );
 
-      const uploadResponse = await axios.put(presignedUrl, binaryData, {
-        headers: {
-          "Content-Type": file?.mimeType,
-        },
+      const binaryData = Uint8Array.from(atob(fileData), (c) => c.charCodeAt(0));
+      await fetch(presignedUrl, {
+        method: "PUT",
+        headers: { "Content-Type": file.mimeType },
+        body: binaryData,
       });
 
-      if (uploadResponse.status === 200) {
-        console.log(
-          "https://trekies.s3.ap-south-1.amazonaws.com/uploads/" + fileName
-        );
-        await axios.post(
-          `${process.env.EXPO_PUBLIC_BASE_URL}/api/image/create-image`,
-          {
-            id,
-            url:
-              "https://trekies.s3.ap-south-1.amazonaws.com/uploads/" + fileName,
-            type,
-          }
-        );
-      }
-    }
+      const fileUrl = `${S3_BASE_URL}${fileName}`;
+      await fetch(`${BASE_URL}/api/image/create-image`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, url: fileUrl, type }),
+      });
+      return fileUrl;
+    });
+    await Promise.all(uploadPromises);
     return true;
   } catch (error) {
-    console.error("Error while uploading files", error);
+    console.error("Upload failed:", error);
     return false;
   }
 };
 
 export const uploadFileToS3 = async (file) => {
   try {
-    const name = file.fileName || file.name;
-    const fileName =
-      name.split(" ")[0] + Date.now() + `.${file?.mimeType.split("/")[1]}`;
-
-    const response = await fetch(
-      `${process.env.EXPO_PUBLIC_BASE_URL}/api/putObject`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ fileName, contentType: file?.mimeType }),
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("Failed to get the pre-signed URL for " + file.name);
+    if (!file || !file.uri || !file.mimeType) {
+      throw new Error("Invalid file data provided.");
     }
 
-    const result = await response.json();
-    const presignedUrl = result;
+    const name = file.fileName || file.name || "file";
+    const extension = file.mimeType.split("/")[1] || "png";
+    const fileName = `${name.split(" ")[0]}_${Date.now()}.${extension}`;
+
+    const response = await fetch(`${BASE_URL}/api/putObject`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ fileName, contentType: file.mimeType }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to get pre-signed URL for ${name}`);
+    }
+
+    const presignedUrl = await response.json();
 
     const fileData = await FileSystem.readAsStringAsync(file.uri, {
       encoding: FileSystem.EncodingType.Base64,
     });
     const binaryData = Uint8Array.from(atob(fileData), (c) => c.charCodeAt(0));
 
-    const uploadResponse = await axios.put(presignedUrl, binaryData, {
-      headers: {
-        "Content-Type": file?.mimeType,
-      },
+    const uploadResponse = await fetch(presignedUrl, {
+      method: "PUT",
+      headers: { "Content-Type": file.mimeType },
+      body: binaryData,
     });
 
-    if (uploadResponse.status === 200) {
-      const url =
-        "https://trekies.s3.ap-south-1.amazonaws.com/uploads/" + fileName;
-      return url;
+    if (!uploadResponse.ok) {
+      throw new Error(`Failed to upload file: ${fileName}`);
     }
+
+    const fileUrl = `${S3_BASE_URL}${fileName}`;
+    console.log("Uploaded:", fileUrl);
+    return fileUrl;
   } catch (error) {
-    console.error("Error while uploading file", error);
+    console.error("Error while uploading file:", error);
+    return null;
   }
 };

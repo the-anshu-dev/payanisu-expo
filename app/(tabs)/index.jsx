@@ -2,7 +2,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import V1 from "@/assets/welcomeTile.svg";
 import {
   Dimensions,
-  StyleSheet,
   View,
   Text,
   TouchableOpacity,
@@ -13,11 +12,15 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { setTour } from "../../redux/slices/tourSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useIsFocused } from "@react-navigation/native";
-import { setAdminAccessEnabled, setMembers } from "../../redux/slices/userSlice";
+import {
+  setAdminAccessEnabled,
+  setMembers,
+} from "../../redux/slices/userSlice";
 import { checkNetworkStatus } from "../../utils/offlineLocationHelper";
 import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { showError } from "../../utils/toastHelper";
+import { homeScreenStyles } from "../../constants/Styles";
 
 const { width, height } = Dimensions.get("window");
 
@@ -69,8 +72,10 @@ export default function HomeScreen() {
         throw new Error("Failed to fetch tours due to server error.");
       }
       const tour = await response.json();
-      const validTours = tour.filter((tour) => new Date(tour.booking_close) > new Date());
-      if(validTours.length === 0) {
+      const validTours = tour.filter(
+        (tour) => new Date(tour.booking_close) > new Date()
+      );
+      if (validTours.length === 0) {
         showError("No upcoming tours available.");
       }
       await AsyncStorage.setItem("tours", JSON.stringify(validTours));
@@ -85,7 +90,7 @@ export default function HomeScreen() {
   }, [isFocused]);
 
   useEffect(() => {
-    checkNetworkStatus()
+    checkNetworkStatus();
     getAllTours();
     handleGetMembers();
     const interval = setInterval(() => {
@@ -95,31 +100,30 @@ export default function HomeScreen() {
     return () => clearInterval(interval);
   }, []);
 
-
   if (!isConnected) {
     return (
-      <SafeAreaView style={styles.safeArea} edges={["left", "right", "bottom"]}>
-        <View style={styles.offlineContainer}>
-          <View style={styles.modalContent}>
+      <SafeAreaView style={homeScreenStyles.safeArea} edges={["left", "right", "bottom"]}>
+        <View style={homeScreenStyles.offlineContainer}>
+          <View style={homeScreenStyles.modalContent}>
             <MaterialIcons name="wifi-off" size={60} color="red" />
-            <Text style={styles.modalText}>You are offline</Text>
-            <Text style={styles.modalSubText}>
+            <Text style={homeScreenStyles.modalText}>You are offline</Text>
+            <Text style={homeScreenStyles.modalSubText}>
               Please check your network connection
             </Text>
             <View className="flex flex-row justify-between w-full items-center gap-4 mt-4">
               <TouchableOpacity
                 activeOpacity={0.9}
-                style={styles.retryButton}
+                style={homeScreenStyles.retryButton}
                 onPress={checkNetworkConnection}
               >
-                <Text style={styles.retryButtonText}>Retry</Text>
+                <Text style={homeScreenStyles.retryButtonText}>Retry</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 activeOpacity={0.9}
-                style={styles.retryButton}
+                style={homeScreenStyles.retryButton}
                 onPress={() => router.push("/(offlinemode)/mytours")}
               >
-                <Text style={styles.retryButtonText}>Offline Mode</Text>
+                <Text style={homeScreenStyles.retryButtonText}>Offline Mode</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -129,12 +133,12 @@ export default function HomeScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={["left", "right", "bottom"]}>
-      <View style={styles.container}>
-        <View style={styles.imageContainer}>
+    <SafeAreaView style={homeScreenStyles.safeArea} edges={["left", "right", "bottom"]}>
+      <View style={homeScreenStyles.container}>
+        <View style={homeScreenStyles.imageContainer}>
           <V1 width={width * 1.8} height={height * 0.7} />
         </View>
-        <View style={styles.carouselContainer}>
+        <View style={homeScreenStyles.carouselContainer}>
           <CarouselComponent />
         </View>
       </View>
@@ -142,81 +146,3 @@ export default function HomeScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
-  offlineContainer: {
-    flex: 1,
-    width: width,
-    height: height,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  container: {
-    flex: 1,
-    width: width,
-    height: height,
-    justifyContent: "flex-end",
-    alignItems: "center",
-    position: "relative",
-  },
-  imageContainer: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    width: "100%",
-    display: "flex",
-    justifyContent: "flex-end",
-    alignItems: "center",
-    height: height * 0.47,
-    zIndex: 0,
-  },
-  carouselContainer: {
-    width: width,
-    height: height,
-    display: "flex",
-    justifyContent: "flex-end",
-    alignItems: "center",
-    zIndex: 1,
-  },
-  modalContent: {
-    width: "80%",
-    backgroundColor: "white",
-    padding: 20,
-    borderRadius: 10,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  modalText: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#228B22",
-    marginTop: 10,
-  },
-  modalSubText: {
-    fontSize: 16,
-    color: "gray",
-    textAlign: "center",
-    marginTop: 10,
-  },
-  retryButton: {
-    backgroundColor: "#228B22",
-    width: "45%",
-    paddingVertical: 10,
-    borderRadius: 5,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  retryButtonText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-});

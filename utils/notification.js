@@ -4,10 +4,11 @@ import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
 import { Platform } from "react-native";
 import axios from "axios";
+import { showWarning } from "./toastHelper";
 
 export async function registerForPushNotificationsAsync() {
   if (!Device.isDevice) {
-    alert("Must use a physical device for Push Notifications");
+    showWarning("Must use a physical device for Push Notifications");
     return;
   }
 

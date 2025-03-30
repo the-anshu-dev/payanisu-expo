@@ -8,8 +8,8 @@ import {
   Switch,
   RefreshControl,
 } from "react-native";
-import React, { useEffect, useState } from "react";
-import { router, useRouter } from "expo-router";
+import React, { useCallback, useState } from "react";
+import { router, useFocusEffect, useRouter } from "expo-router";
 import LabelValue from "../components/UI/LabelValue";
 import { useDispatch, useSelector } from "react-redux";
 import MemberCard from "../components/UI/MemberCard";
@@ -21,10 +21,13 @@ import { Ionicons } from "@expo/vector-icons";
 const { width, height } = Dimensions.get("window");
 
 const Profile = () => {
-  const data = useSelector((state) => state.user);
-  const { user, role, profile, isAdminAccessEnabled } = data;
+  const { user, role, profile, isAdminAccessEnabled } = useSelector(
+    (state) => state.user
+  );
+
   const router = useRouter();
   const dispatch = useDispatch();
+  
   const [membersData, setMembersData] = useState([]);
 
   const [refresh, setRefresh] = useState(false);
@@ -44,7 +47,6 @@ const Profile = () => {
       console.error("User email is not available.");
       return;
     }
-
     try {
       const response = await fetch(
         `${process.env.EXPO_PUBLIC_BASE_URL}/api/member/get-member?email=${user.email}`,
@@ -78,9 +80,11 @@ const Profile = () => {
     }
   };
 
-  useEffect(() => {
-    onRefresh();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      onRefresh();
+    }, [])
+  );
 
   return (
     <View style={styles.container}>
@@ -142,7 +146,13 @@ const Profile = () => {
                 size={width * 0.08}
                 color="#228B22"
               />
-              <Text style={{ fontSize: width * 0.055, fontWeight: "600", color: "#228B22" }}>
+              <Text
+                style={{
+                  fontSize: width * 0.055,
+                  fontWeight: "600",
+                  color: "#228B22",
+                }}
+              >
                 Added Members
               </Text>
             </View>

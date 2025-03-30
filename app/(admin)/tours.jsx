@@ -15,17 +15,20 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { setTour } from "../../redux/slices/tourSlice";
 import { showError } from "../../utils/toastHelper";
+import NotAvailableComponent from "../../components/UI/NotAvailableComponent";
+import Loader from "../../components/common/Loader";
 
 const { width, height } = Dimensions.get("window");
 
 const Tours = () => {
   const [tours, setTours] = useState([]);
 
-  const [refresh, setRefresh] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
 
   const getAllTours = async () => {
+    setLoading(true);
     try {
       const response = await fetch(
         `${process.env.EXPO_PUBLIC_BASE_URL}/api/tour/get-alltours`
@@ -39,23 +42,24 @@ const Tours = () => {
       dispatch(setTour(tour));
     } catch (error) {
       showError(error.message || "Please try again.");
-    }
-  };
-
-  const onRefresh = async () => {
-    setRefresh(true);
-    try {
-      await getAllTours();
     } finally {
-      setRefresh(false);
+      setLoading(false);
     }
   };
 
   useFocusEffect(
     useCallback(() => {
-      onRefresh();
+      getAllTours();
     }, [])
   );
+
+  if (loading) {
+    return <Loader />;
+  }
+
+  if (tours.length == 0) {
+    return <NotAvailableComponent text="No Tours Available" iconName="car" />;
+  }
 
   return (
     <SafeAreaView style={{ flex: 1 }} edges={["left", "right", "bottom"]}>
@@ -63,18 +67,11 @@ const Tours = () => {
         <ScrollView
           contentContainerStyle={styles.scrollContainer}
           showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl onRefresh={onRefresh} refreshing={refresh} />
-          }
         >
           <View style={styles.tourListContainer}>
-            {tours.length > 0 ? (
-              tours.map((item) => <TourCard key={item?._id} tour={item} />)
-            ) : (
-              <View style={styles.noToursCard}>
-                <Text style={styles.noToursText}>No Tours Available</Text>
-              </View>
-            )}
+            {tours.map((item) => (
+              <TourCard key={item?._id} tour={item} />
+            ))}
           </View>
         </ScrollView>
         <View style={styles.createButtonContainer}>
