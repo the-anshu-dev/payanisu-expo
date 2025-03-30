@@ -20,7 +20,7 @@
     "android": {
       "config": {
         "googleMaps": {
-          "apiKey": "AIzaSyCsSJ8KZ_1mB44pVnIjcqzx_lWV87kuHRc"
+          "apiKey": "${EXPO_PUBLIC_GOOGLE_API_KEY}"
         }
       },
       "jsEngine": "hermes",
@@ -30,6 +30,10 @@
       },
       "package": "com.anonymous.trekies",
       "googleServicesFile": "./google-services.json",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ],
       "intentFilters": [
         {
           "action": "VIEW",
@@ -38,15 +42,8 @@
             "host": "trekies",
             "pathPrefix": "/"
           },
-          "category": [
-            "BROWSABLE",
-            "DEFAULT"
-          ]
+          "category": ["BROWSABLE", "DEFAULT"]
         }
-      ],
-      "permissions": [
-        "android.permission.CAMERA",
-        "android.permission.RECORD_AUDIO"
       ]
     },
     "web": {
@@ -54,7 +51,6 @@
       "output": "static"
     },
     "plugins": [
-
       [
         "expo-notifications",
         {
@@ -63,10 +59,8 @@
           "enableBackgroundRemoteNotifications": true
         }
       ],
-
-      [
-        "expo-router"
-      ],
+      "expo-secure-store",
+      "expo-router",
       [
         "expo-camera",
         {
@@ -75,7 +69,6 @@
           "recordAudioAndroid": true
         }
       ],
-      "expo-secure-store",
       [
         "expo-location",
         {
@@ -83,20 +76,22 @@
         }
       ]
     ],
-    "experiments": {
-      "typedRoutes": true
-    },
     "extra": {
-      "router": {
-        "origin": false
-      },
       "eas": {
         "projectId": "492d9093-8144-4155-b019-962b57ee71b0"
-      }
+      },
+      "EXPO_PUBLIC_ANDROID_CLIENT_ID": "${EXPO_PUBLIC_ANDROID_CLIENT_ID}",
+      "EXPO_PUBLIC_BASE_URL": "${EXPO_PUBLIC_BASE_URL}",
+      "EXPO_PUBLIC_GOOGLE_API_KEY": "${EXPO_PUBLIC_GOOGLE_API_KEY}"
     },
     "owner": "prince_24",
     "ios": {
-      "bundleIdentifier": "com.anonymous.trekies"
+      "bundleIdentifier": "com.anonymous.trekies",
+      "infoPlist": {
+        "NSAppTransportSecurity": {
+          "NSAllowsArbitraryLoads": true
+        }
+      }
     }
   }
 }

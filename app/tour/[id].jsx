@@ -5,11 +5,17 @@ import {
   TouchableOpacity,
   Dimensions,
   RefreshControl,
+  Alert,
+  Modal,
 } from "react-native";
-import React, { useCallback, useState } from "react";
-import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
+import React, { useCallback, useLayoutEffect, useState } from "react";
+import {
+  router,
+  useFocusEffect,
+  useLocalSearchParams,
+  useNavigation,
+} from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { StatusBar } from "expo-status-bar";
 import { useDispatch, useSelector } from "react-redux";
 import { formatDate } from "../../utils/helpers";
 import { ActivityIndicator } from "react-native-paper";
@@ -26,6 +32,10 @@ const TourDetails = () => {
 
   const [loading, setLoading] = useState(false);
   const [unPublishLoading, setUnPublishLoading] = useState(false);
+  const [cloning, setCloning] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const navigation = useNavigation();
 
   const tourDetail = tour?.find((item) => item._id === id) ?? null;
 
@@ -135,11 +145,51 @@ const TourDetails = () => {
     }
   };
 
+  const handleCloneTour = async () => {
+    setCloning(true);
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_BASE_URL}/api/clone-tour?tourId=${id}`,
+        {
+          method: "GET",
+          headers: {
+            "x-user-email": user.email,
+          },
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Failed to clone tour.");
+      }
+      showSuccess("Tour cloned successfully.");
+      router.back();
+    } catch (error) {
+      showError(error.message || "Failed to clone tour.");
+    } finally {
+      setModalVisible(false);
+      setCloning(false);
+    }
+  };
+
   useFocusEffect(
     useCallback(() => {
       onRefresh();
     }, [])
   );
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity onPress={() => setModalVisible(true)}>
+          <Ionicons
+            name="copy-outline"
+            size={24}
+            color="green"
+            style={{ marginRight: 16 }}
+          />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
 
   if (!tourDetail) {
     return (
@@ -152,12 +202,39 @@ const TourDetails = () => {
 
   return (
     <View className="flex flex-1 flex-col w-full h-full justify-between items-center">
-      <StatusBar
-        style="dark"
-        backgroundColor="#fff"
-        translucent={true}
-        animated
-      />
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View className="flex-1 justify-center items-center bg-black/50">
+          <View className="bg-white rounded-lg p-6 w-4/5">
+            <Text className="text-2xl font-semibold">Clone Tour</Text>
+            <Text className="mt-2 text-gray-600 text-xl">
+              Do you want to clone this tour ?
+            </Text>
+            <View className="flex-row justify-center mt-10 gap-4">
+              <TouchableOpacity
+                onPress={() => setModalVisible(false)}
+                className="w-1/2 h-12 rounded-lg bg-gray-300 flex justify-center items-center"
+              >
+                <Text className="font-semibold">Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={handleCloneTour}
+                className="w-1/2 h-12 rounded-lg bg-green-600 flex justify-center items-center"
+              >
+                {cloning ? (
+                  <ActivityIndicator size={"small"} color="white" />
+                ) : (
+                  <Text className="text-white font-semibold">Clone</Text>
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
       <View className="mt-2 w-full px-4">
         <View className="w-full  rounded-lg border border-[#228B22] bg-[#228B22]">
           <View

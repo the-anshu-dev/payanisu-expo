@@ -105,7 +105,7 @@ const UploadFaq = () => {
             >
               <Ionicons name="cloud-upload-outline" size={24} color="white" />
               <Text className="text-white text-center font-semibold py-2">
-                Upload FAQs PDF
+                Upload FAQs
               </Text>
             </TouchableOpacity>
           </View>

@@ -7,9 +7,9 @@ import {
   StyleSheet,
   RefreshControl,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import TourCard from "../../components/admin/UI/TourCard";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { useDispatch } from "react-redux";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -51,9 +51,11 @@ const Tours = () => {
     }
   };
 
-  useEffect(() => {
-    getAllTours();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      onRefresh();
+    }, [])
+  );
 
   return (
     <SafeAreaView style={{ flex: 1 }} edges={["left", "right", "bottom"]}>

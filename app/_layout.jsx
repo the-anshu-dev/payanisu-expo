@@ -10,17 +10,18 @@ import "react-native-get-random-values";
 import { useState, useEffect, useRef } from "react";
 import * as Notifications from "expo-notifications";
 import { registerForPushNotificationsAsync } from "../utils/notification";
+import { CloneTourButton } from "../components/UI/CloneTourButton";
 
 export default function RootLayout() {
   const [expoPushToken, setExpoPushToken] = useState("");
 
   Notifications.setNotificationHandler({
-    handleNotification:async()=>({
+    handleNotification: async () => ({
       shouldShowAlert: true,
       shouldPlaySound: true,
       shouldSetBadge: false,
-    })
-  })
+    }),
+  });
 
   useEffect(() => {
     async function getToken() {
@@ -29,7 +30,6 @@ export default function RootLayout() {
     }
     getToken();
   }, []);
-
 
   return (
     <Provider store={store}>
@@ -42,7 +42,7 @@ export default function RootLayout() {
           <Stack.Screen name="(offlinemode)" options={{ headerShown: false }} />
           <Stack.Screen name="login" options={{ headerShown: false }} />
           <Stack.Screen name="form" options={{ headerShown: false }} />
-          <Stack.Screen name="addRoles" options={{ headerShown: false }} />
+          <Stack.Screen name="addRoles" options={getOpt("Add Roles")} />
           <Stack.Screen name="addMember" options={getOpt("Add Member")} />
           <Stack.Screen name="addTours" options={getOpt("Add Tour")} />
           <Stack.Screen name="addBusImg" options={getOpt("Add Bus Images")} />

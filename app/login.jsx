@@ -23,7 +23,6 @@ WebBrowser.maybeCompleteAuthSession();
 const { width, height } = Dimensions.get("window");
 
 const Login = () => {
-
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [sessionActive, setSessionActive] = useState(false);
@@ -42,7 +41,6 @@ const Login = () => {
   const getUserProfile = async (token) => {
     if (!token) return;
     setLoading(true);
-
     try {
       const response = await fetch(
         "https://www.googleapis.com/oauth2/v2/userinfo",
@@ -78,6 +76,8 @@ const Login = () => {
           }
         );
 
+        console.log(roleResponse.json())
+
         if (roleResponse.ok) {
           const roleData = await roleResponse.json();
           dispatch(setRole(roleData));
@@ -96,9 +96,10 @@ const Login = () => {
 
         if (profileResponse.ok) {
           const profileData = await profileResponse.json();
+          console.log({ profileData });
           if (profileData && !profileData.error) {
             dispatch(setProfile(profileData));
-          }else{
+          } else {
             dispatch(setProfile(null));
           }
         }
@@ -123,7 +124,7 @@ const Login = () => {
     };
     fetchProfile();
   }, [response]);
-  
+
   const handleLogin = () => {
     if (!sessionActive) {
       setSessionActive(true);
@@ -132,7 +133,10 @@ const Login = () => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }} edges={["top", "bottom", "left", "right"]}>
+    <SafeAreaView
+      style={{ flex: 1 }}
+      edges={["top", "bottom", "left", "right"]}
+    >
       <View style={styles.container}>
         <View style={styles.backgroundImageContainer}>
           <Image style={styles.backgroundImage} source={payanisuPoster} />
