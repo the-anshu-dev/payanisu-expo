@@ -6,7 +6,7 @@
     "start": "expo start -c",
     "android": "expo run:android",
     "ios": "expo run:ios",
-    "build":"eas build --profile production --platform android"
+    "build": "eas build --profile production --platform android"
   },
   "jest": {
     "preset": "jest-expo"
@@ -25,6 +25,7 @@
     "dayjs": "^1.11.13",
     "expo": "~51.0.39",
     "expo-auth-session": "~5.5.2",
+    "expo-build-properties": "~0.12.5",
     "expo-camera": "~15.0.16",
     "expo-checkbox": "~3.0.0",
     "expo-constants": "~16.0.2",

@@ -46,6 +46,14 @@
         }
       ]
     },
+    "ios": {
+      "bundleIdentifier": "com.anonymous.trekies",
+      "infoPlist": {
+        "NSAppTransportSecurity": {
+          "NSAllowsArbitraryLoads": true
+        }
+      }
+    },
     "web": {
       "bundler": "metro",
       "output": "static"
@@ -74,6 +82,14 @@
         {
           "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
         }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
       ]
     ],
     "extra": {
@@ -84,14 +100,6 @@
       "EXPO_PUBLIC_BASE_URL": "${EXPO_PUBLIC_BASE_URL}",
       "EXPO_PUBLIC_GOOGLE_API_KEY": "${EXPO_PUBLIC_GOOGLE_API_KEY}"
     },
-    "owner": "prince_24",
-    "ios": {
-      "bundleIdentifier": "com.anonymous.trekies",
-      "infoPlist": {
-        "NSAppTransportSecurity": {
-          "NSAllowsArbitraryLoads": true
-        }
-      }
-    }
+    "owner": "prince_24"
   }
 }
