@@ -76,8 +76,6 @@ const Login = () => {
           }
         );
 
-        console.log(roleResponse.json())
-
         if (roleResponse.ok) {
           const roleData = await roleResponse.json();
           dispatch(setRole(roleData));
@@ -96,7 +94,6 @@ const Login = () => {
 
         if (profileResponse.ok) {
           const profileData = await profileResponse.json();
-          console.log({ profileData });
           if (profileData && !profileData.error) {
             dispatch(setProfile(profileData));
           } else {

@@ -20,7 +20,7 @@
     "android": {
       "config": {
         "googleMaps": {
-          "apiKey": "${EXPO_PUBLIC_GOOGLE_API_KEY}"
+          "apiKey": "AIzaSyCsSJ8KZ_1mB44pVnIjcqzx_lWV87kuHRc"
         }
       },
       "jsEngine": "hermes",
@@ -96,9 +96,9 @@
       "eas": {
         "projectId": "492d9093-8144-4155-b019-962b57ee71b0"
       },
-      "EXPO_PUBLIC_ANDROID_CLIENT_ID": "${EXPO_PUBLIC_ANDROID_CLIENT_ID}",
-      "EXPO_PUBLIC_BASE_URL": "${EXPO_PUBLIC_BASE_URL}",
-      "EXPO_PUBLIC_GOOGLE_API_KEY": "${EXPO_PUBLIC_GOOGLE_API_KEY}"
+      "EXPO_PUBLIC_ANDROID_CLIENT_ID": "224596464252-9uorphjo5hosnkp02sn8sb3sclgoiup9.apps.googleusercontent.com",
+      "EXPO_PUBLIC_BASE_URL": "http://13.235.234.229:9000",
+      "EXPO_PUBLIC_GOOGLE_API_KEY": "AIzaSyCsSJ8KZ_1mB44pVnIjcqzx_lWV87kuHRc"
     },
     "owner": "prince_24"
   }

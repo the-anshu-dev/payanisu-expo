@@ -29,7 +29,6 @@ const MyTours = () => {
 
   const getAllBookedTours = useCallback(async () => {
     if (!user) return;
-    showSuccess(`${process.env.EXPO_PUBLIC_BASE_URL}`);
     setLoading(true);
     try {
       const response = await fetch(
