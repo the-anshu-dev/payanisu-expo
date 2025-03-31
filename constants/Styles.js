@@ -485,3 +485,61 @@ export const tourScreenStyles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
+
+// components
+
+export const loginScreenStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  backgroundImageContainer: {
+    ...StyleSheet.absoluteFillObject,
+    width: width,
+    height: height,
+  },
+  backgroundImage: {
+    width: "100%",
+    height: "100%",
+    contentFit: "cover",
+  },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  contentContainer: {
+    flex: 1,
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "relative",
+    paddingHorizontal: width * 0.08,
+  },
+  loginButton: {
+    width: "100%",
+    paddingHorizontal: width * 0.01,
+    position: "absolute",
+    bottom: 24,
+  },
+  loginButtonContent: {
+    backgroundColor: "rgba(96, 96, 96, 0.8)",
+    width: "100%",
+    borderRadius: 10,
+    paddingVertical: height * 0.02,
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "center",
+  },
+  loginButtonTextContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    spaceX: width * 0.02,
+  },
+  loginButtonText: {
+    color: "white",
+    fontSize: width * 0.04,
+    fontWeight: "bold",
+    marginLeft: width * 0.02,
+  },
+});

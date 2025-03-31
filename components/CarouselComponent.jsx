@@ -14,7 +14,19 @@ const CarouselComponent = () => {
   const [activeTours, setActiveTours] = useState([]);
 
   useEffect(() => {
-    setActiveTours(tour.filter((item) => item.status === true));
+    const today = new Date().setHours(0, 0, 0, 0);
+
+    const filteredTours = tour.filter((item) => {
+      const bookingCloseDate = new Date(item.booking_close).setHours(
+        0,
+        0,
+        0,
+        0
+      );
+      return item.status === true && bookingCloseDate >= today;
+    });
+
+    setActiveTours(filteredTours);
   }, [tour]);
 
   if (activeTours.length === 0)
@@ -28,7 +40,7 @@ const CarouselComponent = () => {
           <View style={styles.noTourAvailable}>
             <Ionicons name="alert-circle-outline" color="#228B22" size={80} />
             <Text style={{ fontSize: 18, marginTop: 18, fontWeight: "bold" }}>
-              No Active Tours Available
+              No Tours Available
             </Text>
           </View>
         </ScrollView>

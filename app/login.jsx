@@ -1,13 +1,6 @@
-import {
-  ActivityIndicator,
-  Text,
-  TouchableOpacity,
-  View,
-  Dimensions,
-  StyleSheet,
-} from "react-native";
+import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import { Image } from "expo-image";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import * as WebBrowser from "expo-web-browser";
@@ -17,11 +10,10 @@ import { useDispatch } from "react-redux";
 import { setProfile, setRole, setUser } from "../redux/slices/userSlice";
 import payanisuPoster from "../assets/payanisu.png";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { showError } from "../utils/toastHelper";
+import { showError, showSuccess } from "../utils/toastHelper";
+import { loginScreenStyles } from "../constants/Styles";
 
 WebBrowser.maybeCompleteAuthSession();
-
-const { width, height } = Dimensions.get("window");
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -41,26 +33,29 @@ const Login = () => {
 
   const getUserProfile = async (token) => {
     if (!token) return;
-  
+
     setLoading(true);
     try {
-      const response = await fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
-        method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
-      });
-  
+      const response = await fetch(
+        "https://www.googleapis.com/oauth2/v2/userinfo",
+        {
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData?.error || "Failed to fetch Google user data.");
+        throw new Error("Failed to fetch Google user data.");
       }
-  
+
       const user = await response.json();
+      if (!user?.email) throw new Error("User email not found.");
+
       dispatch(setUser(user));
       await storeUserData(user);
-  
-      const userEmail = user?.email;
-      if (!userEmail) throw new Error("User email not found.");
-  
+
+      const userEmail = user.email;
+
       const [roleResponse, profileResponse] = await Promise.all([
         fetch(`${process.env.EXPO_PUBLIC_BASE_URL}/api/users/signin`, {
           method: "POST",
@@ -72,66 +67,76 @@ const Login = () => {
           headers: { email: userEmail },
         }),
       ]);
-  
+
       if (!roleResponse.ok) throw new Error("Failed to fetch user role.");
-      const roleData = await roleResponse.json();
-      dispatch(setRole(roleData));
-  
       if (!profileResponse.ok) throw new Error("Failed to fetch user profile.");
+
+      const roleData = await roleResponse.json();
       const profileData = await profileResponse.json();
+
+      dispatch(setRole(roleData));
       dispatch(setProfile(profileData));
-  
+
+      setSessionActive(true);
+      router.replace("(tabs)");
     } catch (error) {
       showError(error.message || "An error occurred. Please try again.");
     } finally {
-      setSessionActive(true);
       setLoading(false);
     }
   };
 
   useEffect(() => {
     const fetchProfile = async () => {
-      if (response?.type === "success" && response.authentication) {
-        const { accessToken } = response.authentication;
-        await getUserProfile(accessToken);
-        router.replace("(tabs)");
-      } else if (response?.type === "dismiss") {
-        setSessionActive(false);
+      try {
+        if (
+          response?.type === "success" &&
+          response.authentication?.accessToken
+        ) {
+          await getUserProfile(response.authentication.accessToken);
+        }
+      } catch (error) {
+        showError("Login failed. Please try again.");
       }
     };
+
     fetchProfile();
   }, [response]);
 
-  const handleLogin = () => {
+  const handleLogin = useCallback(() => {
     if (!sessionActive) {
-      setSessionActive(true);
       promptAsync();
     }
-  };
+  }, [sessionActive, promptAsync]);
 
   return (
     <SafeAreaView
       style={{ flex: 1 }}
       edges={["top", "bottom", "left", "right"]}
     >
-      <View style={styles.container}>
-        <View style={styles.backgroundImageContainer}>
-          <Image style={styles.backgroundImage} source={payanisuPoster} />
+      <View style={loginScreenStyles.container}>
+        <View style={loginScreenStyles.backgroundImageContainer}>
+          <Image
+            style={loginScreenStyles.backgroundImage}
+            source={payanisuPoster}
+          />
         </View>
-        <View style={styles.contentContainer}>
+        <View style={loginScreenStyles.contentContainer}>
           <TouchableOpacity
             activeOpacity={0.9}
             onPress={handleLogin}
-            style={styles.loginButton}
+            style={loginScreenStyles.loginButton}
             disabled={loading}
           >
-            <View style={styles.loginButtonContent}>
+            <View style={loginScreenStyles.loginButtonContent}>
               {loading ? (
                 <ActivityIndicator size={24} color="#228B22" />
               ) : (
-                <View style={styles.loginButtonTextContainer}>
+                <View style={loginScreenStyles.loginButtonTextContainer}>
                   <Ionicons name="logo-google" size={20} color="white" />
-                  <Text style={styles.loginButtonText}>Login with Google</Text>
+                  <Text style={loginScreenStyles.loginButtonText}>
+                    Login with Google
+                  </Text>
                 </View>
               )}
             </View>
@@ -141,61 +146,5 @@ const Login = () => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  backgroundImageContainer: {
-    ...StyleSheet.absoluteFillObject,
-    width: width,
-    height: height,
-  },
-  backgroundImage: {
-    width: "100%",
-    height: "100%",
-    contentFit: "cover",
-  },
-  overlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  contentContainer: {
-    flex: 1,
-    width: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-    position: "relative",
-    paddingHorizontal: width * 0.08,
-  },
-  loginButton: {
-    width: "100%",
-    paddingHorizontal: width * 0.01,
-    position: "absolute",
-    bottom: 24,
-  },
-  loginButtonContent: {
-    backgroundColor: "rgba(96, 96, 96, 0.8)",
-    width: "100%",
-    borderRadius: 10,
-    paddingVertical: height * 0.02,
-    alignItems: "center",
-    flexDirection: "row",
-    justifyContent: "center",
-  },
-  loginButtonTextContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    spaceX: width * 0.02,
-  },
-  loginButtonText: {
-    color: "white",
-    fontSize: width * 0.04,
-    fontWeight: "bold",
-    marginLeft: width * 0.02,
-  },
-});
 
 export default Login;

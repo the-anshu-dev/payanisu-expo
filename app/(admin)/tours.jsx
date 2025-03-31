@@ -2,7 +2,7 @@ import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import React, { useCallback, useState } from "react";
 import TourCard from "../../components/admin/UI/TourCard";
 import { router, useFocusEffect } from "expo-router";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { setTour } from "../../redux/slices/tourSlice";
@@ -12,8 +12,8 @@ import Loader from "../../components/common/Loader";
 import { tourScreenStyles } from "../../constants/Styles";
 
 const Tours = () => {
-  const [tours, setTours] = useState([]);
-
+  const [adminTours, setAdminTours] = useState([]);
+  const { user } = useSelector((state) => state.user);
   const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
@@ -28,9 +28,10 @@ const Tours = () => {
         throw new Error("Failed to fetch tours due to server error.");
       }
       const tour = await response.json();
-      await AsyncStorage.setItem("tours", JSON.stringify(tour));
-      setTours(tour);
       dispatch(setTour(tour));
+      await AsyncStorage.setItem("tours", JSON.stringify(tour));
+      const adminTours = tour.filter((item) => item?.email === user?.email);
+      setAdminTours(adminTours);
     } catch (error) {
       showError(error.message || "Please try again.");
     } finally {
@@ -48,7 +49,7 @@ const Tours = () => {
     return <Loader />;
   }
 
-  if (tours.length == 0) {
+  if (adminTours.length == 0) {
     return <NotAvailableComponent text="No Tours Available" iconName="car" />;
   }
 
@@ -60,7 +61,7 @@ const Tours = () => {
           showsVerticalScrollIndicator={false}
         >
           <View style={tourScreenStyles.tourListContainer}>
-            {tours.map((item) => (
+            {adminTours.map((item) => (
               <TourCard key={item?._id} tour={item} />
             ))}
           </View>

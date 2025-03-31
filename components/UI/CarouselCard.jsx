@@ -10,7 +10,6 @@ const { width, height } = Dimensions.get("window");
 
 const CarouselCard = ({ tour }) => {
   const images = tour.images.filter((i) => !i.type).map((i) => i.url);
-
   return (
     <Link push href={`/details/${tour._id}`} className="ml-6">
       <View
@@ -33,8 +32,12 @@ const CarouselCard = ({ tour }) => {
           </View>
           <View className="flex flex-row justify-between px-2 mt-2">
             <View>
-              <Text className="text-lg font-semibold text-gray-900">{tour.name}</Text>
-              <Text className="text-md text-gray-600">{calculateDuration(tour.tour_start, tour.tour_end)}</Text>
+              <Text className="text-lg font-semibold text-gray-900">
+                {tour.name}
+              </Text>
+              <Text className="text-md text-gray-600">
+                {calculateDuration(tour.tour_start, tour.tour_end)}
+              </Text>
             </View>
             <View className="flex flex-col justify-center items-end">
               <Text className="text-lg font-semibold text-[#228B22]">{`₹${tour.tour_cost}`}</Text>
@@ -44,7 +47,9 @@ const CarouselCard = ({ tour }) => {
           <View className="px-2 py-3 gap-3">
             <View className="flex flex-row items-center gap-3">
               <Ionicons name="calendar-outline" size={16} color="#228B22" />
-              <Text className="text-gray-700">{`${formatDate(tour.tour_start)} - ${formatDate(tour.tour_end)}`}</Text>
+              <Text className="text-gray-700">{`${formatDate(
+                tour.tour_start
+              )} - ${formatDate(tour.tour_end)}`}</Text>
             </View>
             <View className="flex flex-row items-center gap-3">
               <FontAwesome6 name="person-hiking" size={16} color="#228B22" />

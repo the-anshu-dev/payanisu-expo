@@ -236,7 +236,7 @@ const Page = () => {
                     handleLocationSelect(details)
                   }
                   query={{
-                    key: apiKey,
+                    key: "AIzaSyCsSJ8KZ_1mB44pVnIjcqzx_lWV87kuHRc",
                     language: "en",
                   }}
                   styles={{

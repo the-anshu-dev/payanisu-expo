@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   Dimensions,
+  Modal,
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { Picker } from "@react-native-picker/picker";
@@ -48,6 +49,7 @@ const Page = () => {
 
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
 
   const getCurrentLocation = async () => {
     try {
@@ -77,9 +79,6 @@ const Page = () => {
       if (data.results?.[0]) {
         const address = data.results[0].formatted_address;
         setSelectedAddress(address);
-        if (googlePlacesRef.current) {
-          googlePlacesRef.current.setAddressText(address);
-        }
       }
     } catch (error) {
       console.error("Error fetching address:", error);
@@ -90,17 +89,16 @@ const Page = () => {
     if (!details?.geometry?.location) return;
 
     const { lat, lng } = details.geometry.location;
-    const newRegion = {
+    setRegion({
       latitude: lat,
       longitude: lng,
       latitudeDelta: 0.015,
       longitudeDelta: 0.015,
-    };
-
-    setRegion(newRegion);
+    });
     setMarkerPosition({ latitude: lat, longitude: lng });
     setCoordinates({ latitude: lat, longitude: lng });
     setSelectedAddress(details.formatted_address);
+    setModalVisible(false);
   };
 
   const handleMapPress = async (event) => {
@@ -112,14 +110,15 @@ const Page = () => {
   };
 
   const handleAddCheckPoint = async () => {
-    const { latitude, longitude } = coordinates;
-
     if (!id || !title || !description || !locationType) {
       showWarning("All fields are required");
       return;
     }
 
-    if (locationType === "Geo Tagging" && (!latitude || !longitude)) {
+    if (
+      locationType === "Geo Tagging" &&
+      (!coordinates.latitude || !coordinates.longitude)
+    ) {
       showWarning("Please select a location.");
       return;
     }
@@ -135,8 +134,8 @@ const Page = () => {
           name: title,
           description,
           type: locationType,
-          longitude,
-          latitude,
+          longitude: coordinates.longitude,
+          latitude: coordinates.latitude,
         }
       );
 
@@ -159,11 +158,8 @@ const Page = () => {
     <View className="h-full flex justify-between items-center w-full relative px-2">
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          paddingBottom: 80,
-          flexGrow: 1,
-        }}
-        style={{ width: "100%", flex: 1 }}
+        contentContainerStyle={{ paddingBottom: 80, flexGrow: 1 }}
+        className="w-full h-full"
         keyboardShouldPersistTaps="handled"
       >
         <View className="px-3 h-full w-full flex justify-between items-center pb-12">
@@ -172,80 +168,56 @@ const Page = () => {
               {errorMsg}
             </Text>
           )}
+
           <View className="w-full flex justify-start items-center gap-3">
-            <View className="mt-3 p-2 rounded-lg w-full bg-white shadow-lg shadow-black/50">
-              <Text className="text-xs text-gray-500/70">Title</Text>
+            <View className="mt-3 p-2 rounded-sm w-full bg-white shadow-lg">
+              <Text className="text-xs text-gray-500">Title</Text>
               <TextInput
                 placeholder="Enter Title"
-                className="text-black text-base mt-1"
                 value={title}
                 onChangeText={setTitle}
               />
             </View>
-            <View className="p-2 rounded-lg w-full bg-white shadow-lg shadow-black/50">
-              <Text className="text-xs text-gray-500/70">Description</Text>
+
+            <View className="p-2 rounded-sm w-full bg-white shadow-lg">
+              <Text className="text-xs text-gray-500">Description</Text>
               <TextInput
-                multiline={true}
+                multiline
                 numberOfLines={5}
                 textAlignVertical="top"
                 onChangeText={setDescription}
                 value={description}
                 placeholder="Enter description"
-                className="text-black text-base mt-1"
               />
             </View>
-            <View className="w-full">
-              <View className="rounded-lg w-full bg-white shadow-lg shadow-black/50">
-                <Picker
-                  selectedValue={locationType}
-                  onValueChange={setLocationType}
-                  className="px-3"
-                >
-                  <Picker.Item label="Geo Tagging" value="Geo Tagging" />
-                  <Picker.Item label="QR Code" value="Qr Code" />
-                </Picker>
-              </View>
-            </View>
-            <View className="w-full flex justify-start items-center">
-              <View className="w-full">
-                <GooglePlacesAutocomplete
-                  ref={googlePlacesRef}
-                  placeholder="Search location"
-                  minLength={2}
-                  fetchDetails={true}
-                  onPress={(data, details = null) =>
-                    handleLocationSelect(details)
-                  }
-                  query={{
-                    key: apiKey,
-                    language: "en",
-                  }}
-                  styles={{
-                    container: {
-                      width: "100%",
-                      zIndex: 1000,
-                    },
-                    textInput: {
-                      height: 44,
-                      paddingHorizontal: 10,
-                      backgroundColor: "#FFFFFF",
-                      color: "black",
-                      zIndex: 1000,
-                    },
-                  }}
-                />
-              </View>
-              <View className="h-fit w-full rounded-xl overflow-hidden mt-2 border border-gray-500/50">
-                <MapView
-                  style={{ height: height * 0.45, width: "100%" }}
-                  className="rounded-xl"
-                  region={region}
-                  onPress={handleMapPress}
-                >
-                  <Marker coordinate={markerPosition} />
-                </MapView>
-              </View>
-            </View>
+            <Picker
+              selectedValue={locationType}
+              onValueChange={setLocationType}
+              style={{
+                height: 50,
+                width: "100%",
+                backgroundColor: "#fff",
+                borderRadius: 12,
+                padding: 10,
+              }}
+            >
+              <Picker.Item label="Geo Tagging" value="Geo Tagging" />
+              <Picker.Item label="QR Code" value="Qr Code" />
+            </Picker>
+
+            <TouchableOpacity
+              onPress={() => setModalVisible(true)}
+              style={{ padding: 10, backgroundColor: "#ddd", borderRadius: 8 }}
+            >
+              <Text>{selectedAddress || "Select Location"}</Text>
+            </TouchableOpacity>
+            <MapView
+              style={{ height: height * 0.45, width: "100%" }}
+              region={region}
+              onPress={handleMapPress}
+            >
+              <Marker coordinate={markerPosition} />
+            </MapView>
           </View>
         </View>
       </ScrollView>
@@ -269,6 +241,44 @@ const Page = () => {
           )}
         </TouchableOpacity>
       </View>
+      <Modal visible={modalVisible} animationType="slide">
+        <View style={{ flex: 1, padding: 20 }}>
+          <Text style={{ fontSize: 18, fontWeight: "400", marginBottom: 10 }}>
+            Select Location
+          </Text>
+          <GooglePlacesAutocomplete
+            ref={googlePlacesRef}
+            placeholder="Search location"
+            fetchDetails
+            onPress={(data, details) => handleLocationSelect(details)}
+            query={{ key: apiKey, language: "en" }}
+            styles={{
+              textInputContainer: {
+                backgroundColor: "#fff",
+                borderRadius: 8,
+                padding: 2,
+                marginBottom: 20,
+                borderWidth: 2,
+              },
+              textInput: {
+                height: 40,
+                fontSize: 18,
+              },
+            }}
+          />
+          <TouchableOpacity
+            onPress={() => setModalVisible(false)}
+            style={{
+              marginTop: 20,
+              padding: 10,
+              backgroundColor: "#ddd",
+              borderRadius: 8,
+            }}
+          >
+            <Text style={{ textAlign: "center" }}>Cancel</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </View>
   );
 };

@@ -110,7 +110,7 @@ const Profile = () => {
           <View>
             <LabelValue
               label={"Date Of Birth"}
-              value={formatDate(profile.dob)}
+              value={formatDate(profile?.dob)}
             />
             <LabelValue label={"Age"} value={profile.age} />
             <LabelValue label={"Gender"} value={profile.gender} />

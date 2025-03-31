@@ -1,11 +1,6 @@
 import { SafeAreaView } from "react-native-safe-area-context";
 import V1 from "@/assets/welcomeTile.svg";
-import {
-  Dimensions,
-  View,
-  Text,
-  TouchableOpacity,
-} from "react-native";
+import { Dimensions, View, Text, TouchableOpacity } from "react-native";
 import CarouselComponent from "@/components/CarouselComponent";
 import { useEffect, useState } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -72,14 +67,11 @@ export default function HomeScreen() {
         throw new Error("Failed to fetch tours due to server error.");
       }
       const tour = await response.json();
-      const validTours = tour.filter(
-        (tour) => new Date(tour.booking_close) > new Date()
-      );
-      if (validTours.length === 0) {
+      if (tour.length === 0) {
         showError("No upcoming tours available.");
       }
-      await AsyncStorage.setItem("tours", JSON.stringify(validTours));
-      dispatch(setTour(validTours));
+      await AsyncStorage.setItem("tours", JSON.stringify(tour));
+      dispatch(setTour(tour));
     } catch (error) {
       showError(error.message || "Please try again.");
     }
@@ -102,7 +94,10 @@ export default function HomeScreen() {
 
   if (!isConnected) {
     return (
-      <SafeAreaView style={homeScreenStyles.safeArea} edges={["left", "right", "bottom"]}>
+      <SafeAreaView
+        style={homeScreenStyles.safeArea}
+        edges={["left", "right", "bottom"]}
+      >
         <View style={homeScreenStyles.offlineContainer}>
           <View style={homeScreenStyles.modalContent}>
             <MaterialIcons name="wifi-off" size={60} color="red" />
@@ -123,7 +118,9 @@ export default function HomeScreen() {
                 style={homeScreenStyles.retryButton}
                 onPress={() => router.push("/(offlinemode)/mytours")}
               >
-                <Text style={homeScreenStyles.retryButtonText}>Offline Mode</Text>
+                <Text style={homeScreenStyles.retryButtonText}>
+                  Offline Mode
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -133,7 +130,10 @@ export default function HomeScreen() {
   }
 
   return (
-    <SafeAreaView style={homeScreenStyles.safeArea} edges={["left", "right", "bottom"]}>
+    <SafeAreaView
+      style={homeScreenStyles.safeArea}
+      edges={["left", "right", "bottom"]}
+    >
       <View style={homeScreenStyles.container}>
         <View style={homeScreenStyles.imageContainer}>
           <V1 width={width * 1.8} height={height * 0.7} />
@@ -145,4 +145,3 @@ export default function HomeScreen() {
     </SafeAreaView>
   );
 }
-

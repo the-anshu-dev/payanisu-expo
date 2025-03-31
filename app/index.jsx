@@ -13,8 +13,6 @@ SplashScreen.preventAutoHideAsync();
 const Index = () => {
   const [showLoader, setShowLoader] = useState(true);
   const [authenticated, setAuthenticated] = useState(false);
-  const [redirect, setRedirect] = useState(false);
-
   const dispatch = useDispatch();
 
   const fetchUserData = async (email) => {
@@ -42,9 +40,12 @@ const Index = () => {
           dispatch(setProfile(profileData));
         }
       }
-      getAllBookedTours(email);
+      await getAllBookedTours(email);
     } catch (error) {
-      showWarning(error.message || "Failed to fetch user data. Please check your network connection.");
+      showWarning(
+        error.message ||
+          "Failed to fetch user data. Please check your network connection."
+      );
     }
   };
 
@@ -60,7 +61,9 @@ const Index = () => {
         setAuthenticated(true);
       }
     } catch (error) {
-      showWarning(error.message || "Failed to load user data. Please try again.");
+      showWarning(
+        error.message || "Failed to load user data. Please try again."
+      );
     } finally {
       await SplashScreen.hideAsync();
       setShowLoader(false);
@@ -79,7 +82,10 @@ const Index = () => {
       await AsyncStorage.setItem("bookedTours", JSON.stringify(data.data));
       dispatch(setBookedTour(data.data));
     } catch (error) {
-      showWarning(error.message || "Failed to fetch booked tours. Please check your network connection.");
+      showWarning(
+        error.message ||
+          "Failed to fetch booked tours. Please check your network connection."
+      );
     }
   };
 
@@ -95,23 +101,23 @@ const Index = () => {
       await AsyncStorage.setItem("tours", JSON.stringify(tour));
       dispatch(setTour(tour));
     } catch (error) {
-      showWarning(error.message || "Failed to fetch tours. Please check your network connection.");
+      showWarning(
+        error.message ||
+          "Failed to fetch tours. Please check your network connection."
+      );
     }
   };
 
   useEffect(() => {
-    loadUserData();
-    getAllTours();
+    const initializeApp = async () => {
+      await loadUserData();
+      await getAllTours();
+    };
+    initializeApp();
   }, []);
 
-  useEffect(() => {
-    if (authenticated) {
-      setRedirect(true);
-    }
-  }, [authenticated]);
-
   if (showLoader) return <Loader />;
-  if (redirect) return <Redirect href="/(tabs)" />;
+  if (authenticated) return <Redirect href="/(tabs)" />;
   return <Redirect href="/login" />;
 };
 

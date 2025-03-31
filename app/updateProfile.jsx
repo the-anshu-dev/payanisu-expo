@@ -28,7 +28,7 @@ const UpdateProfile = () => {
   const dispatch = useDispatch();
 
   const [name, setName] = useState(profile.name);
-  const [dob, setDob] = useState(profile.dob);
+  const [dob, setDob] = useState(profile?.dob);
   const [age, setAge] = useState(profile.age);
   const [contact, setContact] = useState(profile.contact);
   const [emergencyContact, setEmergencyContact] = useState(
@@ -158,7 +158,7 @@ const UpdateProfile = () => {
                 editable={false}
                 className={`border py-3 mt-3 w-full border-slate-500/50 rounded-lg text-black placeholder:text-base  px-3 `}
                 value={dob && format(dob, "yyyy-MM-dd")}
-                placeholder={format(profile.dob, "yyyy-MM-dd")}
+                placeholder={format(profile?.dob, "yyyy-MM-dd")}
               />
             </TouchableOpacity>
             {showDatePicker && (

@@ -18,7 +18,7 @@ const MyTourCheckPoints = ({ checkPoints = [] }) => {
     (cp) => cp.type === "Geo Tagging"
   );
 
-  console.log('filteredCheckPoints GEO LOCATION ===>', filteredCheckPoints)
+  console.log("filteredCheckPoints GEO LOCATION ===>", filteredCheckPoints);
 
   useEffect(() => {
     const getUserLocation = async () => {
@@ -31,7 +31,7 @@ const MyTourCheckPoints = ({ checkPoints = [] }) => {
       setUserLocation({
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
-        latitudeDelta: 0.05, 
+        latitudeDelta: 0.05,
         longitudeDelta: 0.05,
       });
     };
@@ -51,9 +51,6 @@ const MyTourCheckPoints = ({ checkPoints = [] }) => {
     dispatch(setMapLink(mapsUrl));
   }, [userLocation, filteredCheckPoints, dispatch]);
 
-
-  
-
   return (
     <View style={styles.screenContainer}>
       <View className="rounded-xl overflow-hidden px-4">
@@ -61,8 +58,7 @@ const MyTourCheckPoints = ({ checkPoints = [] }) => {
           <MapView
             style={styles.mapViewStyle}
             region={
-              userLocation ||
-               {
+              userLocation || {
                 latitude: 12.9716,
                 longitude: 77.5946,
                 latitudeDelta: 0.05,
@@ -99,7 +95,7 @@ const MyTourCheckPoints = ({ checkPoints = [] }) => {
                     latitude: checkpoint.latitude,
                     longitude: checkpoint.longitude,
                   }}
-                  apikey={apiKey}
+                  apikey="AIzaSyCsSJ8KZ_1mB44pVnIjcqzx_lWV87kuHRc"
                   strokeWidth={6}
                   strokeColor="#228B22"
                   onError={(errorMessage) => {
