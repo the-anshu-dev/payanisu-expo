@@ -1,8 +1,8 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
-import { shorten } from "./PostComponent";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { format } from "date-fns";
+import { shorten } from "../../utils/helpers";
 
 const Announcement = ({ title, content, date }) => {
   return (

@@ -167,6 +167,7 @@ const addTours = () => {
       const result = await response.json();
 
       const notificationData = {
+        notificationType: "notification",
         title: `Buckle up! New tour: ${tourName}`,
         content: description,
         id: result._id,

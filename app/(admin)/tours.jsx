@@ -1,12 +1,4 @@
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  Dimensions,
-  StyleSheet,
-  RefreshControl,
-} from "react-native";
+import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import React, { useCallback, useState } from "react";
 import TourCard from "../../components/admin/UI/TourCard";
 import { router, useFocusEffect } from "expo-router";
@@ -17,8 +9,7 @@ import { setTour } from "../../redux/slices/tourSlice";
 import { showError } from "../../utils/toastHelper";
 import NotAvailableComponent from "../../components/UI/NotAvailableComponent";
 import Loader from "../../components/common/Loader";
-
-const { width, height } = Dimensions.get("window");
+import { tourScreenStyles } from "../../constants/Styles";
 
 const Tours = () => {
   const [tours, setTours] = useState([]);
@@ -63,79 +54,29 @@ const Tours = () => {
 
   return (
     <SafeAreaView style={{ flex: 1 }} edges={["left", "right", "bottom"]}>
-      <View style={styles.container}>
+      <View style={tourScreenStyles.container}>
         <ScrollView
-          contentContainerStyle={styles.scrollContainer}
+          contentContainerStyle={tourScreenStyles.scrollContainer}
           showsVerticalScrollIndicator={false}
         >
-          <View style={styles.tourListContainer}>
+          <View style={tourScreenStyles.tourListContainer}>
             {tours.map((item) => (
               <TourCard key={item?._id} tour={item} />
             ))}
           </View>
         </ScrollView>
-        <View style={styles.createButtonContainer}>
+        <View style={tourScreenStyles.createButtonContainer}>
           <TouchableOpacity
             activeOpacity={0.9}
-            style={styles.createButton}
+            style={tourScreenStyles.createButton}
             onPress={() => router.push("/addTours")}
           >
-            <Text style={styles.createButtonText}>Create Tour</Text>
+            <Text style={tourScreenStyles.createButtonText}>Create Tour</Text>
           </TouchableOpacity>
         </View>
       </View>
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  scrollContainer: {
-    paddingBottom: height * 0.1,
-    width: "100%",
-  },
-  tourListContainer: {
-    width: width,
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    gap: 15,
-  },
-  noToursCard: {
-    paddingVertical: height * 0.02,
-    paddingHorizontal: width * 0.05,
-    justifyContent: "center",
-    alignItems: "center",
-    marginVertical: height * 0.02,
-  },
-  noToursText: {
-    color: "gray",
-    fontSize: width * 0.06,
-    fontWeight: "bold",
-  },
-  createButtonContainer: {
-    position: "absolute",
-    bottom: 0,
-    width: "100%",
-    paddingHorizontal: width * 0.04,
-    paddingVertical: 5,
-  },
-  createButton: {
-    backgroundColor: "#228B22",
-    width: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-    paddingVertical: 10,
-    borderRadius: 10,
-  },
-  createButtonText: {
-    color: "white",
-    fontSize: width * 0.045,
-    fontWeight: "bold",
-  },
-});
 
 export default Tours;

@@ -5,7 +5,6 @@ import {
   TextInput,
   TouchableOpacity,
   Dimensions,
-  StyleSheet,
 } from "react-native";
 import React, { useCallback, useRef, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
@@ -17,6 +16,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { showError, showSuccess } from "../../utils/toastHelper";
 import { useFocusEffect } from "expo-router";
 import Notifications from "../../components/UI/Notifications";
+import { announcementScreenStyles } from "../../constants/Styles";
 
 const { width, height } = Dimensions.get("window");
 
@@ -43,9 +43,10 @@ const AnnouncementScreen = () => {
   const handleCreateAnnouncement = async () => {
     setLoading(true);
     const body = {
-      id: currentTour,
+      notificationType: "announcement",
       title: announcementTitle,
       content: content,
+      id: currentTour,
     };
 
     try {
@@ -105,8 +106,8 @@ const AnnouncementScreen = () => {
 
   return (
     <SafeAreaView style={{ flex: 1 }} edges={["left", "right", "bottom"]}>
-      <View style={styles.container}>
-        <View style={styles.dropDownContainer}>
+      <View style={announcementScreenStyles.container}>
+        <View style={announcementScreenStyles.dropDownContainer}>
           <DropDownPicker
             open={open}
             value={currentTour}
@@ -133,9 +134,9 @@ const AnnouncementScreen = () => {
         </View>
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scrollViewContent}
+          contentContainerStyle={announcementScreenStyles.scrollViewContent}
         >
-          <View style={styles.announcementContainer}>
+          <View style={announcementScreenStyles.announcementContainer}>
             {announcements.length > 0 ? (
               announcements.map((announcement, index) => (
                 <Notifications
@@ -156,28 +157,30 @@ const AnnouncementScreen = () => {
           </View>
         </ScrollView>
       </View>
-      <View style={styles.buttonContainer}>
+      <View style={announcementScreenStyles.buttonContainer}>
         <TouchableOpacity
           activeOpacity={0.9}
           onPress={() => addAnnounceMentRef?.current?.open()}
-          style={styles.newAnnouncementButton}
+          style={announcementScreenStyles.newAnnouncementButton}
         >
-          <View style={styles.buttonContent}>
+          <View style={announcementScreenStyles.buttonContent}>
             <Ionicons
               name="megaphone-outline"
               size={width * 0.05}
               color="white"
             />
-            <Text style={styles.buttonText}>New Announcements</Text>
+            <Text style={announcementScreenStyles.buttonText}>
+              New Announcements
+            </Text>
           </View>
         </TouchableOpacity>
       </View>
       <Modalize ref={addAnnounceMentRef} adjustToContentHeight>
-        <View style={styles.modalContent}>
-          <Text style={styles.modalTitle}>Announcement</Text>
+        <View style={announcementScreenStyles.modalContent}>
+          <Text style={announcementScreenStyles.modalTitle}>Announcement</Text>
           <TextInput
             placeholder="Announcement Title"
-            style={styles.textInput}
+            style={announcementScreenStyles.textInput}
             onChangeText={setAnnouncementTitle}
             value={announcementTitle}
           />
@@ -189,7 +192,7 @@ const AnnouncementScreen = () => {
             textAlignVertical="top"
             onChangeText={setContent}
             placeholder="Announcement Content"
-            style={styles.textInput}
+            style={announcementScreenStyles.textInput}
           />
           <View
             style={{
@@ -227,77 +230,5 @@ const AnnouncementScreen = () => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingHorizontal: width * 0.01,
-    marginTop: height * 0.015,
-  },
-  dropDownContainer: {
-    paddingHorizontal: width * 0.03,
-  },
-  scrollViewContent: {
-    paddingBottom: height * 0.15,
-    paddingHorizontal: width * 0.03,
-  },
-  announcementContainer: {
-    marginTop: height * 0.01,
-  },
-  buttonContainer: {
-    position: "absolute",
-    bottom: height * 0.009,
-    width: "100%",
-    paddingHorizontal: width * 0.07,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  newAnnouncementButton: {
-    width: "100%",
-    height: height * 0.06,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#228B22",
-    borderRadius: 10,
-  },
-  buttonContent: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  buttonText: {
-    color: "white",
-    fontSize: width * 0.045,
-    fontWeight: "600",
-    marginLeft: width * 0.02,
-  },
-  modalContent: {
-    padding: width * 0.05,
-  },
-  modalTitle: {
-    fontSize: width * 0.05,
-    fontWeight: "600",
-    textAlign: "center",
-    marginBottom: height * 0.02,
-  },
-  textInput: {
-    borderWidth: 1.5,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    padding: width * 0.02,
-    fontWeight: "500",
-    marginBottom: height * 0.02,
-    fontSize: width * 0.04,
-  },
-  switchContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: height * 0.02,
-  },
-  switchText: {
-    marginLeft: width * 0.03,
-    fontWeight: "600",
-    fontSize: width * 0.04,
-  },
-});
 
 export default AnnouncementScreen;

@@ -3,7 +3,7 @@ import React from "react";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { ScrollView } from "react-native-gesture-handler";
-import { formatDate } from "../../utils/helpers";
+import { formatDate, shorten } from "../../utils/helpers";
 
 const PostComponent = ({ post }) => {
   return (
@@ -40,11 +40,6 @@ const PostComponent = ({ post }) => {
       </View>
     </TouchableOpacity>
   );
-};
-
-export const shorten = (text, maxLength) => {
-  if (text.length <= maxLength) return text;
-  return text.substr(0, maxLength) + "...";
 };
 
 export default PostComponent;

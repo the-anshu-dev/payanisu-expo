@@ -7,12 +7,10 @@ import {
   TouchableOpacity,
   Dimensions,
   RefreshControl,
-  StyleSheet,
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { Modalize } from "react-native-modalize";
 import { Ionicons } from "@expo/vector-icons";
-import { shorten } from "../../components/UI/PostComponent";
 import DropDownPicker from "react-native-dropdown-picker";
 import { useDispatch, useSelector } from "react-redux";
 import * as ImagePicker from "expo-image-picker";
@@ -27,6 +25,9 @@ import { setTour } from "../../redux/slices/tourSlice.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { showError, showWarning } from "../../utils/toastHelper.js";
 import { Picker } from "@react-native-picker/picker";
+import ExpenseCard from "../../components/UI/ExpenseCard.jsx";
+import { expenseScreenStyles } from "../../constants/Styles.js";
+
 
 const { width } = Dimensions.get("window");
 
@@ -409,12 +410,12 @@ const expense = () => {
           <Text className="text-lg font-semibold">Add Expense Details</Text>
         </View>
         <View className="px-6 pt-3 flex justify-center items-center gap-3 w-full ">
-          <View style={styles.pickerContainer}>
+          <View style={expenseScreenStyles.pickerContainer}>
             <Picker
               selectedValue={expenseCategory}
               onValueChange={setExpenseCategory}
               dropdownIconColor="#228B22"
-              style={styles.picker}
+              style={expenseScreenStyles.picker}
             >
               <Picker.Item label="Expense Category" value={null} />
               <Picker.Item label="Food" value="Food" />
@@ -525,50 +526,5 @@ const expense = () => {
     </SafeAreaView>
   );
 };
-
-const ExpenseCard = ({ getIconName, item, handleShowExpenseDetails }) => {
-  return (
-    <View
-      className={`flex flex-row w-full justify-between items-center px-2 py-2 bg-white shadow-xl shadow-black/50 rounded-lg mb-2`}
-    >
-      <View className="flex flex-row w-[40%] justify-start items-center gap-3">
-        <Ionicons
-          name={getIconName(item.category)}
-          size={24}
-          color={"#228B22"}
-        />
-        <View>
-          <Text className={`font-semibold`}>{shorten(item.category, 20)}</Text>
-          <Text className="text-xs text-gray-500">
-            {formatDate(item?.createdAt)}
-          </Text>
-        </View>
-      </View>
-      <Text>{shorten(item.name, 12)}</Text>
-      <View className="flex flex-row justify-center items-center gap-3">
-        <Text className={`w-14 text-right font-medium  `}>₹ {item.amount}</Text>
-        <TouchableOpacity
-          activeOpacity={0.9}
-          onPress={() => handleShowExpenseDetails(item._id)}
-        >
-          <Ionicons name="eye-outline" size={20} color={"#228B22"} />
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-};
-
-const styles = StyleSheet.create({
-  pickerContainer: {
-    width: "100%",
-    borderWidth: 2,
-    borderColor: "#228B22",
-    borderRadius: 8,
-  },
-  picker: {
-    height: 50,
-    fontSize: 18,
-  },
-});
 
 export default expense;

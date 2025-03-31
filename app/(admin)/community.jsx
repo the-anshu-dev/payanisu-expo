@@ -3,8 +3,6 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Dimensions,
-  StyleSheet,
   ActivityIndicator,
 } from "react-native";
 import { ScrollView, TextInput } from "react-native-gesture-handler";
@@ -18,7 +16,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { uploadFilesToS3 } from "../../utils/uploadFileHelper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { showError } from "../../utils/toastHelper";
-const { width, height } = Dimensions.get("window");
+import { communityScreenStyles } from "../../constants/Styles";
 
 const Community = () => {
   const { user } = useSelector((state) => state.user);
@@ -111,7 +109,7 @@ const Community = () => {
 
   if (allPosts.length === 0) {
     return (
-      <View style={styles.loaderContainer}>
+      <View style={communityScreenStyles.loaderContainer}>
         <ActivityIndicator color="#228B22" size="large" />
       </View>
     );
@@ -120,36 +118,36 @@ const Community = () => {
   return (
     <>
       {user ? (
-        <SafeAreaView style={styles.safeArea} edges={["bottom", "left", "right"]}>
+        <SafeAreaView style={communityScreenStyles.safeArea} edges={["bottom", "left", "right"]}>
           <ScrollView
-            contentContainerStyle={styles.scrollContainer}
+            contentContainerStyle={communityScreenStyles.scrollContainer}
             showsVerticalScrollIndicator={false}
           >
-            <View style={styles.postsContainer}>
+            <View style={communityScreenStyles.postsContainer}>
               {allPosts.map((post, index) => (
                 <PostComponent key={index} post={post} />
               ))}
             </View>
           </ScrollView>
-          <View style={styles.shareButtonContainer}>
+          <View style={communityScreenStyles.shareButtonContainer}>
             <TouchableOpacity
               activeOpacity={0.9}
               onPress={() => addPostRef.current?.open()}
-              style={styles.shareButton}
+              style={communityScreenStyles.shareButton}
             >
-              <Text style={styles.shareButtonText}>Share your experience</Text>
+              <Text style={communityScreenStyles.shareButtonText}>Share your experience</Text>
             </TouchableOpacity>
           </View>
           <Modalize
             adjustToContentHeight
             ref={addPostRef}
             handlePosition="inside"
-            modalStyle={styles.modalStyle}
+            modalStyle={communityScreenStyles.modalStyle}
           >
-            <View style={styles.modalContainer}>
-              <ScrollView contentContainerStyle={styles.modalScrollContent}>
-                <View style={styles.modalContent}>
-                  <Text style={styles.modalTitle}>
+            <View style={communityScreenStyles.modalContainer}>
+              <ScrollView contentContainerStyle={communityScreenStyles.modalScrollContent}>
+                <View style={communityScreenStyles.modalContent}>
+                  <Text style={communityScreenStyles.modalTitle}>
                     Share your experience with us
                   </Text>
                   <TextInput
@@ -160,21 +158,21 @@ const Community = () => {
                     value={text}
                     placeholder="Write your thoughts...."
                     keyboardType="default"
-                    style={styles.textInput}
+                    style={communityScreenStyles.textInput}
                     placeholderTextColor="gray"
                   />
                   {images.length > 0 ? (
-                    <View style={styles.imagesContainer}>
+                    <View style={communityScreenStyles.imagesContainer}>
                       {images.map((img, idx) => (
-                        <View key={idx} style={styles.imageWrapper}>
+                        <View key={idx} style={communityScreenStyles.imageWrapper}>
                           <Image
                             source={{ uri: img.uri }}
-                            style={styles.image}
+                            style={communityScreenStyles.image}
                           />
                           <TouchableOpacity
                             activeOpacity={0.9}
                             onPress={() => handleUnselect(img.uri)}
-                            style={styles.imageCloseButton}
+                            style={communityScreenStyles.imageCloseButton}
                           >
                             <Ionicons
                               name="close-outline"
@@ -186,14 +184,14 @@ const Community = () => {
                       ))}
                     </View>
                   ) : (
-                    <View style={styles.addImagesPlaceholder}>
+                    <View style={communityScreenStyles.addImagesPlaceholder}>
                       <Text>Add the moments you captured</Text>
                       <TouchableOpacity
                         onPress={pickImage}
                         activeOpacity={0.9}
-                        style={styles.addImagesButton}
+                        style={communityScreenStyles.addImagesButton}
                       >
-                        <Text style={styles.addImagesButtonText}>
+                        <Text style={communityScreenStyles.addImagesButtonText}>
                           Select Images
                         </Text>
                       </TouchableOpacity>
@@ -201,16 +199,16 @@ const Community = () => {
                   )}
                 </View>
               </ScrollView>
-              <View style={styles.postButtonContainer}>
+              <View style={communityScreenStyles.postButtonContainer}>
                 <TouchableOpacity
                   onPress={handlePost}
                   activeOpacity={0.9}
-                  style={styles.postButton}
+                  style={communityScreenStyles.postButton}
                 >
                   {loading ? (
                     <ActivityIndicator color="white" size="small" />
                   ) : (
-                    <Text style={styles.postButtonText}>Post</Text>
+                    <Text style={communityScreenStyles.postButtonText}>Post</Text>
                   )}
                 </TouchableOpacity>
               </View>
@@ -223,143 +221,5 @@ const Community = () => {
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-  },
-  loaderContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-    height: "100%",
-  },
-  scrollContainer: {
-    paddingBottom: height * 0.1,
-  },
-  postsContainer: {
-    paddingHorizontal: width * 0.05,
-    gap: 15,
-    marginTop: 15
-  },
-  shareButtonContainer: {
-    position: "absolute",
-    bottom: 10,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    left: width * 0.05,
-    right: width * 0.05,
-  },
-  shareButton: {
-    backgroundColor: "#228B22",
-    height: height * 0.055,
-    width: "100%",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 8,
-  },
-  shareButtonText: {
-    width: "100%",
-    color: "white",
-    textAlign: "center",
-    fontWeight: "bold",
-    fontSize: height * 0.02,
-  },
-  modalStyle: {
-    width: "100%",
-  },
-  modalContainer: {
-    paddingHorizontal: width * 0.05,
-  },
-  modalScrollContent: {
-    paddingBottom: height * 0.02,
-  },
-  modalContent: {
-    alignItems: "center",
-    width: "100%",
-  },
-  modalTitle: {
-    fontSize: width * 0.05,
-    fontWeight: "bold",
-    paddingBottom: height * 0.02,
-    marginTop: 20,
-  },
-  textInput: {
-    borderWidth: 1,
-    borderColor: "#228B22",
-    borderRadius: 8,
-    padding: 10,
-    width: "100%",
-    marginTop: height * 0.002,
-    height: height * 0.15,
-  },
-  imagesContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "center",
-    paddingTop: height * 0.02,
-    width: "100%",
-  },
-  imageWrapper: {
-    position: "relative",
-    margin: 5,
-  },
-  image: {
-    width: width * 0.25,
-    height: width * 0.25,
-    borderRadius: 10,
-  },
-  imageCloseButton: {
-    position: "absolute",
-    top: -5,
-    right: -5,
-    backgroundColor: "white",
-    borderRadius: 12,
-    padding: 2,
-  },
-  addImagesPlaceholder: {
-    borderWidth: 1,
-    borderColor: "#228B22",
-    borderRadius: 8,
-    width: "100%",
-    height: height * 0.15,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: height * 0.02,
-  },
-  postButtonContainer: {
-    width: "100%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: height * 0.02,
-  },
-  postButton: {
-    backgroundColor: "#228B22",
-    width: width * 0.6,
-    paddingVertical: height * 0.01,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 10,
-  },
-  postButtonText: {
-    color: "white",
-    fontSize: height * 0.02,
-  },
-  addImagesButton: {
-    backgroundColor: "#228B22",
-    paddingHorizontal: 24,
-    marginTop: 10,
-    paddingVertical: 10,
-    borderRadius: 12,
-  },
-  addImagesButtonText: {
-    color: "white",
-  },
-});
 
 export default Community;

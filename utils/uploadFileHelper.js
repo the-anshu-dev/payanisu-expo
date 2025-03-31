@@ -22,7 +22,9 @@ export const uploadFilesToS3 = async (files, id = 12, type) => {
         encoding: FileSystem.EncodingType.Base64,
       });
 
-      const binaryData = Uint8Array.from(atob(fileData), (c) => c.charCodeAt(0));
+      const binaryData = Uint8Array.from(atob(fileData), (c) =>
+        c.charCodeAt(0)
+      );
       await fetch(presignedUrl, {
         method: "PUT",
         headers: { "Content-Type": file.mimeType },

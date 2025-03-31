@@ -2,8 +2,7 @@ import { View, Text, TouchableOpacity, Dimensions } from "react-native";
 import React from "react";
 import { FontAwesome6, Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { shorten } from "../../UI/PostComponent";
-import { formatDate } from "../../../utils/helpers";
+import { formatDate, shorten } from "../../../utils/helpers";
 import TourStatus from "./TourStatus";
 
 const { height } = Dimensions.get("window");

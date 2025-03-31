@@ -16,7 +16,6 @@ import UserIcon from "../../../assets/user.svg";
 import { Modalize } from "react-native-modalize";
 import MapView, { Marker } from "react-native-maps";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
-import { shorten } from "../../../components/UI/PostComponent";
 import { ActivityIndicator } from "react-native-paper";
 import * as FileSystem from "expo-file-system";
 import * as MediaLibrary from "expo-media-library";
@@ -29,6 +28,7 @@ import {
   showSuccess,
   showWarning,
 } from "../../../utils/toastHelper";
+import { shorten } from "../../../utils/helpers";
 
 const { height, width } = Dimensions.get("window");
 

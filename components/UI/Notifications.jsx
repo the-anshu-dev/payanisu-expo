@@ -8,8 +8,7 @@ import {
 } from "react-native";
 import { FontAwesome6 } from "@expo/vector-icons";
 import React, { useState } from "react";
-import { shorten } from "./PostComponent";
-import { apiRequest } from "../../utils/helpers";
+import { apiRequest, shorten } from "../../utils/helpers";
 import { useSelector } from "react-redux";
 import { format } from "date-fns";
 

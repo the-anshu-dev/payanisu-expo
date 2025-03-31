@@ -1,5 +1,5 @@
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import DropDownPicker from "react-native-dropdown-picker";
 import { ActivityIndicator } from "react-native-paper";
 import { showError, showSuccess } from "../../utils/toastHelper";
