@@ -178,7 +178,7 @@ export default function RootLayout() {
           />
           <Stack.Screen
             name="(addTourDetails)/addBoardingPoint/[id]"
-            options={getOpt("Boarding Point Details")}
+            options={getOpt("Add Boarding Point")}
           />
         </Stack>
       </GestureHandlerRootView>

@@ -207,7 +207,12 @@ const Page = () => {
 
             <TouchableOpacity
               onPress={() => setModalVisible(true)}
-              style={{ padding: 10, backgroundColor: "#ddd", borderRadius: 8 }}
+              style={{
+                padding: 10,
+                backgroundColor: "#ddd",
+                borderRadius: 8,
+                width: "100%",
+              }}
             >
               <Text>{selectedAddress || "Select Location"}</Text>
             </TouchableOpacity>
@@ -248,10 +253,15 @@ const Page = () => {
           </Text>
           <GooglePlacesAutocomplete
             ref={googlePlacesRef}
+            listViewDisplayed={"auto"}
             placeholder="Search location"
             fetchDetails
+            minLength={3}
             onPress={(data, details) => handleLocationSelect(details)}
-            query={{ key: apiKey, language: "en" }}
+            query={{
+              key: "AIzaSyAWiZa_f1BStr9sDkGGJdDvmOV76-SVoFo",
+              language: "en",
+            }}
             styles={{
               textInputContainer: {
                 backgroundColor: "#fff",

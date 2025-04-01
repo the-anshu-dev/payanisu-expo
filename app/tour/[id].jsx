@@ -5,7 +5,6 @@ import {
   TouchableOpacity,
   Dimensions,
   RefreshControl,
-  Alert,
   Modal,
 } from "react-native";
 import React, { useCallback, useLayoutEffect, useState } from "react";
@@ -295,7 +294,7 @@ const TourDetails = () => {
           style={{
             width: width * 0.45,
             backgroundColor: tourDetail.status === false ? "#228B22" : "gray",
-            height: 48,
+            height: 44,
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
@@ -309,7 +308,7 @@ const TourDetails = () => {
               style={{
                 textAlign: "center",
                 color: "white",
-                fontWeight: 600,
+                fontWeight: 500,
                 fontSize: 18,
               }}
             >
