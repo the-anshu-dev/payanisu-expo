@@ -19,7 +19,7 @@ import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { ActivityIndicator } from "react-native-paper";
 import * as FileSystem from "expo-file-system";
 import * as MediaLibrary from "expo-media-library";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setCheckPoints } from "../../../redux/slices/tourSlice";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as Location from "expo-location";
@@ -29,6 +29,9 @@ import {
   showWarning,
 } from "../../../utils/toastHelper";
 import { shorten } from "../../../utils/helpers";
+import { captureRef } from "react-native-view-shot";
+import ViewShot from "react-native-view-shot";
+import RNFS from "react-native-fs";
 
 const { height, width } = Dimensions.get("window");
 
@@ -36,17 +39,24 @@ const Checkpoints = () => {
   const { id } = useLocalSearchParams();
   const dispatch = useDispatch();
 
+  const { tour } = useSelector((state) => state.tour);
+  const currentTour = tour.find((tour) => tour._id === id);
+
+  console.log(currentTour);
+
   const [qrUrl, setQrUrl] = useState();
   const [allCheckPoints, setAllCheckPoints] = useState([]);
   const [loading, setLoading] = useState(false);
   const [qrLoading, setQrLoading] = useState(false);
   const [editingCheckPointData, setEditingCheckPointData] = useState({});
+
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
 
   const editCheckPointRef = useRef(null);
   const viewMapRef = useRef(null);
   const downloadQRref = useRef(null);
+  const captureViewRef = useRef(null);
 
   const [region, setRegion] = useState({
     latitude: 12.9716,
@@ -98,9 +108,21 @@ const Checkpoints = () => {
         return showWarning("We need access to save the QR code.");
       }
 
+      // Capture the QR Code View with the heading
+      const uri = await captureRef(captureViewRef, {
+        format: "png",
+        quality: 1.0,
+      });
+
+      if (!uri) {
+        return showError("Failed to capture QR code.");
+      }
+
       const fileUri = FileSystem.documentDirectory + "qrcode.png";
-      const { uri } = await FileSystem.downloadAsync(qrUrl, fileUri);
-      const asset = await MediaLibrary.createAssetAsync(uri);
+      await FileSystem.copyAsync({ from: uri, to: fileUri });
+
+      // Save to gallery
+      const asset = await MediaLibrary.createAssetAsync(fileUri);
       const album = await MediaLibrary.getAlbumAsync("Download");
 
       album
@@ -369,16 +391,24 @@ const Checkpoints = () => {
           <View className="w-full py-6 flex justify-center items-center">
             <Text className="text-base font-semibold">QR Code</Text>
           </View>
-          <View className="p-1 border border-[#228B22] rounded-xl">
-            <Image
-              source={qrUrl}
-              style={{
-                height: height * 0.2,
-                width: width * 0.4,
-                borderRadius: 6,
-              }}
-            />
-          </View>
+          <ViewShot
+            ref={captureViewRef}
+            options={{ format: "png", quality: 1.0 }}
+          >
+            <View className="p-1 border border-[#228B22] rounded-xl">
+              <Text className="text-base font-semibold text-center w-full py-1">
+                {currentTour?.name}
+              </Text>
+              <Image
+                source={qrUrl}
+                style={{
+                  height: height * 0.2,
+                  width: width * 0.4,
+                  borderRadius: 6,
+                }}
+              />
+            </View>
+          </ViewShot>
           <View className="mt-6">
             <TouchableOpacity
               onPress={handleDownloadQr}

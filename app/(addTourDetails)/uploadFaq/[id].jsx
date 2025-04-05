@@ -41,6 +41,14 @@ const UploadFaq = () => {
   };
 
   const handleSubmit = async () => {
+    if (tourDetail.faqUrl && !faq) {
+      showError("FAQ already uploaded, please edit it.");
+      return;
+    }
+    if (!faq) {
+      showError("Please select a file");
+      return;
+    }
     setLoading(true);
     try {
       const faqUrl = await uploadFileToS3(faq);
@@ -82,17 +90,17 @@ const UploadFaq = () => {
         contentContainerStyle={{ flexGrow: 1 }}
         showsVerticalScrollIndicator={false}
       >
-        {tourDetail?.faqUrl ? (
-          <View className="flex-1 p-1 rounded-lg">
-            <Image
-              source={tourDetail.faqUrl}
-              style={{ width: "100%", height: height * 0.75, borderRadius: 10 }}
-            />
-          </View>
-        ) : faq ? (
+        {faq ? (
           <View className="flex-1 p-1 rounded-lg">
             <Image
               source={{ uri: faq.uri }}
+              style={{ width: "100%", height: height * 0.75, borderRadius: 10 }}
+            />
+          </View>
+        ) : tourDetail?.faqUrl ? (
+          <View className="flex-1 p-1 rounded-lg">
+            <Image
+              source={tourDetail.faqUrl}
               style={{ width: "100%", height: height * 0.75, borderRadius: 10 }}
             />
           </View>
@@ -112,13 +120,15 @@ const UploadFaq = () => {
         )}
       </ScrollView>
       <View className="absolute bottom-0 left-0 right-0 bg-white p-3 flex flex-row justify-between">
-        <TouchableOpacity className="bg-gray-500 p-3 rounded-lg flex-1 mr-2">
+        <TouchableOpacity
+          onPress={pickImage}
+          className="bg-gray-500 p-3 rounded-lg flex-1 mr-2"
+        >
           <Text className="text-white text-center font-semibold">Edit FAQ</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={handleSubmit}
           activeOpacity={0.8}
-          disabled={!faq && true}
           className="bg-[#228B22] p-3 rounded-lg flex-1 ml-2"
         >
           {loading ? (

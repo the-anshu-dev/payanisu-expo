@@ -126,9 +126,7 @@ const TourDetails = () => {
 
       const tour = await refreshTour.json();
       dispatch(setTour(tour));
-
       showSuccess("Tour Status Updated.");
-      router.push("/(admin)/tours");
     } catch (error) {
       showError(error.message || "Please try again.");
     } finally {

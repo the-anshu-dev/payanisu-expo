@@ -63,7 +63,7 @@ const Menu = () => {
           </TouchableOpacity>
         ))}
       </View>
-      <View style={styles.logOutButtonContainer}>
+      <View style={styles.buttonContainer}>
         <TouchableOpacity
           onPress={handleLogOut}
           activeOpacity={0.9}
@@ -72,10 +72,33 @@ const Menu = () => {
           {loggingOut ? (
             <ActivityIndicator size={"small"} color={"green"} />
           ) : (
-            <Text style={{ color: "black", fontWeight: "600", fontSize: 18 }}>
-              Log Out
-            </Text>
+            <View style={{ display: "flex", flexDirection: "row" }}>
+              <Ionicons
+                name="log-out-outline"
+                size={24}
+                color={"white"}
+                style={{ marginRight: 10 }}
+              />
+              <Text style={{ color: "white", fontWeight: "600", fontSize: 18 }}>
+                Log Out
+              </Text>
+            </View>
           )}
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => router.back()}
+          activeOpacity={0.9}
+          style={styles.homeButton}
+        >
+          <Ionicons
+            name="home-outline"
+            size={24}
+            color={"white"}
+            style={{ marginRight: 10 }}
+          />
+          <Text style={{ color: "white", fontWeight: "600", fontSize: 18 }}>
+            Go to Home
+          </Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -83,11 +106,6 @@ const Menu = () => {
 };
 
 const options = [
-  {
-    id: "home",
-    name: "Home",
-    route: "/(tabs)",
-  },
   {
     id: "contact",
     name: "Contact Us",
@@ -129,22 +147,37 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#ccc",
   },
-  logOutButtonContainer: {
+  buttonContainer: {
     position: "absolute",
-    bottom: 20,
+    bottom: 10,
     width: width,
     height: height * 0.06,
     display: "flex",
-    justifyContent: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
+    paddingHorizontal: width * 0.04,
   },
   logOutButton: {
-    width: "90%",
+    width: width * 0.42,
     elevation: 0.9,
-    backgroundColor: "#fff",
+    backgroundColor: "#e60000",
     color: "#000",
     height: "100%",
     display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#D3D3D3",
+    borderRadius: 10,
+  },
+  homeButton: {
+    width: width * 0.42,
+    elevation: 0.9,
+    backgroundColor: "#228B22",
+    height: "100%",
+    display: "flex",
+    flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 1,

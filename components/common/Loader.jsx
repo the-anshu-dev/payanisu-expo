@@ -1,4 +1,4 @@
-import { Dimensions, StyleSheet, View } from "react-native";
+import { ActivityIndicator, Dimensions, StyleSheet, View } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Image } from "expo-image";
@@ -10,14 +10,7 @@ const Loader = () => {
   return (
     <SafeAreaView style={{ flex: 1 }} edges={["left", "right", "bottom"]}>
       <View style={styles.container}>
-        <Image
-          source={walk}
-          style={{
-            height: height * 0.2,
-            width: width * 0.4,
-            objectFit: "cover",
-          }}
-        />
+        <ActivityIndicator size={"large"} color={"green"} />
       </View>
     </SafeAreaView>
   );

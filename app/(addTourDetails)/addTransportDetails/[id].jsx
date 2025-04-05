@@ -13,7 +13,11 @@ import * as ImagePicker from "expo-image-picker";
 import { Image } from "expo-image";
 import { ActivityIndicator } from "react-native-paper";
 import { uploadFilesToS3 } from "../../../utils/uploadFileHelper";
-import { showError, showSuccess, showWarning } from "../../../utils/toastHelper";
+import {
+  showError,
+  showSuccess,
+  showWarning,
+} from "../../../utils/toastHelper";
 
 const { width, height } = Dimensions.get("window");
 
@@ -115,7 +119,10 @@ const TransportDetails = () => {
       >
         <View style={styles.formFieldContainer}>
           <Text style={styles.formFieldText}>Bus Name</Text>
-          <TextInput onChangeText={setBusName} style={styles.formFieldInputText} />
+          <TextInput
+            onChangeText={setBusName}
+            style={styles.formFieldInputText}
+          />
         </View>
         <View style={styles.formFieldContainer}>
           <Text style={styles.formFieldText}>Bus Number</Text>
@@ -127,7 +134,12 @@ const TransportDetails = () => {
         <View style={styles.formFieldContainer}>
           <Text style={styles.formFieldText}>Seating Capacity</Text>
           <TextInput
-            onChangeText={setSeatingCapacity}
+            keyboardType="numeric"
+            onChangeText={(text) => {
+              const numericText = text.replace(/[^0-9]/g, "");
+              setSeatingCapacity(numericText);
+            }}
+            value={seatingCapacity}
             style={styles.formFieldInputText}
           />
         </View>
@@ -144,7 +156,10 @@ const TransportDetails = () => {
         </Text>
         <View style={styles.formFieldContainer}>
           <Text style={styles.formFieldText}>Driver Name</Text>
-          <TextInput onChangeText={setDriver} style={styles.formFieldInputText} />
+          <TextInput
+            onChangeText={setDriver}
+            style={styles.formFieldInputText}
+          />
         </View>
         <View style={styles.formFieldContainer}>
           <Text style={styles.formFieldText}>Driver Contact Number</Text>

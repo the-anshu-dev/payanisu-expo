@@ -3,7 +3,7 @@ import * as FileSystem from "expo-file-system";
 const BASE_URL = process.env.EXPO_PUBLIC_BASE_URL;
 const S3_BASE_URL = "https://trekies.s3.ap-south-1.amazonaws.com/uploads/";
 
-export const uploadFilesToS3 = async (files, id = 12, type) => {
+export const uploadFilesToS3 = async (files, id = 12, type = "tour") => {
   try {
     const uploadPromises = files.map(async (file) => {
       const fileName = `${file.fileName}_${Date.now()}`;
@@ -57,22 +57,27 @@ export const uploadFileToS3 = async (file) => {
     const extension = file.mimeType.split("/")[1] || "png";
     const fileName = `${name.split(" ")[0]}_${Date.now()}.${extension}`;
 
-    const response = await fetch(`${BASE_URL}/api/putObject`, {
+    const res = await fetch(`${BASE_URL}/api/putObject`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ fileName, contentType: file.mimeType }),
     });
 
-    if (!response.ok) {
+    const presignedUrl = await res.text();
+
+    console.log('11111')
+
+    if (!res.ok || !presignedUrl) {
       throw new Error(`Failed to get pre-signed URL for ${name}`);
     }
-
-    const presignedUrl = await response.json();
 
     const fileData = await FileSystem.readAsStringAsync(file.uri, {
       encoding: FileSystem.EncodingType.Base64,
     });
+
     const binaryData = Uint8Array.from(atob(fileData), (c) => c.charCodeAt(0));
+
+    console.log("33333")
 
     const uploadResponse = await fetch(presignedUrl, {
       method: "PUT",
@@ -80,12 +85,13 @@ export const uploadFileToS3 = async (file) => {
       body: binaryData,
     });
 
+    console.log('22222')
+
     if (!uploadResponse.ok) {
       throw new Error(`Failed to upload file: ${fileName}`);
     }
 
     const fileUrl = `${S3_BASE_URL}${fileName}`;
-    console.log("Uploaded:", fileUrl);
     return fileUrl;
   } catch (error) {
     console.error("Error while uploading file:", error);

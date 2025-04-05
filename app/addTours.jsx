@@ -145,6 +145,7 @@ const addTours = () => {
         tour_cost: costPerPerson,
         can_admin_reject: adminCanReject,
         enable_payment_getway: paymentGatewayEnabled,
+        status: false,
         difficulty,
         state,
         tourType,

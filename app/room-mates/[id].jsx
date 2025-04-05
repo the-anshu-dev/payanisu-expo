@@ -69,7 +69,7 @@ const MateCard = ({ mate }) => {
         {mate.gender.charAt(0)}
       </Text>
       <Text style={{ width: "10%" }}>{mate.age}</Text>
-      <Text style={{ width: "50%" }}>{shorten(mate.email, 25)}</Text>
+      <Text style={{ width: "50%" }}>{shorten(mate.contact, 25)}</Text>
     </View>
   );
 };

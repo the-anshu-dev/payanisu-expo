@@ -24,9 +24,11 @@ const AnnouncementScreen = () => {
   const { tour } = useSelector((state) => state.tour);
   const { user } = useSelector((state) => state.user);
 
-  const toursData = tour.map((t) => {
-    return { label: t.name, value: t._id };
-  });
+  const toursData = tour
+    .filter((t) => t.email == user?.email)
+    .map((t) => {
+      return { label: t.name, value: t._id };
+    });
 
   const addAnnounceMentRef = useRef(null);
 

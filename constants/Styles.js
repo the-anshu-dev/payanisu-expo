@@ -426,12 +426,13 @@ export const communityScreenStyles = StyleSheet.create({
 export const expenseScreenStyles = StyleSheet.create({
   pickerContainer: {
     width: "100%",
+    height: height * 0.06,
     borderWidth: 2,
     borderColor: "#228B22",
     borderRadius: 8,
   },
   picker: {
-    height: 50,
+    height: "100%",
     fontSize: 18,
   },
 });
@@ -470,6 +471,7 @@ export const tourScreenStyles = StyleSheet.create({
     width: "100%",
     paddingHorizontal: width * 0.04,
     paddingVertical: 5,
+    backgroundColor: "white",
   },
   createButton: {
     backgroundColor: "#228B22",

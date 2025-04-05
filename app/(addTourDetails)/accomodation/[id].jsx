@@ -13,7 +13,7 @@ import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { exportDataToExcel } from "../../../utils/helpers";
 import { ActivityIndicator } from "react-native-paper";
 import { Ionicons } from "@expo/vector-icons";
-import { showError } from "../../../utils/toastHelper";
+import { showError, showSuccess } from "../../../utils/toastHelper";
 
 const { width } = Dimensions.get("window");
 
@@ -191,6 +191,24 @@ const AccomodationButton = ({
   tourId,
   allocatedCount,
 }) => {
+
+  const handleDeleteAccomodation = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_BASE_URL}/api/accommodation/delete?id=${_id}`,
+        {
+          method: "DELETE",
+        }
+      );
+      if (response.status !== 200) {
+        throw new Error("Failed to delete accomodation");
+      }
+      showSuccess("Accomodation deleted successfully");
+    } catch (error) {
+      showError(error.message || "Please try again.");
+    }
+  }
+
   return (
     <Pressable
       activeOpacity={0.9}
@@ -205,7 +223,7 @@ const AccomodationButton = ({
             },
             {
               text: "Delete",
-              onPress: () => console.log("delete"),
+              onPress: handleDeleteAccomodation,
             },
             {
               text: "Edit",

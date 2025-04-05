@@ -77,7 +77,11 @@ const EditTour = () => {
 
   // image states
 
-  const [images, setImages] = useState(tourDetails?.images || []);
+  const tourImages = tourDetails.images.filter(
+    (img) => img.type === "tour" || !img.type
+  );
+
+  const [images, setImages] = useState(tourImages || []);
 
   const [imageToAdd, setImageToAdd] = useState([]);
 

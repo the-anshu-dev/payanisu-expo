@@ -8,7 +8,7 @@ import {
   Dimensions,
   RefreshControl,
 } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Modalize } from "react-native-modalize";
 import { Ionicons } from "@expo/vector-icons";
 import DropDownPicker from "react-native-dropdown-picker";
@@ -27,7 +27,7 @@ import { showError, showWarning } from "../../utils/toastHelper.js";
 import { Picker } from "@react-native-picker/picker";
 import ExpenseCard from "../../components/UI/ExpenseCard.jsx";
 import { expenseScreenStyles } from "../../constants/Styles.js";
-
+import { useFocusEffect } from "expo-router";
 
 const { width } = Dimensions.get("window");
 
@@ -35,9 +35,11 @@ const expense = () => {
   const { tour } = useSelector((state) => state.tour);
   const { user } = useSelector((state) => state.user);
 
-  const toursDataForDropdown = tour.map((t) => {
-    return { label: t.name, value: t._id };
-  });
+  const toursDataForDropdown = tour
+    .filter((t) => t.email == user?.email)
+    .map((t) => {
+      return { label: t.name, value: t._id };
+    });
 
   const dispatch = useDispatch();
 
@@ -107,6 +109,12 @@ const expense = () => {
     setLoading(true);
     try {
       const imgUrl = image ? await uploadFileToS3(image) : null;
+
+      if (image && !imgUrl) {
+        showError("Failed to upload image");
+        return;
+      }
+
       const newExpense = {
         category: expenseCategory,
         amount,
@@ -238,14 +246,12 @@ const expense = () => {
   };
 
   useEffect(() => {
-    getAllTours();
-  }, []);
-
-  useEffect(() => {
     if (currentTour) {
       fetchExpense();
     }
   }, [currentTour]);
+
+  useFocusEffect(useCallback(() => onRefresh(), [currentTour]));
 
   return (
     <SafeAreaView edges={["left", "right", "bottom"]} style={{ flex: 1 }}>
@@ -417,7 +423,7 @@ const expense = () => {
               dropdownIconColor="#228B22"
               style={expenseScreenStyles.picker}
             >
-              <Picker.Item label="Expense Category" value={null} />
+              <Picker.Item label="Select Category" value={null} />
               <Picker.Item label="Food" value="Food" />
               <Picker.Item label="Transport" value="Transport" />
               <Picker.Item label="Stationary" value="Stationary" />

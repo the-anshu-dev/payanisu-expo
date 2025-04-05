@@ -28,7 +28,11 @@ const ExpenseCard = ({ getIconName, item, handleShowExpenseDetails }) => {
           activeOpacity={0.9}
           onPress={() => handleShowExpenseDetails(item._id)}
         >
-          <Ionicons name="eye-outline" size={20} color={"#228B22"} />
+          <Ionicons
+            name="document-attach-outline"
+            size={20}
+            color={"#228B22"}
+          />
         </TouchableOpacity>
       </View>
     </View>
