@@ -251,8 +251,16 @@ const expense = () => {
     }
   }, [currentTour]);
 
-  useFocusEffect(useCallback(() => onRefresh(), [currentTour]));
-
+  useFocusEffect(
+    useCallback(() => {
+      const refresh = async () => {
+        await onRefresh(); 
+      };
+  
+      refresh();
+      }, [currentTour])
+  );
+  
   return (
     <SafeAreaView edges={["left", "right", "bottom"]} style={{ flex: 1 }}>
       <View className="mt-14 h-full w-full relative">

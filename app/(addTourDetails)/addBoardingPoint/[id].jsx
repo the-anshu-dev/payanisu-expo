@@ -21,7 +21,6 @@ import {
 } from "../../../utils/toastHelper";
 
 const { width } = Dimensions.get("window");
-const apiKey = process.env.EXPO_PUBLIC_GOOGLE_API_KEY;
 
 const Page = () => {
   const { id } = useLocalSearchParams();
@@ -62,7 +61,7 @@ const Page = () => {
 
   const reverseGeocode = async (lat, lng) => {
     try {
-      const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiKey}`;
+      const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${process.env.EXPO_PUBLIC_GOOGLE_API_KEY}`;
       const response = await fetch(url);
       const data = await response.json();
 
@@ -77,7 +76,6 @@ const Page = () => {
 
   const handleLocationSelect = (details) => {
     if (!details?.geometry?.location) return;
-
     const { lat, lng } = details.geometry.location;
     setRegion({
       latitude: lat,
@@ -260,7 +258,7 @@ const Page = () => {
             fetchDetails
             onPress={(data, details) => handleLocationSelect(details)}
             query={{
-              key: "AIzaSyAWiZa_f1BStr9sDkGGJdDvmOV76-SVoFo",
+              key: process.env.EXPO_PUBLIC_GOOGLE_API_KEY,
               language: "en",
             }}
             styles={{

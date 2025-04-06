@@ -31,7 +31,6 @@ import {
 import { shorten } from "../../../utils/helpers";
 import { captureRef } from "react-native-view-shot";
 import ViewShot from "react-native-view-shot";
-import RNFS from "react-native-fs";
 
 const { height, width } = Dimensions.get("window");
 
@@ -41,8 +40,6 @@ const Checkpoints = () => {
 
   const { tour } = useSelector((state) => state.tour);
   const currentTour = tour.find((tour) => tour._id === id);
-
-  console.log(currentTour);
 
   const [qrUrl, setQrUrl] = useState();
   const [allCheckPoints, setAllCheckPoints] = useState([]);
@@ -441,7 +438,9 @@ const CheckPointCard = ({
     try {
       await handleCheckpointActive(point._id);
     } catch (error) {
-      console.log("Error:", error);
+      showWarning(
+        error.message || "Failed to activate checkpoint. Please try again."
+      );
     } finally {
       setLoading(false);
     }
@@ -469,7 +468,12 @@ const CheckPointCard = ({
   };
 
   return (
-    <View className="border border-gray-500/50 rounded-lg py-3 px-2 mt-3 w-full bg-white">
+    <View className="border border-gray-500/50 rounded-lg py-3 px-2 mt-8 w-full bg-white relative z-50">
+      <View className="absolute -top-5 right-2 bg-green-700 rounded-tr-xl rounded-tl-xl w-24 z-10 ">
+        <Text className="text-xs text-white  font-semibold py-0.5 rounded-xl text-center">
+          {point.type}
+        </Text>
+      </View>
       <View className="flex flex-row justify-between items-center ">
         <View>
           <Text className="text-xs">{`Check Point ${idx + 1}`}</Text>

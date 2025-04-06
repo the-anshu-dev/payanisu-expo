@@ -25,7 +25,6 @@ const CheckPointElement = ({
   handleGetCheckPoints,
   isTourCurrentlyActive,
 }) => {
-
   const [permission, requestPermission] = useCameraPermissions();
   const [showCameraModal, setShowCameraModal] = useState(false);
   const [scanned, setScanned] = useState(false);
@@ -77,7 +76,10 @@ const CheckPointElement = ({
         throw new Error("Failed to check in");
       }
       showSuccess("You are checked in.");
-      sendLocalNotification("Check-in Successful", "You have successfully reached the checkpoint.");
+      sendLocalNotification(
+        "Check-in Successful",
+        "You have successfully reached the checkpoint."
+      );
 
       handleGetCheckPoints();
     } catch (error) {
@@ -96,7 +98,6 @@ const CheckPointElement = ({
     checkAndRequestPermission();
   }, [permission]);
 
-
   useEffect(() => {
     let watchId;
 
@@ -113,7 +114,7 @@ const CheckPointElement = ({
         watchId = await Location.watchPositionAsync(
           {
             accuracy: Location.Accuracy.High,
-            distanceInterval: 100
+            distanceInterval: 100,
           },
           (location) => {
             const { latitude, longitude } = location.coords;
@@ -201,19 +202,24 @@ const CheckPointElement = ({
   return (
     <>
       <View style={styles.container}>
+        <View style={styles.tag}>
+          <Text
+            style={{
+              color: "white",
+              fontSize: 12,
+              textAlign: "center",
+              fontWeight: "bold",
+            }}
+          >
+            {points?.type}
+          </Text>
+        </View>
         <View style={styles.header}>
           <View style={styles.checkpointInfo}>
-            <Text
-              style={styles.checkpointText}
-            >{`Check Point ${index + 1}`}</Text>
+            <Text style={styles.checkpointText}>{`Check Point ${
+              index + 1
+            }`}</Text>
             <Text style={styles.pointName}>{points?.name}</Text>
-            <TouchableOpacity
-              onPress={() =>
-                sendLocalNotification("Hello", "This is a local notification")
-              }
-            >
-              <Text>Notifications</Text>
-            </TouchableOpacity>
           </View>
           <View style={styles.qrIconContainer}>
             {checkInLoading && (
@@ -311,7 +317,7 @@ const styles = StyleSheet.create({
     padding: 8,
     justifyContent: "flex-start",
     alignItems: "center",
-    marginTop: 8,
+    marginTop: 20,
     borderRadius: 8,
     backgroundColor: "white",
     shadowColor: "black",
@@ -319,6 +325,23 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 8,
     elevation: 8,
+    position: "relative",
+  },
+  tag: {
+    position: "absolute",
+    top: -20,
+    right: 10,
+    width: "30%",
+    height: 20,
+    backgroundColor: "#228B22",
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+  },
+  tagText: {
+    color: "white",
+    fontSize: 12,
+    textAlign: "center",
+    fontWeight: "bold",
   },
   header: {
     flexDirection: "row",

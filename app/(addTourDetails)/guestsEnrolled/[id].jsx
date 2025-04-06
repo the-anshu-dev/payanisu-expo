@@ -45,7 +45,6 @@ const GuestsEnrolled = () => {
   const [interestedMembers, setInterestedMembers] = useState(null);
   const [loading, setLoading] = useState(false);
 
-
   const [reservedMembers, setReservedMembers] = useState([]);
 
   const enrollRef = useRef(null);
@@ -71,14 +70,13 @@ const GuestsEnrolled = () => {
   const translateX = useSharedValue(-tabWidth);
 
   const handleTabPress = (tab) => {
-    setActiveTab(tab)
+    setActiveTab(tab);
     translateX.value = withTiming(tab === "requested" ? 0 : -tabWidth);
   };
 
   const animatedStyles = useAnimatedStyle(() => ({
     transform: [{ translateX: translateX.value + (tabWidth - barWidth) / 2 }],
   }));
-
 
   const handleGetInterestedMembers = async () => {
     setLoading(true);
@@ -144,7 +142,9 @@ const GuestsEnrolled = () => {
       if (response.status !== 200) {
         throw new Error("Failed to update.");
       }
-      showSuccess(`Member has been ${type === "accept" ? "accepted" : "rejected"}`);
+      showSuccess(
+        `Member has been ${type === "accept" ? "accepted" : "rejected"}`
+      );
       getPendingApprovals();
     } catch (error) {
       showError(error.message || "Please try again.");
@@ -243,16 +243,42 @@ const GuestsEnrolled = () => {
         <View className="px-5 w-full flex justify-center items-center">
           <View className="flex flex-row justify-between">
             <Pressable onPress={() => handleTabPress("interested")}>
-              <View style={{ width: tabWidth }} className="py-2">
+              <View
+                style={{
+                  width: tabWidth,
+                  display: "flex",
+                  justifyContent: "center",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 5,
+                }}
+                className="py-2"
+              >
                 <Text className="text-center text-base font-semibold">
                   Interest Requests
+                </Text>
+                <Text className="font-semibold bg-green-700 text-white w-5 h-5 text-center rounded-full text-xs">
+                  {interestedMembers?.length}
                 </Text>
               </View>
             </Pressable>
             <Pressable onPress={() => handleTabPress("requested")}>
-              <View style={{ width: tabWidth }} className="py-2">
+              <View
+                style={{
+                  width: tabWidth,
+                  display: "flex",
+                  justifyContent: "center",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 5,
+                }}
+                className="py-2"
+              >
                 <Text className="text-center text-base font-semibold">
                   Reserve Requests
+                </Text>
+                <Text className="font-semibold bg-green-700 text-white w-5 h-5 text-center rounded-full text-xs">
+                  {reservedMembers?.length}
                 </Text>
               </View>
             </Pressable>
@@ -267,7 +293,9 @@ const GuestsEnrolled = () => {
         <ScrollView
           style={{ flex: 1 }}
           showsVerticalScrollIndicator={false}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
           contentContainerStyle={{ paddingBottom: height * 0.15 }}
         >
           <View className="w-full px-4">
@@ -299,9 +327,6 @@ const GuestsEnrolled = () => {
               <>
                 {reservedMembers.length > 0 ? (
                   <View className="p-2 flex justify-center items-center">
-                    <Text className="text-center text-lg font-semibold text-[#228B22]">
-                      Reserved Members
-                    </Text>
                     {reservedMembers.map((i) => (
                       <ReqCard
                         key={i._id}
@@ -472,7 +497,10 @@ const ReqCard = ({
   };
 
   return (
-    <View style={{ width: width * 0.9 }} className="flex flex-row justify-between items-center bg-white p-1 rounded-lg px-3 shadow-xl shadow-black/50 mt-2 py-2">
+    <View
+      style={{ width: width * 0.9 }}
+      className="flex flex-row justify-between items-center bg-white p-1 rounded-lg px-3 shadow-xl shadow-black/50 mt-2 py-2"
+    >
       <Text className="w-[35%]">{name}</Text>
       <Text>
         {age} Yrs, {gender?.charAt(0)}
