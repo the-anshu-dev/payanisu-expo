@@ -43,6 +43,10 @@ const MyTourInfo = ({ tour }) => {
   const busImages = tourDetails?.images
     .filter((i) => i.type === "bus")
     .map((i) => i.url);
+    
+  const accomodationImages = tourDetails?.images
+    .filter((i) => i.type === "accomodation")
+    .map((i) => i.url);
 
   const [refresh, setRefresh] = useState(false);
   const [viewFAQ, setViewFAQ] = useState(false);
@@ -51,12 +55,13 @@ const MyTourInfo = ({ tour }) => {
   const [boardingPoints, setBoardingPoints] = useState([]);
   const [accomodationDetails, setAccomodationDetails] = useState([]);
   const [destination, setDestination] = useState({});
-
+  
   const [cancelling, setCancelling] = useState(false);
 
   const [isModalVisible, setIsModalVisible] = useState({
     busImageModal: false,
     directionModal: false,
+    accomodationImageModal: false,
   });
 
   const handleBusModal = () => {
@@ -65,6 +70,10 @@ const MyTourInfo = ({ tour }) => {
 
   const handleDirectionModal = () => {
     setIsModalVisible((prev) => ({ ...prev, directionModal: true }));
+  };
+
+  const handleAccomodationModal = () => {
+    setIsModalVisible((prev) => ({ ...prev, accomodationImageModal: true }));
   };
 
   const { transportId } = allocatedTransport[0] || {};
@@ -435,8 +444,8 @@ const MyTourInfo = ({ tour }) => {
                     className={`font-bold `}
                   >{`${allocatedAccommodation[0]?.occupancy}`}</Text>
                 </View>
-                {allocatedAccommodation[0]?.occupancy !== "Single" && (
-                  <View className="flex flex-row justify-start items-center mt-2 border rounded-lg w-full border-[#228B22]/50">
+                <View className="flex flex-row justify-between items-center mt-2">
+                  {allocatedAccommodation[0]?.occupancy !== "Single" && (
                     <TouchableOpacity
                       onPress={() =>
                         router.push(
@@ -444,7 +453,7 @@ const MyTourInfo = ({ tour }) => {
                         )
                       }
                       activeOpacity={0.9}
-                      className="flex flex-row justify-between items-center py-1 px-2 gap-2 w-full"
+                      className="flex flex-row justify-between items-center py-1 px-2 gap-2"
                     >
                       <View className="flex flex-row justify-start items-center gap-2">
                         <Ionicons name="compass" size={20} color={"#228B22"} />
@@ -454,14 +463,18 @@ const MyTourInfo = ({ tour }) => {
                           Your Room Mates
                         </Text>
                       </View>
-                      <Ionicons
-                        name="chevron-forward"
-                        color={"#228B22"}
-                        size={20}
-                      />
                     </TouchableOpacity>
-                  </View>
-                )}
+                  )}
+                  <TouchableOpacity
+                    onPress={handleAccomodationModal}
+                    className="flex flex-row justify-center items-center gap-2 px-2 py-1 rounded-md"
+                  >
+                    <Ionicons name="images" size={16} color={"#228B22"} />
+                    <Text className={`font-semibold text-base text-[#228B22]`}>
+                      View Images
+                    </Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
           ) : (
@@ -575,6 +588,42 @@ const MyTourInfo = ({ tour }) => {
                 setIsModalVisible((prev) => ({
                   ...prev,
                   directionModal: false,
+                }))
+              }
+            >
+              <Text style={{ color: "white", fontWeight: "500" }}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+      <Modal
+        visible={isModalVisible.accomodationImageModal}
+        onRequestClose={() =>
+          setIsModalVisible((prev) => ({
+            ...prev,
+            accomodationImageModal: false,
+          }))
+        }
+        transparent={true}
+        animationType="fade"
+      >
+        <View style={styles.overLay}>
+          <View style={styles.modal}>
+            <View style={{ height: "90%", width: "100%" }}>
+              <Carousel
+                loop
+                width={width * 0.9}
+                height={height * 0.45}
+                data={accomodationImages}
+                renderItem={CarouselImageRender}
+              />
+            </View>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() =>
+                setIsModalVisible((prev) => ({
+                  ...prev,
+                  accomodationImageModal: false,
                 }))
               }
             >

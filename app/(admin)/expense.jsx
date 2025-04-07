@@ -139,6 +139,7 @@ const expense = () => {
       }
 
       const data = await response.json();
+
       setExpenseCategory("");
       setAmount("");
       setNote("");
@@ -254,13 +255,13 @@ const expense = () => {
   useFocusEffect(
     useCallback(() => {
       const refresh = async () => {
-        await onRefresh(); 
+        await onRefresh();
       };
-  
+
       refresh();
-      }, [currentTour])
+    }, [currentTour])
   );
-  
+
   return (
     <SafeAreaView edges={["left", "right", "bottom"]} style={{ flex: 1 }}>
       <View className="mt-14 h-full w-full relative">
@@ -402,12 +403,14 @@ const expense = () => {
             label={"Date"}
             value={formatDate(showExpenseDetails?.date)}
           />
-          <View className="w-full h-300 py-3 flex justify-center items-center">
-            <Image
-              source={showExpenseDetails?.receipt}
-              className="w-44 h-44 object-cover"
-            />
-          </View>
+          {showExpenseDetails?.receipt && (
+            <View className="w-full h-300 py-3 flex justify-center items-center">
+              <Image
+                source={showExpenseDetails?.receipt}
+                className="w-44 h-44 object-cover"
+              />
+            </View>
+          )}
           <View className="w-full flex justify-center items-center mb-3">
             <TouchableOpacity
               activeOpacity={0.9}

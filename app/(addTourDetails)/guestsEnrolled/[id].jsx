@@ -275,7 +275,7 @@ const GuestsEnrolled = () => {
                 className="py-2"
               >
                 <Text className="text-center text-base font-semibold">
-                  Reserve Requests
+                  Reserved Requests
                 </Text>
                 <Text className="font-semibold bg-green-700 text-white w-5 h-5 text-center rounded-full text-xs">
                   {reservedMembers?.length}
@@ -340,8 +340,7 @@ const GuestsEnrolled = () => {
                 ) : (
                   <NoDataMessage message="No Reserved Members" />
                 )}
-
-                {pendingApproval.length > 0 ? (
+                {pendingApproval.length > 0 && (
                   <View className="p-2 flex justify-center items-center">
                     <Text className="text-center text-lg font-semibold text-yellow-700">
                       Pending Approvals
@@ -360,8 +359,6 @@ const GuestsEnrolled = () => {
                       />
                     ))}
                   </View>
-                ) : (
-                  <NoDataMessage message="No Reserve Requests" />
                 )}
               </>
             )}
