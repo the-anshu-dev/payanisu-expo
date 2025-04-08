@@ -68,21 +68,21 @@
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:scheme="trekies"/>
-                <data android:scheme="com.anonymous.trekies"/>
-                <data android:scheme="exp+trekies"/>
+                <data android:scheme="payanisu"/>
+                <data android:scheme="com.mycompany.payanisu"/>
+                <data android:scheme="exp+payanisu"/>
             </intent-filter>
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
-                <data android:scheme="trekies" android:host="trekies" android:pathPrefix="/"/>
+                <data android:scheme="payanisu" android:host="payanisu" android:pathPrefix="/"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
 
             <intent-filter data-generated="true">
                 <action android:name="android.intent.action.VIEW"/>
-                <data android:scheme="trekies" android:host="trekies" android:pathPrefix="/"/>
+                <data android:scheme="payanisu" android:host="payanisu" android:pathPrefix="/"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>

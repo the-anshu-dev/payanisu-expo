@@ -369,7 +369,7 @@ const expense = () => {
           </>
         )}
         <View
-          className={`flex flex-grow flex-row justify-between items-center w-full absolute bottom-12 px-4 py-2 bg-white `}
+          className={`flex flex-grow flex-row justify-between items-center w-full absolute bottom-14 px-4 py-2 bg-white `}
         >
           <TouchableOpacity activeOpacity={0.9} onPress={handleExport}>
             <View
@@ -437,12 +437,27 @@ const expense = () => {
           <Text className="text-lg font-semibold">Add Expense Details</Text>
         </View>
         <View className="px-6 pt-3 flex justify-center items-center gap-3 w-full ">
-          <View style={expenseScreenStyles.pickerContainer}>
+          <View
+            style={{
+              borderWidth: 2,
+              borderColor: "#228B22",
+              borderRadius: 10,
+              width: "100%",
+              overflow: "hidden",
+              zIndex: 100,
+            }}
+          >
             <Picker
               selectedValue={expenseCategory}
-              onValueChange={setExpenseCategory}
+              onValueChange={(itemValue) => setExpenseCategory(itemValue)}
+              style={{
+                height: 50,
+                width: "100%",
+                color: "#000",
+              }}
+              collapsable={true}
               dropdownIconColor="#228B22"
-              style={expenseScreenStyles.picker}
+              mode="dropdown"
             >
               <Picker.Item label="Select Category" value={null} />
               <Picker.Item label="Food" value="Food" />

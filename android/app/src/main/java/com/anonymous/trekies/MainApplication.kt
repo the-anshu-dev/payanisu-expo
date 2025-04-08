@@ -1,4 +1,4 @@
-package com.anonymous.trekies
+package com.mycompany.payanisu
 
 import android.app.Application
 import android.content.res.Configuration

@@ -53,3 +53,12 @@ export const expenseCategories = [
     value: "Miscellaneous",
   },
 ];
+
+export const INITIAL_REGION = {
+  latitude: 12.9716,
+  longitude: 77.5946,
+  latitudeDelta: 0.0922,
+  longitudeDelta: 0.0421,
+};
+
+export const apiKey = process.env.EXPO_PUBLIC_GOOGLE_API_KEY;

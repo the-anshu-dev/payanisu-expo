@@ -1,5 +1,5 @@
-import { View, RefreshControl } from "react-native";
-import React, { useState, useCallback } from "react";
+import { View, RefreshControl, Text } from "react-native";
+import React, { useState, useCallback, useEffect } from "react";
 import { ScrollView } from "react-native-gesture-handler";
 import { StatusBar } from "expo-status-bar";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,17 +7,19 @@ import { setBookedTour } from "../../redux/slices/tourSlice";
 import MyTourCard from "../../components/UI/MyTourCard";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Redirect, useFocusEffect } from "expo-router";
+import { useFocusEffect } from "expo-router";
 import { showError } from "../../utils/toastHelper";
 import { myTourScreenStyles } from "../../constants/Styles";
 import Loader from "../../components/common/Loader";
 import NotAvailableComponent from "../../components/UI/NotAvailableComponent";
+import { TouchableOpacity } from "react-native";
 
 const MyTours = () => {
   const { user } = useSelector((state) => state.user);
   const { bookedTour } = useSelector((state) => state.tour);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [bookingStatus, setBookingStatus] = useState(1);
 
   const dispatch = useDispatch();
 
@@ -42,6 +44,10 @@ const MyTours = () => {
       setLoading(false);
     }
   };
+
+  const filterBookedTours = bookedTour.filter(
+    (tour) => tour.status !== 0 && tour.status === bookingStatus
+  );
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -73,6 +79,65 @@ const MyTours = () => {
       style={myTourScreenStyles.safeArea}
       edges={["left", "right", "bottom"]}
     >
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          width: "100%",
+          paddingHorizontal: 15,
+          paddingVertical: 10,
+          backgroundColor: "white",
+        }}
+      >
+        <TouchableOpacity
+          onPress={() => setBookingStatus(1)}
+          style={{
+            width: "48%",
+            borderWidth: 1,
+            borderColor: "green",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            borderRadius: 100,
+            paddingVertical: 5,
+            backgroundColor: bookingStatus === 1 ? "green" : "white",
+          }}
+        >
+          <Text
+            style={{
+              color: bookingStatus === 1 ? "white" : "black",
+              fontWeight: "600",
+            }}
+          >
+            Booked
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => setBookingStatus(2)}
+          style={{
+            width: "48%",
+            borderWidth: 1,
+            borderColor: "green",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            borderRadius: 100,
+            paddingVertical: 5,
+            backgroundColor: bookingStatus === 1 ? "white" : "green",
+          }}
+        >
+          <Text
+            style={{
+              color: bookingStatus === 1 ? "black" : "white",
+              fontWeight: "600",
+            }}
+          >
+            Pending
+          </Text>
+        </TouchableOpacity>
+      </View>
       <StatusBar style="dark" backgroundColor="#fff" translucent animated />
       <View style={myTourScreenStyles.container}>
         <ScrollView
@@ -83,13 +148,22 @@ const MyTours = () => {
           }
         >
           <View style={myTourScreenStyles.toursContainer}>
-            {bookedTour.map((tour, idx) => (
-              <MyTourCard
-                key={tour.id || idx}
-                tour={tour.tourDetails}
-                status={tour.status}
+            {filterBookedTours.length > 0 ? (
+              filterBookedTours?.map((tour, idx) => (
+                <MyTourCard
+                  key={tour.id || idx}
+                  tour={tour.tourDetails}
+                  status={tour.status}
+                />
+              ))
+            ) : (
+              <NotAvailableComponent
+                text={
+                  bookingStatus === 1 ? "No Booked Tours" : "No Pending Tours"
+                }
+                iconName={"alert-circle-outline"}
               />
-            ))}
+            )}
           </View>
         </ScrollView>
       </View>

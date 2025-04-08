@@ -20,16 +20,9 @@ import {
   showSuccess,
   showWarning,
 } from "../../../utils/toastHelper";
+import { apiKey, INITIAL_REGION } from "../../../constants/constant";
 
 const { width, height } = Dimensions.get("window");
-const apiKey = process.env.EXPO_PUBLIC_GOOGLE_API_KEY;
-
-const INITIAL_REGION = {
-  latitude: 12.9716,
-  longitude: 77.5946,
-  latitudeDelta: 0.0922,
-  longitudeDelta: 0.0421,
-};
 
 const Page = () => {
   const { id } = useLocalSearchParams();
@@ -204,7 +197,6 @@ const Page = () => {
               <Picker.Item label="Geo Tagging" value="Geo Tagging" />
               <Picker.Item label="QR Code" value="Qr Code" />
             </Picker>
-
             <TouchableOpacity
               onPress={() => setModalVisible(true)}
               style={{

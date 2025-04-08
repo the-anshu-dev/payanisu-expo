@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "trekies",
-    "slug": "trekies",
+    "name": "Payanisu",
+    "slug": "payanisu",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "trekies",
+    "scheme": "payanisu",
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/images/splash.png",
@@ -22,14 +22,14 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.trekies",
+      "package": "com.mycompany.payanisu",
       "googleServicesFile": "./google-services.json",
       "intentFilters": [
         {
           "action": "VIEW",
           "data": {
-            "scheme": "trekies",
-            "host": "trekies",
+            "scheme": "payanisu",
+            "host": "payanisu",
             "pathPrefix": "/"
           },
           "category": ["BROWSABLE", "DEFAULT"]
@@ -73,7 +73,7 @@
     },
     "owner": "prince_24",
     "ios": {
-      "bundleIdentifier": "com.anonymous.trekies"
+      "bundleIdentifier": "com.mycompany.payanisu"
     }
   }
 }

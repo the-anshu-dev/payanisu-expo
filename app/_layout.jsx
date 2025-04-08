@@ -45,7 +45,6 @@ export default function RootLayout() {
               options={{ headerShown: false }}
             />
             <Stack.Screen name="login" options={{ headerShown: false }} />
-            <Stack.Screen name="form" options={{ headerShown: false }} />
             <Stack.Screen name="addRoles" options={getOpt("Add Roles")} />
             <Stack.Screen name="addMember" options={getOpt("Add Member")} />
             <Stack.Screen name="addTours" options={getOpt("Add Tour")} />

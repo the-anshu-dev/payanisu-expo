@@ -43,7 +43,7 @@ const MyTourInfo = ({ tour }) => {
   const busImages = tourDetails?.images
     .filter((i) => i.type === "bus")
     .map((i) => i.url);
-    
+
   const accomodationImages = tourDetails?.images
     .filter((i) => i.type === "accomodation")
     .map((i) => i.url);
@@ -55,7 +55,7 @@ const MyTourInfo = ({ tour }) => {
   const [boardingPoints, setBoardingPoints] = useState([]);
   const [accomodationDetails, setAccomodationDetails] = useState([]);
   const [destination, setDestination] = useState({});
-  
+
   const [cancelling, setCancelling] = useState(false);
 
   const [isModalVisible, setIsModalVisible] = useState({
@@ -417,7 +417,7 @@ const MyTourInfo = ({ tour }) => {
             <Ionicons name="bed" size={20} color={"#228B22"} />
             <Text className={`font-bold`}>Accomodation Details</Text>
           </View>
-          {Object.keys(accomodationDetails).length > 0 ? (
+          {accomodationDetails ? (
             <View className="mt-2">
               <View className="gap-2 pl-2">
                 <View>
@@ -491,38 +491,38 @@ const MyTourInfo = ({ tour }) => {
             </View>
           )}
         </View>
-        <TouchableOpacity
-          onPress={() => setViewFAQ(!viewFAQ)}
-          activeOpacity={0.9}
-          className="p-2 rounded-lg shadow-lg shadow-black/50 bg-white flex flex-row justify-between"
-        >
-          <View className="flex flex-row justify-left items-center gap-3 border-gray-300 px-1">
-            <Ionicons name="help-circle-outline" size={24} color={"#228B22"} />
-            <Text className={`text-base font-semibold`}>
-              Frequently Asked Questions (FAQs)
-            </Text>
-          </View>
-          <Ionicons
-            name={viewFAQ ? "chevron-down-outline" : "chevron-forward-outline"}
-            size={24}
-            color={"#228B22"}
-          />
-        </TouchableOpacity>
-        <View>
-          {viewFAQ ? (
-            faqUrl ? (
-              <Image
-                style={{ height: height * 0.8, borderRadius: 10 }}
-                source={{ uri: faqUrl }}
+        {faqUrl && (
+          <TouchableOpacity
+            onPress={() => setViewFAQ(!viewFAQ)}
+            activeOpacity={0.9}
+            className="p-2 rounded-lg shadow-lg shadow-black/50 bg-white flex flex-row justify-between"
+          >
+            <View className="flex flex-row justify-left items-center gap-3 border-gray-300 px-1">
+              <Ionicons
+                name="help-circle-outline"
+                size={24}
+                color={"#228B22"}
               />
-            ) : (
-              <View>
-                <Text className="text-center text-lg font-semibold mt-4">
-                  FAQs not available
-                </Text>
-              </View>
-            )
-          ) : null}
+              <Text className={`text-base font-semibold`}>
+                Frequently Asked Questions (FAQs)
+              </Text>
+            </View>
+            <Ionicons
+              name={
+                viewFAQ ? "chevron-down-outline" : "chevron-forward-outline"
+              }
+              size={24}
+              color={"#228B22"}
+            />
+          </TouchableOpacity>
+        )}
+        <View>
+          {viewFAQ && (
+            <Image
+              style={{ height: height * 0.8, borderRadius: 10 }}
+              source={{ uri: faqUrl }}
+            />
+          )}
         </View>
         {cancelCondition && (
           <TouchableOpacity

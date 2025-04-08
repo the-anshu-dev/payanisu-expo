@@ -37,9 +37,9 @@
         "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_ANDROID_CLIENT_ID": "224596464252-9uorphjo5hosnkp02sn8sb3sclgoiup9.apps.googleusercontent.com",
+        "EXPO_PUBLIC_ANDROID_CLIENT_ID": "701498649058-10gk3o9417ss61nsmk0poebq2ujr956d.apps.googleusercontent.com",
         "EXPO_PUBLIC_BASE_URL": "http://13.235.234.229:9000",
-        "EXPO_PUBLIC_GOOGLE_API_KEY": "AIzaSyCsSJ8KZ_1mB44pVnIjcqzx_lWV87kuHRc"
+        "EXPO_PUBLIC_GOOGLE_API_KEY": "AIzaSyAWiZa_f1BStr9sDkGGJdDvmOV76-SVoFo"
       }
     }
   },
