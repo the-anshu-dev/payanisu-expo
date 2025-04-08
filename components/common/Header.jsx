@@ -25,7 +25,7 @@ const Header = () => {
           `${process.env.EXPO_PUBLIC_BASE_URL}/api/users/getProfile`,
           {
             method: "GET",
-            headers: { email: userEmail },
+            headers: { email: user.email },
           }
         );
         if (response.status == 404) {
@@ -57,13 +57,13 @@ const Header = () => {
               activeOpacity={0.9}
               className="px-3 py-2"
             >
-              <FontAwesome6 name="bars" size={30} color="#228B22" />
+              <FontAwesome6 name="bars" size={28} color="#228B22" />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => router.push("/(tabs)")}
               activeOpacity={0.9}
             >
-              <Logo width={width * 0.35} height={height * 0.04} />
+              <Logo width={width * 0.4} height={height * 0.04} />
             </TouchableOpacity>
           </View>
           <TouchableOpacity activeOpacity={0.9} onPress={handleProfilePress}>

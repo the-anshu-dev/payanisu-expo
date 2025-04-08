@@ -70,7 +70,7 @@ const Menu = () => {
           style={styles.logOutButton}
         >
           {loggingOut ? (
-            <ActivityIndicator size={"small"} color={"green"} />
+            <ActivityIndicator size={"small"} color={"white"} />
           ) : (
             <View style={{ display: "flex", flexDirection: "row" }}>
               <Ionicons

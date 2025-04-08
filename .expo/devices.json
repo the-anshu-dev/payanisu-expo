@@ -1,44 +1,8 @@
 {
   "devices": [
     {
-      "installationId": "cdd78a33-aef6-4e92-8726-29e3bdcf749a",
-      "lastUsed": 1744025292118
-    },
-    {
-      "installationId": "07b82b57-66c6-4709-acb3-959b5f5938d4",
-      "lastUsed": 1743791835801
-    },
-    {
-      "installationId": "892edcf9-8ba6-4d1c-aa1f-c5d9ddf3b7f7",
-      "lastUsed": 1743438920036
-    },
-    {
-      "installationId": "8897ec6a-db40-474e-9763-bed77a7ba2bd",
-      "lastUsed": 1743368368402
-    },
-    {
-      "installationId": "8b9a7d48-c03e-43dd-bab1-80c49cb17724",
-      "lastUsed": 1743326255327
-    },
-    {
-      "installationId": "2cf710e8-0c23-4ac0-93ee-0f4805878914",
-      "lastUsed": 1743325410902
-    },
-    {
-      "installationId": "25cd9a3f-064a-4fca-bc53-de4904657ce8",
-      "lastUsed": 1743317457522
-    },
-    {
-      "installationId": "dde28923-b155-40ed-b97c-6ca5c85ad6fc",
-      "lastUsed": 1743312088380
-    },
-    {
-      "installationId": "a257eb78-72d4-4c99-b4a0-043b828d1077",
-      "lastUsed": 1743239814125
-    },
-    {
-      "installationId": "02cdc14c-bca7-4b0c-a421-336170432750",
-      "lastUsed": 1743221736519
+      "installationId": "f3fefa99-18db-4cf9-800f-add7796e8875",
+      "lastUsed": 1744086947030
     }
   ]
 }

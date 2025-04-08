@@ -57,6 +57,9 @@ export const uploadFileToS3 = async (file) => {
     const extension = file.mimeType.split("/")[1] || "png";
     const fileName = `${name.split(" ")[0]}_${Date.now()}.${extension}`;
 
+    console.log("Uploading file:", fileName, "MIME:", file.mimeType);
+
+    // Step 1: Get the pre-signed URL from your server
     const res = await fetch(`${BASE_URL}/api/putObject`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -64,37 +67,39 @@ export const uploadFileToS3 = async (file) => {
     });
 
     const presignedUrl = await res.text();
-
-    console.log('11111')
+    console.log("Pre-signed URL:", presignedUrl);
 
     if (!res.ok || !presignedUrl) {
-      throw new Error(`Failed to get pre-signed URL for ${name}`);
+      throw new Error(`Failed to get pre-signed URL: ${res.status}`);
     }
 
-    const fileData = await FileSystem.readAsStringAsync(file.uri, {
-      encoding: FileSystem.EncodingType.Base64,
-    });
+    // Step 2: Fetch the file from local uri (handled by Expo)
+    const fileResponse = await fetch(file.uri);
+    const blob = await fileResponse.blob();
 
-    const binaryData = Uint8Array.from(atob(fileData), (c) => c.charCodeAt(0));
+    console.log("File size:", blob.size);
 
-    console.log("33333")
-
-    const uploadResponse = await fetch(presignedUrl, {
+    // Step 3: Upload to S3 using the pre-signed URL
+    const uploadRes = await fetch(presignedUrl, {
       method: "PUT",
-      headers: { "Content-Type": file.mimeType },
-      body: binaryData,
+      headers: {
+        "Content-Type": file.mimeType,
+      },
+      body: blob,
     });
 
-    console.log('22222')
+    console.log("Upload response status:", uploadRes.status);
 
-    if (!uploadResponse.ok) {
-      throw new Error(`Failed to upload file: ${fileName}`);
+    if (!uploadRes.ok) {
+      const errorText = await uploadRes.text();
+      throw new Error(`Failed to upload file: ${fileName} - ${errorText}`);
     }
 
     const fileUrl = `${S3_BASE_URL}${fileName}`;
     return fileUrl;
   } catch (error) {
-    console.error("Error while uploading file:", error);
+    console.error("Upload error:", error.message);
     return null;
   }
 };
+

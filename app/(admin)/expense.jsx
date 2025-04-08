@@ -28,6 +28,7 @@ import { Picker } from "@react-native-picker/picker";
 import ExpenseCard from "../../components/UI/ExpenseCard.jsx";
 import { expenseScreenStyles } from "../../constants/Styles.js";
 import { useFocusEffect } from "expo-router";
+import NotAvailableComponent from "../../components/UI/NotAvailableComponent.jsx";
 
 const { width } = Dimensions.get("window");
 
@@ -262,6 +263,15 @@ const expense = () => {
     }, [currentTour])
   );
 
+  if (toursDataForDropdown.length === 0) {
+    return (
+      <NotAvailableComponent
+        text={"You haven't created any tour."}
+        iconName={"alert-circle-outline"}
+      />
+    );
+  }
+
   return (
     <SafeAreaView edges={["left", "right", "bottom"]} style={{ flex: 1 }}>
       <View className="mt-14 h-full w-full relative">
@@ -359,7 +369,7 @@ const expense = () => {
           </>
         )}
         <View
-          className={`flex flex-grow flex-row justify-between items-center w-full absolute bottom-16 px-4 py-2 bg-white `}
+          className={`flex flex-grow flex-row justify-between items-center w-full absolute bottom-12 px-4 py-2 bg-white `}
         >
           <TouchableOpacity activeOpacity={0.9} onPress={handleExport}>
             <View

@@ -77,9 +77,6 @@ const RoomDetails = () => {
       }
 
       const res = await response.json();
-
-      console.log(res._id);
-
       const { _id } = res;
 
       await uploadFilesToS3(images, _id, "accommodation");
