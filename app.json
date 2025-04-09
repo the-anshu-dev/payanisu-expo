@@ -36,7 +36,6 @@
         "android.permission.ACCESS_FINE_LOCATION",
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_BACKGROUND_LOCATION",
-        "android.permission.ACCESS_BACKGROUND_LOCATION",
         "android.permission.INTERNET"
       ],
       "intentFilters": [
@@ -47,7 +46,10 @@
             "host": "payanisu",
             "pathPrefix": "/"
           },
-          "category": ["BROWSABLE", "DEFAULT"]
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         }
       ]
     },
@@ -98,12 +100,15 @@
       ]
     ],
     "extra": {
-      "eas": {
-        "projectId": "492d9093-8144-4155-b019-962b57ee71b0"
-      },
       "EXPO_PUBLIC_ANDROID_CLIENT_ID": "701498649058-10gk3o9417ss61nsmk0poebq2ujr956d.apps.googleusercontent.com",
       "EXPO_PUBLIC_BASE_URL": "http://13.235.234.229:9000",
-      "EXPO_PUBLIC_GOOGLE_API_KEY": "AIzaSyCsSJ8KZ_1mB44pVnIjcqzx_lWV87kuHRc"
+      "EXPO_PUBLIC_GOOGLE_API_KEY": "AIzaSyAWiZa_f1BStr9sDkGGJdDvmOV76-SVoFo",
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "5471eac2-e29d-4468-8944-a07f791114e3"
+      }
     },
     "owner": "prince_24"
   }
