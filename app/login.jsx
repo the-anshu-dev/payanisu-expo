@@ -10,7 +10,7 @@ import { useDispatch } from "react-redux";
 import { setProfile, setRole, setUser } from "../redux/slices/userSlice";
 import payanisuPoster from "../assets/payanisu.png";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { showError, showSuccess } from "../utils/toastHelper";
+import { showError } from "../utils/toastHelper";
 import { loginScreenStyles } from "../constants/Styles";
 
 WebBrowser.maybeCompleteAuthSession();
@@ -53,32 +53,50 @@ const Login = () => {
 
       dispatch(setUser(user));
       await storeUserData(user);
-
       const userEmail = user.email;
 
-      const [roleResponse, profileResponse] = await Promise.all([
-        fetch(`${process.env.EXPO_PUBLIC_BASE_URL}/api/users/signin`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: userEmail }),
-        }),
-        fetch(`${process.env.EXPO_PUBLIC_BASE_URL}/api/users/getProfile`, {
-          method: "GET",
-          headers: { email: userEmail },
-        }),
-      ]);
+      // Optional calls: log errors but don't block navigation
+      try {
+        const roleResponse = await fetch(
+          `${process.env.EXPO_PUBLIC_BASE_URL}/api/users/signin`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: userEmail }),
+          }
+        );
 
-      if (!roleResponse.ok) throw new Error("Failed to fetch user role.");
-      if (!profileResponse.ok) throw new Error("Failed to fetch user profile.");
+        if (roleResponse.ok) {
+          const roleData = await roleResponse.json();
+          dispatch(setRole(roleData || null));
+        } else {
+          console.warn("Role fetch failed:", await roleResponse.text());
+        }
+      } catch (error) {
+        console.warn("Error fetching role:", error);
+      }
 
-      const roleData = await roleResponse.json();
-      const profileData = await profileResponse.json();
+      try {
+        const profileResponse = await fetch(
+          `${process.env.EXPO_PUBLIC_BASE_URL}/api/users/getProfile`,
+          {
+            method: "GET",
+            headers: { email: userEmail },
+          }
+        );
 
-      dispatch(setRole(roleData));
-      dispatch(setProfile(profileData));
+        if (profileResponse.ok) {
+          const profileData = await profileResponse.json();
+          dispatch(setProfile(profileData || null));
+        } else {
+          console.warn("Profile fetch failed:", await profileResponse.text());
+        }
+      } catch (error) {
+        console.warn("Error fetching profile:", error);
+      }
 
       setSessionActive(true);
-      router.replace("(tabs)");
+      router.replace("/(tabs)");
     } catch (error) {
       showError(error.message || "An error occurred. Please try again.");
     } finally {
@@ -105,7 +123,11 @@ const Login = () => {
 
   const handleLogin = useCallback(() => {
     if (!sessionActive) {
-      promptAsync();
+      try {
+        promptAsync();
+      } catch (err) {
+        showError("Could not start Google login.");
+      }
     }
   }, [sessionActive, promptAsync]);
 
