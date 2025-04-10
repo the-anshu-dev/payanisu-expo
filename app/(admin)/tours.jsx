@@ -49,10 +49,6 @@ const Tours = () => {
     return <Loader />;
   }
 
-  if (adminTours.length == 0) {
-    return <NotAvailableComponent text="No Tours Available" iconName="car" />;
-  }
-
   return (
     <SafeAreaView style={{ flex: 1 }} edges={["left", "right", "bottom"]}>
       <View style={tourScreenStyles.container}>
@@ -61,9 +57,14 @@ const Tours = () => {
           showsVerticalScrollIndicator={false}
         >
           <View style={tourScreenStyles.tourListContainer}>
-            {adminTours.map((item) => (
-              <TourCard key={item?._id} tour={item} />
-            ))}
+            {!adminTours.length > 0 ? (
+              adminTours.map((item) => <TourCard key={item?._id} tour={item} />)
+            ) : (
+              <NotAvailableComponent
+                text="No Tours Available"
+                iconName="alert-circle-outline"
+              />
+            )}
           </View>
         </ScrollView>
         <View style={tourScreenStyles.createButtonContainer}>

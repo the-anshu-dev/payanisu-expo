@@ -8,7 +8,7 @@ const NotAvailableComponent = ({ text, iconName, iconSize = 48 }) => {
     <SafeAreaView style={{ flex: 1 }} edges={["left", "right", "bottom"]}>
       <View style={styles.container}>
         <View>
-          <Ionicons name={iconName} size={iconSize} />
+          <Ionicons name={iconName} size={iconSize} color={"green"} />
         </View>
         <Text style={styles.text}>{text}</Text>
       </View>
@@ -29,6 +29,8 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "#333",
     fontWeight: "bold",
+    marginTop: 15,
+    color: "green",
   },
 });
 

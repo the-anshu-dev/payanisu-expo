@@ -8,7 +8,7 @@ import * as Google from "expo-auth-session/providers/google";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch } from "react-redux";
 import { setProfile, setRole, setUser } from "../redux/slices/userSlice";
-import payanisuPoster from "../assets/payanisu.png";
+import payanisuPoster from "../assets/payanisu.jpeg";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { showError } from "../utils/toastHelper";
 import { loginScreenStyles } from "../constants/Styles";
@@ -55,7 +55,6 @@ const Login = () => {
       await storeUserData(user);
       const userEmail = user.email;
 
-      // Optional calls: log errors but don't block navigation
       try {
         const roleResponse = await fetch(
           `${process.env.EXPO_PUBLIC_BASE_URL}/api/users/signin`,
