@@ -189,7 +189,6 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   input: {
-    color: "white",
     fontSize: 18,
     width: "100%",
     paddingVertical: 12,
@@ -215,11 +214,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     paddingHorizontal: 15,
+    paddingVertical: 10,
     alignItems: "center",
     position: "absolute",
-    bottom: 10,
+    bottom: 0,
     width: "100%",
-    marginTop: 20,
+    backgroundColor: "white",
   },
   submitButton: {
     backgroundColor: "#228B22",

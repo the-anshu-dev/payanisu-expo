@@ -25,6 +25,7 @@ export const uploadFilesToS3 = async (files, id = 12, type = "tour") => {
       const binaryData = Uint8Array.from(atob(fileData), (c) =>
         c.charCodeAt(0)
       );
+
       await fetch(presignedUrl, {
         method: "PUT",
         headers: { "Content-Type": file.mimeType },
@@ -59,33 +60,29 @@ export const uploadFileToS3 = async (file) => {
 
     console.log("Uploading file:", fileName, "MIME:", file.mimeType);
 
-    // Step 1: Get the pre-signed URL from your server
-    const res = await fetch(`${BASE_URL}/api/putObject`, {
+    const preSignedUrlResponse = await fetch(`${BASE_URL}/api/putObject`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ fileName, contentType: file.mimeType }),
     });
 
-    const presignedUrl = await res.text();
-    console.log("Pre-signed URL:", presignedUrl);
-
-    if (!res.ok || !presignedUrl) {
-      throw new Error(`Failed to get pre-signed URL: ${res.status}`);
+    if (!preSignedUrlResponse.ok) {
+      throw new Error(`Failed to get pre-signed URL for ${file.fileName}`);
     }
 
-    // Step 2: Fetch the file from local uri (handled by Expo)
-    const fileResponse = await fetch(file.uri);
-    const blob = await fileResponse.blob();
+    const presignedUrl = await preSignedUrlResponse.json();
+    const fileData = await FileSystem.readAsStringAsync(file.uri, {
+      encoding: FileSystem.EncodingType.Base64,
+    });
 
-    console.log("File size:", blob.size);
+    const binaryData = Uint8Array.from(atob(fileData), (c) => c.charCodeAt(0));
 
-    // Step 3: Upload to S3 using the pre-signed URL
     const uploadRes = await fetch(presignedUrl, {
       method: "PUT",
       headers: {
         "Content-Type": file.mimeType,
       },
-      body: blob,
+      body: binaryData,
     });
 
     console.log("Upload response status:", uploadRes.status);

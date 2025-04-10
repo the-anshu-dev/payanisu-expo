@@ -9,8 +9,7 @@ import { formatDate, calculateDuration } from "../../utils/helpers.js";
 const { width, height } = Dimensions.get("window");
 
 const CarouselCard = ({ tour }) => {
-
-  const images = tour.images.filter((i) => !i.type).map((i) => i.url);
+  const images = tour.images.filter((i) => i.type === "tour").map((i) => i.url);
   
   return (
     <Link push href={`/details/${tour._id}`} className="ml-6">

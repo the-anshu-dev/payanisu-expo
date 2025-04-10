@@ -282,13 +282,15 @@ const RoomDetails = () => {
           <GooglePlacesAutocomplete
             ref={googlePlacesRef}
             placeholder="Search location"
-            fetchDetails
-            onPress={(data, details) => handleLocationSelect(details)}
+            fetchDetails={true}
+            onPress={(data, details) => {
+              handleLocationSelect(details);
+            }}
             query={{
               key: process.env.EXPO_PUBLIC_GOOGLE_API_KEY,
               language: "en",
             }}
-            addTourScreenStyles={{
+            styles={{
               textInputContainer: {
                 backgroundColor: "#fff",
                 borderRadius: 8,

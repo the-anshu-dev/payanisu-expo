@@ -33,6 +33,7 @@ const MyTourInfo = ({ tour }) => {
     checkinbagages,
     allocatedAccommodation,
     allocatedTransport,
+    Members,
   } = tour;
 
   const { faqUrl, name, description, tour_start, tour_end, booking_close } =
@@ -63,6 +64,12 @@ const MyTourInfo = ({ tour }) => {
     directionModal: false,
     accomodationImageModal: false,
   });
+
+  const [accommodationImg, setAccommodationImg] = useState([]);
+
+  const accommodationImages = Array.isArray(accommodationImg)
+  ? accommodationImg.map((i) => i.url)
+  : [];
 
   const handleBusModal = () => {
     setIsModalVisible((prev) => ({ ...prev, busImageModal: true }));
@@ -117,10 +124,27 @@ const MyTourInfo = ({ tour }) => {
         `${process.env.EXPO_PUBLIC_BASE_URL}/api/accommodation/get?id=${accommodationId}`
       );
 
+      const imageRes = await fetch(
+        `${process.env.EXPO_PUBLIC_BASE_URL}/api/image/get-image`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            id: accommodationId,
+          },
+        }
+      );
+
+      if (!imageRes.ok || imageRes.status !== 200) {
+        console.log("Failed to load images or no images downloaded.");
+      }
+
       if (response.status !== 200) {
         throw new Error("Failed to fetch guest houses");
       }
 
+      const imageData = await imageRes.json();
+      setAccommodationImg(imageData);
       const data = await response.json();
       setAccomodationDetails(data);
     } catch (error) {
@@ -183,7 +207,7 @@ const MyTourInfo = ({ tour }) => {
     3: "Cancelled",
   };
 
-  const cancelCondition = status === 1 && booking_close > new Date();
+  const cancelCondition = new Date(booking_close) > new Date();
 
   useEffect(() => {
     onRefresh();
@@ -252,6 +276,32 @@ const MyTourInfo = ({ tour }) => {
             )} - ${formatDate(tour_end)}`}</Text>
           </View>
         </View>
+        {Members.length > 0 && (
+          <View className="bg-white p-2 rounded-lg shadow-lg shadow-black">
+            <Text className="font-semibold text-green-700">Booked Members</Text>
+            <View className="gap-2">
+              {Members.map((member) => (
+                <View
+                  key={member._id}
+                  className="flex flex-row gap-2 mt-2 justify-between p-2 bg-white rounded-lg shadow-lg shadow-black "
+                >
+                  <Text className={`text-base mt-1 tracking-wider`}>
+                    {member.name}
+                  </Text>
+                  <Text className={`text-base mt-1 tracking-wider`}>
+                    {member.gender.charAt(0)}
+                  </Text>
+                  <Text className={`text-base mt-1 tracking-wider`}>
+                    {member.age}
+                  </Text>
+                  <Text className={`text-base mt-1 tracking-wider`}>
+                    {member.contact}
+                  </Text>
+                </View>
+              ))}
+            </View>
+          </View>
+        )}
         <View className="p-2 shadow-lg shadow-black bg-white rounded-lg">
           <View className="flex flex-row justify-left items-center gap-2 border-b border-gray-300/50 pb-1">
             <Ionicons name="thumbs-up-outline" size={20} color={"#228B22"} />
@@ -383,7 +433,6 @@ const MyTourInfo = ({ tour }) => {
                   </Text>
                 </TouchableOpacity>
               </View>
-
               <View className="mt-2 gap-3">
                 {boardingPoints.length > 0 &&
                   boardingPoints.map((point, index) => (
@@ -614,7 +663,7 @@ const MyTourInfo = ({ tour }) => {
                 loop
                 width={width * 0.9}
                 height={height * 0.45}
-                data={accomodationImages}
+                data={accommodationImages}
                 renderItem={CarouselImageRender}
               />
             </View>

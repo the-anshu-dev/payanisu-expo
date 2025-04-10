@@ -17,7 +17,6 @@ import { format } from "date-fns";
 import { ActivityIndicator } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { showError, showSuccess } from "../../../utils/toastHelper";
-import * as Crypto from "expo-crypto";
 
 const { width, height } = Dimensions.get("window");
 
@@ -57,10 +56,13 @@ const ViewCheckIns = () => {
     const remainder = members.length % 4;
     const placeholdersNeeded = remainder > 0 ? 4 - remainder : 0;
 
-    return [
-      ...members,
-      ...Array(placeholdersNeeded).fill({ _id: Crypto.randomUUID(), placeholder: true }),
-    ];
+    const timestamp = Date.now();
+    const placeholders = Array.from({ length: placeholdersNeeded }, (_, i) => ({
+      _id: `placeholder-${timestamp}-${i}`,
+      placeholder: true,
+    }));
+
+    return [...members, ...placeholders];
   };
 
   const getBookedUsers = async () => {
@@ -195,10 +197,11 @@ const ViewCheckIns = () => {
 
   return (
     <SafeAreaView style={{ flex: 1 }} edges={["bottom", "left", "right"]}>
-      {checkedInMembersLoading ?
+      {checkedInMembersLoading ? (
         <View className="h-full w-full flex justify-center items-center">
           <ActivityIndicator size={"large"} color="#228B22" />
-        </View> :
+        </View>
+      ) : (
         <View className="p-2 mt-2 h-full relative flex justify-center items-center">
           <View className="mb-3 w-full px-2">
             <LinearGradient
@@ -243,7 +246,12 @@ const ViewCheckIns = () => {
             <View style={styles.cardContainer}>
               {getMembersWithPlaceholders(allMembers).map((member) => {
                 if (member.placeholder) {
-                  return <View key={member._id} style={[styles.card, { opacity: 0 }]} />;
+                  return (
+                    <View
+                      key={member._id}
+                      style={[styles.card, { opacity: 0 }]}
+                    />
+                  );
                 }
 
                 const profile = member?.ProfileData?.[0] || {};
@@ -252,10 +260,10 @@ const ViewCheckIns = () => {
                 return (
                   <CheckedInUserCard
                     key={member._id}
-                    name={profile.name}
-                    email={profile.email}
-                    age={profile.age}
-                    gender={profile.gender}
+                    name={member.name}
+                    email={member.email}
+                    age={member.age}
+                    gender={member.gender}
                     contact={profile.contact}
                     emergency_contact={profile.emergency_contact}
                     checkInTime={checkedInMember?.createdAt}
@@ -279,7 +287,8 @@ const ViewCheckIns = () => {
               <Text>Reset All Check-Ins</Text>
             </TouchableOpacity>
           </View>
-        </View>}
+        </View>
+      )}
       <Modalize ref={resetAllRef} adjustToContentHeight>
         <View style={{ padding: 20, alignItems: "center", paddingBottom: 20 }}>
           <Ionicons name="warning" size={48} color="red" />
@@ -288,7 +297,14 @@ const ViewCheckIns = () => {
           >
             Are you sure?
           </Text>
-          <Text style={{ textAlign: "center", color: "#555", paddingHorizontal: 30, fontWeight: "500" }}>
+          <Text
+            style={{
+              textAlign: "center",
+              color: "#555",
+              paddingHorizontal: 30,
+              fontWeight: "500",
+            }}
+          >
             Once you reset this, all your current data will be lost and cannot
             be recovered.
           </Text>
@@ -510,7 +526,7 @@ const CheckedInUserCard = ({
 
 const styles = StyleSheet.create({
   card: {
-    width: width * 0.20,
+    width: width * 0.2,
     height: 80,
     borderRadius: 5,
     padding: 10,
@@ -527,7 +543,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     justifyContent: "space-between",
     alignItems: "start",
-    gap: 15
+    gap: 15,
   },
 });
 

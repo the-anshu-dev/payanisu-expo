@@ -224,6 +224,11 @@ const addTours = () => {
     setLatitude(lat);
     setLongitude(lng);
     setLocation(details.formatted_address);
+    const { address_components } = details;
+    const stateComponent = address_components.find(component =>
+      component.types.includes("administrative_area_level_1")
+    );
+    setState(stateComponent?.long_name)
   };
 
   useEffect(() => {
@@ -527,7 +532,7 @@ const addTours = () => {
               key: process.env.EXPO_PUBLIC_GOOGLE_API_KEY,
               language: "en",
             }}
-            addTourScreenStyles={{
+            styles={{
               textInputContainer: {
                 backgroundColor: "#fff",
                 borderRadius: 8,

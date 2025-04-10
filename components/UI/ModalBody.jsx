@@ -55,7 +55,18 @@ const ModalBody = ({
   };
 
   const handleAllocateRoom = async () => {
+    if (
+      !roomNumber ||
+      !occupancyValue ||
+      !roomTypeValue ||
+      guestsValue.length === 0
+    ) {
+      showError("Please fill in all the fields");
+      return;
+    }
+
     setLoading(true);
+
     try {
       for (let item of guestsValue) {
         const body = {

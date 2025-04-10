@@ -14,7 +14,7 @@ import { Ionicons } from "@expo/vector-icons";
 import DropDownPicker from "react-native-dropdown-picker";
 import { useDispatch, useSelector } from "react-redux";
 import * as ImagePicker from "expo-image-picker";
-import { exportDataToExcel, formatDate } from "../../utils/helpers.js";
+import { exportDataToExcel } from "../../utils/helpers.js";
 import { Image } from "expo-image";
 import { uploadFileToS3 } from "../../utils/uploadFileHelper.js";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -26,7 +26,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { showError, showWarning } from "../../utils/toastHelper.js";
 import { Picker } from "@react-native-picker/picker";
 import ExpenseCard from "../../components/UI/ExpenseCard.jsx";
-import { expenseScreenStyles } from "../../constants/Styles.js";
 import { useFocusEffect } from "expo-router";
 import NotAvailableComponent from "../../components/UI/NotAvailableComponent.jsx";
 
@@ -51,6 +50,7 @@ const expense = () => {
   const [open, setOpen] = useState(false);
 
   const [showExpenseDetails, setShowExpenseDetails] = useState(null);
+  console.log("showExpenseDetails", showExpenseDetails);
 
   const [expenseData, setExpenseData] = useState(null);
 
@@ -402,25 +402,20 @@ const expense = () => {
       </View>
       <Modalize ref={showExpenseDetailRef} adjustToContentHeight>
         <View className="px-3">
-          <View className="flex justify-center items-center py-3">
-            <Text className="text-xl font-semibold">Expense Details</Text>
-          </View>
-          <LabelValue label={"Category"} value={showExpenseDetails?.category} />
-          <LabelValue label={"Notes"} value={showExpenseDetails?.note} />
-          <LabelValue label={"Added By"} value={showExpenseDetails?.name} />
-          <LabelValue label={"Amount"} value={showExpenseDetails?.amount} />
-          <LabelValue
-            label={"Date"}
-            value={formatDate(showExpenseDetails?.date)}
-          />
-          {showExpenseDetails?.receipt && (
-            <View className="w-full h-300 py-3 flex justify-center items-center">
-              <Image
-                source={showExpenseDetails?.receipt}
-                className="w-44 h-44 object-cover"
-              />
+          <ScrollView style={{ flex: 1 }}>
+            <View className="flex justify-center items-center py-3">
+              <Text className="text-xl font-semibold">Expense Details</Text>
             </View>
-          )}
+            <LabelValue label={"Notes"} value={showExpenseDetails?.note} />
+            {showExpenseDetails?.receipt && (
+              <View className="py-2 flex justify-center items-center">
+                <Image
+                  source={{ uri: showExpenseDetails?.receipt }}
+                  style={{ height: 300, width: "100%", borderRadius: 10 }}
+                />
+              </View>
+            )}
+          </ScrollView>
           <View className="w-full flex justify-center items-center mb-3">
             <TouchableOpacity
               activeOpacity={0.9}

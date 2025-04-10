@@ -9,10 +9,16 @@ import React, { useEffect, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import { shorten } from "../../utils/helpers";
 import { showError } from "../../utils/toastHelper";
+import NotAvailableComponent from "../../components/UI/NotAvailableComponent";
+
 const RoomMates = () => {
   const { id } = useLocalSearchParams();
 
   const [mates, setMates] = useState([]);
+
+  const roomMateDetails = Array.isArray(mates)
+    ? mates.map((mate) => mate.userProfileData)
+    : [];
 
   const [refresh, setRefresh] = useState(false);
 
@@ -44,6 +50,15 @@ const RoomMates = () => {
     onRefresh();
   }, []);
 
+  if (!roomMateDetails || roomMateDetails.length === 0) {
+    return (
+      <NotAvailableComponent
+        iconName={"alert-circle-outline"}
+        text={"No Room-Mates"}
+      />
+    );
+  }
+
   return (
     <ScrollView
       contentContainerStyle={{ flexGrow: 1 }}
@@ -52,8 +67,8 @@ const RoomMates = () => {
         <RefreshControl onRefresh={onRefresh} refreshing={refresh} />
       }
     >
-      {mates.map((mate) => (
-        <MateCard key={mate._id} mate={mate.bookingData} />
+      {roomMateDetails.map((mate) => (
+        <MateCard key={mate._id} mate={mate} />
       ))}
     </ScrollView>
   );
@@ -69,7 +84,7 @@ const MateCard = ({ mate }) => {
         {mate.gender.charAt(0)}
       </Text>
       <Text style={{ width: "10%" }}>{mate.age}</Text>
-      <Text style={{ width: "50%", color:"black" }}>{mate.contact || shorten(mate.email, 30)}</Text>
+      <Text style={{ color: "black", fontWeight: "500" }}>{mate.contact}</Text>
     </View>
   );
 };
@@ -82,7 +97,7 @@ const styles = StyleSheet.create({
   },
   matesCardContainer: {
     flexDirection: "row",
-    justifyContent: "center",
+    justifyContent: "space-between",
     alignItems: "center",
     padding: 10,
     margin: 5,
