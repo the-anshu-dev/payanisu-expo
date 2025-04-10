@@ -99,7 +99,6 @@ export const uploadFileToS3 = async (file) => {
     return fileUrl;
   } catch (error) {
     console.error("Upload error:", error.message);
-    return null;
+    throw error;
   }
 };
-

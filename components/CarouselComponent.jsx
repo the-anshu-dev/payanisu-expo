@@ -14,20 +14,19 @@ const CarouselComponent = () => {
   const [activeTours, setActiveTours] = useState([]);
 
   useEffect(() => {
-    const today = new Date().setHours(0, 0, 0, 0);
-
+    if (!Array.isArray(tour)) return;
+  
+    const today = new Date();
+    const todayStr = today.toISOString().split("T")[0];
+  
     const filteredTours = tour.filter((item) => {
-      const bookingCloseDate = new Date(item.booking_close).setHours(
-        0,
-        0,
-        0,
-        0
-      );
-      return item.status === true && bookingCloseDate >= today;
+      const closeDateStr = new Date(item.booking_close).toISOString().split("T")[0];
+      return closeDateStr >= todayStr && item.status;
     });
-
+  
     setActiveTours(filteredTours);
   }, [tour]);
+  
 
   if (activeTours.length === 0)
     return (

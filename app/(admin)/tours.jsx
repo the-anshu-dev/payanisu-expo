@@ -57,7 +57,7 @@ const Tours = () => {
           showsVerticalScrollIndicator={false}
         >
           <View style={tourScreenStyles.tourListContainer}>
-            {!adminTours.length > 0 ? (
+            {adminTours.length > 0 ? (
               adminTours.map((item) => <TourCard key={item?._id} tour={item} />)
             ) : (
               <NotAvailableComponent

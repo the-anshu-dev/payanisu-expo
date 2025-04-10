@@ -20,7 +20,7 @@ import { format } from "date-fns";
 import { uploadFilesToS3, uploadFileToS3 } from "../utils/uploadFileHelper";
 import { Picker } from "@react-native-picker/picker";
 import * as DocumentPicker from "expo-document-picker";
-import { showError } from "../utils/toastHelper";
+import { showError, showWarning } from "../utils/toastHelper";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { addTourScreenStyles } from "../constants/Styles";
 
@@ -113,7 +113,7 @@ const addTours = () => {
       showError(error);
       return;
     }
-
+  
     if (
       !tourName ||
       !location ||
@@ -127,22 +127,28 @@ const addTours = () => {
       !difficulty ||
       !state ||
       !tourType ||
-      image.length === 0 ||
-      !consentForm ||
-      !user ||
-      !latitude ||
-      !longitude
+      !(image.length > 0) ||
+      !user
     ) {
       setError("Please fill all required fields & add tour images.");
       return;
     }
-
+  
     setLoading(true);
     try {
       setError("");
-
-      const consentFormUrl = await uploadFileToS3(consentForm);
-
+  
+      let consentFormUrl = null;
+  
+      if (consentForm) {
+        try {
+          consentFormUrl = await uploadFileToS3(consentForm);
+        } catch (error) {
+          console.warn("Consent form upload failed, continuing without it.");
+          consentFormUrl = null;
+        }
+      }
+  
       const formData = {
         name: tourName,
         location,
@@ -160,11 +166,11 @@ const addTours = () => {
         state,
         tourType,
         email: user?.email,
-        consentFormUrl,
         latitude,
         longitude,
+        ...(consentFormUrl && { consentFormUrl }), // Only add if it exists
       };
-
+  
       const response = await fetch(
         `${process.env.EXPO_PUBLIC_BASE_URL}/api/tour/create-tour`,
         {
@@ -176,16 +182,16 @@ const addTours = () => {
           body: JSON.stringify(formData),
         }
       );
-
+  
       const result = await response.json();
-
+  
       const notificationData = {
         notificationType: "notification",
         title: `Buckle up! New tour: ${tourName}`,
         content: description,
         id: result._id,
       };
-
+  
       if (response.status === 201) {
         await uploadFilesToS3(image, result._id);
         await fetch(
@@ -198,17 +204,19 @@ const addTours = () => {
             body: JSON.stringify(notificationData),
           }
         );
+        router.back();
       } else {
         setError(result.message || "Something went wrong.");
         return;
       }
-      router.back();
     } catch (err) {
-      setError("Error whilte creating tour. Please try again.");
+      showWarning("Tour not created. Please try again.");
+      setError(err.message || "Error while creating tour. Please try again.");
     } finally {
       setLoading(false);
     }
   };
+  
 
   const handleLocationSelect = (details) => {
     if (!details?.geometry?.location) return;
