@@ -192,7 +192,7 @@ const DetailsScreen = () => {
   }, [curatedMembers]);
 
   const images = useMemo(
-    () => tourData?.images.filter((i) => !i.type).map((i) => i.url),
+    () => tourData?.images.filter((i) => i.type == "tour").map((i) => i.url),
     [tourData]
   );
 
