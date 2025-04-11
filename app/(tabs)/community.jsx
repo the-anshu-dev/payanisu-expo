@@ -120,7 +120,7 @@ const Community = () => {
             {allPosts.length > 0 ? allPosts?.map((post, index) => (
               <PostComponent key={index} post={post} />
             )) : <NotAvailableComponent
-            text={"No Posts Available"}
+            text={"No Posts Yet"}
             iconName={"alert-circle-outline"}
           />}
           </View>

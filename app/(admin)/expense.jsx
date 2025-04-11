@@ -50,7 +50,6 @@ const expense = () => {
   const [open, setOpen] = useState(false);
 
   const [showExpenseDetails, setShowExpenseDetails] = useState(null);
-  console.log("showExpenseDetails", showExpenseDetails);
 
   const [expenseData, setExpenseData] = useState(null);
 

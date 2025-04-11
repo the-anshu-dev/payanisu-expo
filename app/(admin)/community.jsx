@@ -1,10 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ActivityIndicator,
-} from "react-native";
+import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
 import { ScrollView, TextInput } from "react-native-gesture-handler";
 import { Modalize } from "react-native-modalize";
 import PostComponent from "../../components/UI/PostComponent";
@@ -17,6 +12,7 @@ import { uploadFilesToS3 } from "../../utils/uploadFileHelper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { showError } from "../../utils/toastHelper";
 import { communityScreenStyles } from "../../constants/Styles";
+import NotAvailableComponent from "../../components/UI/NotAvailableComponent";
 
 const Community = () => {
   const { user } = useSelector((state) => state.user);
@@ -48,6 +44,7 @@ const Community = () => {
   };
 
   const getAllPosts = async () => {
+    setLoading(true);
     try {
       const res = await fetch(
         `${process.env.EXPO_PUBLIC_BASE_URL}/api/Post/get-posts`
@@ -56,6 +53,8 @@ const Community = () => {
       setAllPosts(posts.data);
     } catch (error) {
       showError("Failed to get posts", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -105,9 +104,9 @@ const Community = () => {
 
   useEffect(() => {
     getAllPosts();
-  }, [allPosts]);
+  }, []);
 
-  if (allPosts.length === 0) {
+  if (loading) {
     return (
       <View style={communityScreenStyles.loaderContainer}>
         <ActivityIndicator color="#228B22" size="large" />
@@ -118,15 +117,25 @@ const Community = () => {
   return (
     <>
       {user ? (
-        <SafeAreaView style={communityScreenStyles.safeArea} edges={["bottom", "left", "right"]}>
+        <SafeAreaView
+          style={communityScreenStyles.safeArea}
+          edges={["bottom", "left", "right"]}
+        >
           <ScrollView
             contentContainerStyle={communityScreenStyles.scrollContainer}
             showsVerticalScrollIndicator={false}
           >
             <View style={communityScreenStyles.postsContainer}>
-              {allPosts.map((post, index) => (
-                <PostComponent key={index} post={post} />
-              ))}
+              {allPosts.length > 0 ? (
+                allPosts.map((post, index) => (
+                  <PostComponent key={index} post={post} />
+                ))
+              ) : (
+                <NotAvailableComponent
+                  iconName={"alert-circle-outline"}
+                  text={"No Posts yet"}
+                />
+              )}
             </View>
           </ScrollView>
           <View style={communityScreenStyles.shareButtonContainer}>
@@ -135,7 +144,9 @@ const Community = () => {
               onPress={() => addPostRef.current?.open()}
               style={communityScreenStyles.shareButton}
             >
-              <Text style={communityScreenStyles.shareButtonText}>Share your experience</Text>
+              <Text style={communityScreenStyles.shareButtonText}>
+                Share your experience
+              </Text>
             </TouchableOpacity>
           </View>
           <Modalize
@@ -145,7 +156,9 @@ const Community = () => {
             modalStyle={communityScreenStyles.modalStyle}
           >
             <View style={communityScreenStyles.modalContainer}>
-              <ScrollView contentContainerStyle={communityScreenStyles.modalScrollContent}>
+              <ScrollView
+                contentContainerStyle={communityScreenStyles.modalScrollContent}
+              >
                 <View style={communityScreenStyles.modalContent}>
                   <Text style={communityScreenStyles.modalTitle}>
                     Share your experience with us
@@ -164,7 +177,10 @@ const Community = () => {
                   {images.length > 0 ? (
                     <View style={communityScreenStyles.imagesContainer}>
                       {images.map((img, idx) => (
-                        <View key={idx} style={communityScreenStyles.imageWrapper}>
+                        <View
+                          key={idx}
+                          style={communityScreenStyles.imageWrapper}
+                        >
                           <Image
                             source={{ uri: img.uri }}
                             style={communityScreenStyles.image}
@@ -208,7 +224,9 @@ const Community = () => {
                   {loading ? (
                     <ActivityIndicator color="white" size="small" />
                   ) : (
-                    <Text style={communityScreenStyles.postButtonText}>Post</Text>
+                    <Text style={communityScreenStyles.postButtonText}>
+                      Post
+                    </Text>
                   )}
                 </TouchableOpacity>
               </View>
