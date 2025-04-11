@@ -17,6 +17,10 @@ import * as Location from "expo-location";
 import { showWarning, showSuccess, showError } from "../../utils/toastHelper";
 import { sendLocalNotification } from "../../utils/notification";
 import Radar from "./Radar";
+import {
+  requestBackgroundLocation,
+  requestForegroundLocation,
+} from "../../utils/locationHelper";
 
 const { height, width } = Dimensions.get("window");
 
@@ -100,6 +104,22 @@ const CheckPointElement = ({
   }, [permission]);
 
   useEffect(() => {
+    const checkLocationPermission = async () => {
+      const fgLocPermission = await requestForegroundLocation();
+      if (!fgLocPermission) {
+        await requestForegroundLocation();
+      }
+
+      const bgLocPermission = await requestBackgroundLocation();
+      if (!bgLocPermission) {
+        await requestBackgroundLocation();
+      }
+    };
+
+    checkLocationPermission();
+  }, []);
+
+  useEffect(() => {
     let watchId;
 
     const startLocationTracking = async () => {
@@ -172,9 +192,7 @@ const CheckPointElement = ({
   if (!permission.granted) {
     return (
       <View style={styles.container}>
-        <Text style={styles.message}>
-          We need your permission to show the camera.
-        </Text>
+        <Text style={styles.message}>Grant camera permission for QR.</Text>
         <TouchableOpacity
           style={styles.button}
           onPress={async () => {
