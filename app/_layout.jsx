@@ -11,6 +11,10 @@ import { useState, useEffect, useRef } from "react";
 import * as Notifications from "expo-notifications";
 import { registerForPushNotificationsAsync } from "../utils/notification";
 import { Provider as PaperProvider } from "react-native-paper";
+import {
+  requestBackgroundLocation,
+  requestForegroundLocation,
+} from "../utils/locationHelper";
 
 export default function RootLayout() {
   const [expoPushToken, setExpoPushToken] = useState("");
@@ -28,6 +32,11 @@ export default function RootLayout() {
       const token = await registerForPushNotificationsAsync();
       if (token) setExpoPushToken(token);
     }
+    async function getLocationAccess() {
+      await requestBackgroundLocation();
+      await requestForegroundLocation();
+    }
+    getLocationAccess();
     getToken();
   }, []);
 

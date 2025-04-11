@@ -12,13 +12,13 @@ import Loader from "../../components/common/Loader";
 import { tourScreenStyles } from "../../constants/Styles";
 
 const Tours = () => {
-  const [adminTours, setAdminTours] = useState([]);
-  const { user } = useSelector((state) => state.user);
+  const [tours, setTours] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
 
   const getAllTours = async () => {
+    
     setLoading(true);
     try {
       const response = await fetch(
@@ -30,8 +30,7 @@ const Tours = () => {
       const tour = await response.json();
       dispatch(setTour(tour));
       await AsyncStorage.setItem("tours", JSON.stringify(tour));
-      const adminTours = tour.filter((item) => item?.email === user?.email);
-      setAdminTours(adminTours);
+      setTours(tour);
     } catch (error) {
       showError(error.message || "Please try again.");
     } finally {
@@ -57,8 +56,8 @@ const Tours = () => {
           showsVerticalScrollIndicator={false}
         >
           <View style={tourScreenStyles.tourListContainer}>
-            {adminTours.length > 0 ? (
-              adminTours.map((item) => <TourCard key={item?._id} tour={item} />)
+            {tours.length > 0 ? (
+              tours.map((item) => <TourCard key={item?._id} tour={item} />)
             ) : (
               <NotAvailableComponent
                 text="No Tours Available"

@@ -136,7 +136,7 @@ const MyTourInfo = ({ tour }) => {
       );
 
       if (!imageRes.ok || imageRes.status !== 200) {
-        console.log("Failed to load images or no images downloaded.");
+        console.log("Failed to load images or no images added.");
       }
 
       if (response.status !== 200) {

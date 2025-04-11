@@ -16,6 +16,7 @@ import { ActivityIndicator } from "react-native-paper";
 import * as Location from "expo-location";
 import { showWarning, showSuccess, showError } from "../../utils/toastHelper";
 import { sendLocalNotification } from "../../utils/notification";
+import Radar from "./Radar";
 
 const { height, width } = Dimensions.get("window");
 
@@ -114,7 +115,7 @@ const CheckPointElement = ({
         watchId = await Location.watchPositionAsync(
           {
             accuracy: Location.Accuracy.High,
-            distanceInterval: 100,
+            distanceInterval: 150,
           },
           (location) => {
             const { latitude, longitude } = location.coords;
@@ -130,7 +131,7 @@ const CheckPointElement = ({
                   point.longitude
                 );
 
-                if (distance <= 100) {
+                if (distance <= 150) {
                   const body = {
                     email: user?.email,
                     tourId: point.tourId,
@@ -234,7 +235,7 @@ const CheckPointElement = ({
                   color="#228B22"
                 />
               ) : (
-                <Ionicons name="time-outline" size={28} color="#228B22" />
+                <Radar isChecking={true} />
               ))}
             {!checkInLoading &&
               points.type !== "Geo Tagging" &&
