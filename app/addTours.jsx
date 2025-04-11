@@ -14,12 +14,12 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useSelector } from "react-redux";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import * as DocumentPicker from "expo-document-picker";
 import * as ImagePicker from "expo-image-picker";
 import { Image } from "expo-image";
 import { format } from "date-fns";
 import { uploadFilesToS3, uploadFileToS3 } from "../utils/uploadFileHelper";
 import { Picker } from "@react-native-picker/picker";
-import * as DocumentPicker from "expo-document-picker";
 import { showError, showWarning } from "../utils/toastHelper";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { addTourScreenStyles } from "../constants/Styles";
@@ -430,7 +430,7 @@ const addTours = () => {
             </View>
             <View className="w-full">
               {consentForm ? (
-                <View className="flex flex-row justify-between item-center border border-[#228B22]w-full rounded-lg px-4 py-2">
+                <View className="flex flex-row justify-between item-center border border-[#228B22] w-full rounded-lg px-4 py-2">
                   <View className="flex flex-row justify-center items-center gap-5">
                     <Ionicons
                       name="document-text-outline"
@@ -526,7 +526,7 @@ const addTours = () => {
           <GooglePlacesAutocomplete
             ref={googlePlacesRef}
             placeholder="Search location"
-            fetchDetails
+            fetchDetails={true}
             onPress={(data, details) => handleLocationSelect(details)}
             query={{
               key: process.env.EXPO_PUBLIC_GOOGLE_API_KEY,

@@ -4,13 +4,12 @@ import { FontAwesome6, Ionicons } from "@expo/vector-icons";
 import { Link } from "expo-router";
 import Carousel from "react-native-reanimated-carousel";
 import CarouselImageRender from "./CarouselImageRender";
-import { formatDate, calculateDuration } from "../../utils/helpers.js";
+import { formatDate, calculateDuration, shorten } from "../../utils/helpers.js";
 
 const { width, height } = Dimensions.get("window");
 
 const CarouselCard = ({ tour }) => {
   const images = tour.images.filter((i) => i.type === "tour").map((i) => i.url);
-  
   return (
     <Link push href={`/details/${tour._id}`} className="ml-6">
       <View
@@ -22,19 +21,19 @@ const CarouselCard = ({ tour }) => {
           style={{ height: "100%", width: "100%", paddingBottom: 10 }}
         >
           <View style={{ height: height * 0.25, width: "100%" }}>
-            <Carousel
-              loop
-              width={width * 0.75}
-              height={height * 0.25}
-              data={images}
-              scrollAnimationDuration={1000}
-              renderItem={({ item }) => <CarouselImageRender item={item} />}
-            />
+              <Carousel
+                loop
+                width={width * 0.75}
+                height={height * 0.25}
+                data={images}
+                scrollAnimationDuration={1000}
+                renderItem={CarouselImageRender}
+              />
           </View>
           <View className="flex flex-row justify-between px-2 mt-2">
             <View>
               <Text className="text-lg font-semibold text-gray-900">
-                {tour.name}
+                {shorten(tour.name, 25)}
               </Text>
               <Text className="text-md text-gray-600">
                 {calculateDuration(tour.tour_start, tour.tour_end)}

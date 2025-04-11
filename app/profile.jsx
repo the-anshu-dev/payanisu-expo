@@ -17,6 +17,7 @@ import { formatDate } from "../utils/helpers";
 import { setMembers, setAdminAccessEnabled } from "../redux/slices/userSlice";
 import LinearGradient from "react-native-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
+import { showError } from "../utils/toastHelper";
 
 const { width, height } = Dimensions.get("window");
 
@@ -67,6 +68,7 @@ const Profile = () => {
       setMembersData(data);
       dispatch(setMembers(data));
     } catch (error) {
+      showError("Could not fetch members");
       console.error("Error fetching members:", error);
     }
   };

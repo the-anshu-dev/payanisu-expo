@@ -7,6 +7,7 @@ import { formatDate } from "../../../utils/helpers";
 import { ScrollView } from "react-native-gesture-handler";
 import { showError } from "../../../utils/toastHelper";
 import { Image } from "expo-image";
+import { Ionicons } from "@expo/vector-icons";
 
 const TourDetails = () => {
   const { id } = useLocalSearchParams();
@@ -56,19 +57,36 @@ const TourDetails = () => {
           label={"Payment gateway enabled ?"}
           value={tourData?.enable_payment_getway ? "Yes" : "No"}
         />
-        {tourData.images.map((image, index) => (
-          <Image
-            key={index}
-            source={image.url}
-            alt="tour"
-            style={{
-              height: 200,
-              width: "100%",
-              borderRadius: 10,
-              marginVertical: 10,
-            }}
-          />
-        ))}
+        <View className="w-full">
+          {tourData.consentFormUrl && (
+            <View className="flex flex-row justify-between item-center border border-slate-500/50 w-full rounded-lg px-4 py-2 mt-4 bg-white">
+              <View className="flex flex-row justify-center items-center gap-5">
+                <Ionicons
+                  name="document-text-outline"
+                  color={"#228B22"}
+                  size={24}
+                />
+                <Text style={{ color: "#228B22", fontWeight: "400" }}>
+                  Consent Form
+                </Text>
+              </View>
+            </View>
+          )}
+        </View>
+        {tourData.images &&
+          tourData.images.map((image, index) => (
+            <Image
+              key={index}
+              source={image.url}
+              alt="tour"
+              style={{
+                height: 200,
+                width: "100%",
+                borderRadius: 10,
+                marginVertical: 10,
+              }}
+            />
+          ))}
       </ScrollView>
       <View className="w-full px-3 py-2">
         <TouchableOpacity

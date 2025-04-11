@@ -18,9 +18,13 @@ import { Picker } from "@react-native-picker/picker";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { showError, showSuccess } from "../../../utils/toastHelper";
 import { Image } from "expo-image";
-import { MaterialIcons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
-import { uploadFilesToS3 } from "../../../utils/uploadFileHelper";
+import {
+  uploadFilesToS3,
+  uploadFileToS3,
+} from "../../../utils/uploadFileHelper";
+import * as DocumentPicker from "expo-document-picker";
 
 const { height, width } = Dimensions.get("window");
 
@@ -75,6 +79,21 @@ const EditTour = () => {
   const [showEndPicker, setShowEndPicker] = useState(false);
   const [showBookingClosePicker, setShowBookingClosePicker] = useState(false);
 
+  // consent form
+  const [consentForm, setConsentForm] = useState(tourDetails?.consentFormUrl);
+
+  const pickPdf = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: "application/pdf",
+      });
+      if (!result.canceled) {
+        setConsentForm(result.assets[0]);
+      }
+    } catch (error) {
+      console.error("Error picking PDF:", error);
+    }
+  };
   // image states
 
   const tourImages = tourDetails.images.filter(
@@ -128,7 +147,8 @@ const EditTour = () => {
       !costPerPerson ||
       !difficulty ||
       !state ||
-      !tourType
+      !tourType ||
+      !consentForm
     ) {
       setError("Please fill all required fields & add tour images.");
       return;
@@ -137,6 +157,20 @@ const EditTour = () => {
     setLoading(true);
     try {
       setError("");
+
+      let consentFormUrl = null;
+
+      try {
+        if (consentForm?.name) {
+          consentFormUrl = await uploadFileToS3(consentForm);
+        } else {
+          consentFormUrl = consentForm;
+        }
+      } catch (error) {
+        console.warn("Consent form upload failed, continuing without it.");
+        consentFormUrl = null;
+      }
+
       const formData = {
         id,
         name: tourName,
@@ -153,6 +187,7 @@ const EditTour = () => {
         difficulty,
         state,
         tourType,
+        consentFormUrl,
       };
 
       const response = await fetch(
@@ -446,26 +481,61 @@ const EditTour = () => {
             />
           </View>
         </View>
+        {consentForm ? (
+          <View
+            style={{
+              borderColor: "gray",
+              borderWidth: 1,
+              width: "100%",
+              borderRadius: 10,
+              marginBottom: 10,
+            }}
+          >
+            <View className="flex flex-row justify-between item-center w-full rounded-lg px-4 py-2">
+              <View className="flex flex-row justify-center items-center gap-5">
+                <Ionicons
+                  name="document-text-outline"
+                  color={"#228B22"}
+                  size={24}
+                />
+                <Text style={{ color: "#228B22", fontWeight: "400" }}>
+                  {consentForm.name || "Consent Form"}
+                </Text>
+              </View>
+              <TouchableOpacity onPress={() => setConsentForm(null)}>
+                <Ionicons name="close-outline" size={24} color="red" />
+              </TouchableOpacity>
+            </View>
+          </View>
+        ) : (
+          <View className="w-full mb-4">
+            <TouchableOpacity onPress={pickPdf} style={styles.imagePicker}>
+              <Ionicons name="add-circle" size={20} color="#228B22" />
+              <Text style={styles.imagePickerText}>Add Consent Form</Text>
+            </TouchableOpacity>
+          </View>
+        )}
         <View style={styles.imageWrapper}>
           <Text className="text-lg mb-2 font-semibold text-gray-600">
             Tour Images
           </Text>
-          {images.map((image, index) => (
-            <View key={index} style={styles.imageWrapper}>
-              <Image
-                source={{ uri: image.url }}
-                alt="tour"
-                style={styles.image}
-              />
-              <TouchableOpacity
-                onPress={() => handleRemoveImage(image._id)}
-                style={styles.closeButton}
-                activeOpacity={0.8}
-              >
-                <MaterialIcons name="close" size={16} color="white" />
-              </TouchableOpacity>
-            </View>
-          ))}
+          {images.length > 0 &&
+            images.map((image, index) => (
+              <View key={index} style={styles.imageWrapper}>
+                <Image
+                  source={{ uri: image.url }}
+                  alt="tour"
+                  style={styles.image}
+                />
+                <TouchableOpacity
+                  onPress={() => handleRemoveImage(image._id)}
+                  style={styles.closeButton}
+                  activeOpacity={0.8}
+                >
+                  <MaterialIcons name="close" size={16} color="white" />
+                </TouchableOpacity>
+              </View>
+            ))}
           {imageToAdd.length > 0 &&
             imageToAdd.map((image, index) => (
               <View key={index} style={styles.imageWrapper}>
@@ -489,7 +559,7 @@ const EditTour = () => {
             activeOpacity={0.8}
           >
             <Text className="text-[#228B22] text-base font-semibold">
-              Add Images
+              Add {images.length > 0 && "more"} Images
             </Text>
             <MaterialIcons
               name="add-a-photo"

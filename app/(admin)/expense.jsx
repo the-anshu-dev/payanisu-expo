@@ -149,7 +149,6 @@ const expense = () => {
       fetchExpense();
     } catch (error) {
       showError(error.message || "Please try again.");
-      setError(error?.message);
     } finally {
       setLoading(false);
     }
