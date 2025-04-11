@@ -106,15 +106,6 @@ const Community = () => {
     return <Loader />;
   }
 
-  if (allPosts.length === 0) {
-    return (
-      <NotAvailableComponent
-        text={"No Posts Available"}
-        iconName={"alert-circle-outline"}
-      />
-    );
-  }
-
   return (
     <SafeAreaView style={communityTabStyles.safeArea} edges={["left", "right", "bottom"]}>
       <View style={communityTabStyles.container}>
@@ -126,9 +117,12 @@ const Community = () => {
           }
         >
           <View className="w-full gap-3">
-            {allPosts?.map((post, index) => (
+            {allPosts.length > 0 ? allPosts?.map((post, index) => (
               <PostComponent key={index} post={post} />
-            ))}
+            )) : <NotAvailableComponent
+            text={"No Posts Available"}
+            iconName={"alert-circle-outline"}
+          />}
           </View>
         </ScrollView>
         <View style={communityTabStyles.shareButtonContainer}>
