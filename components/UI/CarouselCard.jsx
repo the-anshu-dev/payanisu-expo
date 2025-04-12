@@ -21,14 +21,14 @@ const CarouselCard = ({ tour }) => {
           style={{ height: "100%", width: "100%", paddingBottom: 10 }}
         >
           <View style={{ height: height * 0.25, width: "100%" }}>
-              <Carousel
-                loop
-                width={width * 0.75}
-                height={height * 0.25}
-                data={images}
-                scrollAnimationDuration={1000}
-                renderItem={CarouselImageRender}
-              />
+            <Carousel
+              loop
+              width={width * 0.75}
+              height={height * 0.25}
+              data={images}
+              scrollAnimationDuration={1000}
+              renderItem={CarouselImageRender}
+            />
           </View>
           <View className="flex flex-row justify-between px-2 mt-2">
             <View>
@@ -57,11 +57,11 @@ const CarouselCard = ({ tour }) => {
             </View>
             <View className="flex flex-row items-center gap-3">
               <FontAwesome6 name="route" size={16} color="#228B22" />
-              <Text className="text-gray-700">{`${tour.distance} Km`}</Text>
+              <Text className="text-gray-700">{`${tour.distance} KMS`}</Text>
             </View>
             <View className="flex flex-row items-center gap-3">
               <Ionicons name="person-outline" size={16} color="#228B22" />
-              <Text className="text-gray-700">{`${tour.total_seats} seats`}</Text>
+              <Text className="text-gray-700">{`${tour.bookedCount}/${tour.total_seats} seats`}</Text>
             </View>
           </View>
         </View>

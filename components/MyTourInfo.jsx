@@ -347,7 +347,7 @@ const MyTourInfo = ({ tour }) => {
         <View className="p-2 shadow-lg shadow-black bg-white rounded-lg">
           <View className="flex flex-row justify-left items-center gap-2 border-b border-gray-300/50 pb-1">
             <Ionicons name="bag-check-outline" size={20} color={"#228B22"} />
-            <Text className={`text-md font-semibold`}>Bag Pack</Text>
+            <Text className={`text-md font-semibold`}>Back Pack</Text>
           </View>
           <View className="px-1 mt-3 gap-2">
             {backpacks.length > 0 ? (
@@ -360,7 +360,7 @@ const MyTourInfo = ({ tour }) => {
                 />
               ))
             ) : (
-              <Text className="text-center">No items in bag pack</Text>
+              <Text className="text-center">No items in back pack</Text>
             )}
           </View>
         </View>

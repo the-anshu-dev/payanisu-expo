@@ -65,8 +65,8 @@ const MyTourCard = ({ tour, status }) => {
               status === 1
                 ? "bg-[#228B22]"
                 : status === 2
-                  ? "bg-orange-500"
-                  : "bg-red-500"
+                ? "bg-orange-500"
+                : "bg-red-500"
             } flex flex-row justify-center items-center gap-2 mt-2 rounded-lg h-6`}
           >
             <Ionicons
@@ -74,8 +74,8 @@ const MyTourCard = ({ tour, status }) => {
                 status === 1
                   ? "checkmark-outline"
                   : status === 2
-                    ? "time-outline"
-                    : "close-circle-outline"
+                  ? "time-outline"
+                  : "close-circle-outline"
               }`}
               size={16}
               color={"white"}
@@ -99,12 +99,12 @@ const MyTourCard = ({ tour, status }) => {
 
           <View className="flex flex-row gap-3">
             <FontAwesome6 name="route" size={16} color="#228B22" />
-            <Text>{tour?.distance} Kms</Text>
+            <Text>{tour?.distance} KMS</Text>
           </View>
 
           <View className="flex flex-row gap-3">
             <Ionicons name="person-outline" size={16} color="#228B22" />
-            <Text>{`${tour?.total_seats} seats`}</Text>
+            <Text>{`${tour.bookedCount}/${tour?.total_seats} seats`}</Text>
           </View>
         </View>
       </View>

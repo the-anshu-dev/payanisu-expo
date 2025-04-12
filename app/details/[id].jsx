@@ -238,7 +238,7 @@ const DetailsScreen = () => {
                 <View className="space-y-2">
                   <Text className={`font-medium`}>Seats Available</Text>
                   <Text className={`text-lg font-semibold  text-right`}>
-                    {`${tourData?.total_seats} seats`}
+                    {`${tourData.bookedCount}/${tourData?.total_seats} seats`}
                   </Text>
                 </View>
               </View>
@@ -328,7 +328,7 @@ const DetailsScreen = () => {
                   size={24}
                   color={"#228B22"}
                 />
-                <Text className={`text-base  font-semibold`}>Bag Pack</Text>
+                <Text className={`text-base  font-semibold`}>Back Pack</Text>
               </View>
               <View className="px-1 mt-3 gap-2">
                 {backpacks?.map((i, idx) => {

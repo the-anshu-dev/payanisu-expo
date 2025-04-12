@@ -212,7 +212,7 @@ const ModalBody = ({
                 zIndex: 1000,
                 maxHeight: 200,
               }}
-              listMode="SCROLLVIEW"
+              listMode="FLATLIST"
               scrollViewProps={{
                 nestedScrollEnabled: true,
                 showsVerticalScrollIndicator: false,

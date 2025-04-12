@@ -362,7 +362,7 @@ const DetailTitle = [
   },
   {
     id: 9,
-    title: "Bag Pack & Check-in Baggage",
+    title: "Back Pack & Check-in Baggage",
     href: "/(addTourDetails)/luggage",
   },
   {

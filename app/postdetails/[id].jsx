@@ -54,16 +54,18 @@ const postdetails = () => {
         translucent={true}
         animated
       />
-      <Carousel
-        loop
-        width={width}
-        height={288}
-        autoPlay={true}
-        data={images}
-        autoPlayInterval={2000}
-        scrollAnimationDuration={1000}
-        renderItem={CarouselImageRender}
-      />
+      {images.length > 0 && (
+        <Carousel
+          loop
+          width={width}
+          height={288}
+          autoPlay={true}
+          data={images}
+          autoPlayInterval={2000}
+          scrollAnimationDuration={1000}
+          renderItem={CarouselImageRender}
+        />
+      )}
       <View className="px-3 mt-2">
         <View className="flex flex-row justify-between">
           <Text className="text-gray-500">{post.name}</Text>

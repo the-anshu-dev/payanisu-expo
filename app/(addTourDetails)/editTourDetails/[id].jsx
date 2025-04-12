@@ -371,7 +371,7 @@ const EditTour = () => {
           </View>
           <View style={styles.input}>
             <Text className="text-base font-semibold text-gray-600">
-              Distance (km)
+              Distance (KMS)
             </Text>
             <TextInput
               placeholder={tourDetails.distance.toString()}

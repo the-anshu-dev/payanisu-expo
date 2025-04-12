@@ -335,7 +335,7 @@ const addTours = () => {
               style={addTourScreenStyles.input}
             />
             <TextInput
-              placeholder="Distance (kms)"
+              placeholder="Distance (KMS)"
               value={distance}
               placeholderTextColor="gray"
               onChangeText={setDistance}

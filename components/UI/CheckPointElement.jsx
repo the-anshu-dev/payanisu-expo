@@ -283,7 +283,7 @@ const CheckPointElement = ({
               !points.activated &&
               points.type !== "Geo Tagging" && (
                 <Text className="text-red-400 font-semibold border px-2 py-1 rounded-full border-red-400">
-                  In-active
+                  Inactive
                 </Text>
               )}
           </View>

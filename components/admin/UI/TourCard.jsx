@@ -38,7 +38,7 @@ const TourCard = ({ tour }) => {
             <View className="flex flex-row gap-1 items-center justify-center">
               <FontAwesome6 name="route" size={16} color="#228B22" />
               <Text className="text-base font-medium text-gray-600">
-                {tour?.distance} KM
+                {tour?.distance} KMS
               </Text>
             </View>
           </View>

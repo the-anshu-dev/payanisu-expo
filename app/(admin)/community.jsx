@@ -59,7 +59,7 @@ const Community = () => {
   };
 
   const handlePost = async () => {
-    if (!images || !text) return;
+    if (!images && !text) return;
 
     setLoading(true);
     try {
@@ -85,15 +85,16 @@ const Community = () => {
       }
 
       const res = await postRes.json();
-      const imgRes = await uploadFilesToS3(images, res.data._id);
+      const imgRes = images && (await uploadFilesToS3(images, res.data._id));
 
-      if (!imgRes) {
+      if (images && !imgRes) {
         await fetch(
           `${process.env.EXPO_PUBLIC_BASE_URL}/api/Post/delete-post?id=${res.data._id}`,
           { method: "DELETE" }
         );
         throw new Error("Failed to post images.");
       }
+
       addPostRef.current.close();
     } catch (error) {
       showError(error.message || "Please try again.");
