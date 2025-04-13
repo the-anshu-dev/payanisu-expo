@@ -7,12 +7,11 @@ import {
   ScrollView,
   ActivityIndicator,
 } from "react-native";
-import React, { useEffect, useState } from "react";
-import { useLocalSearchParams } from "expo-router";
+import React, { useCallback, useState } from "react";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import AllocatedRoomCard from "../../../components/UI/AllocatedRoomCard";
 import ModalBody from "../../../components/UI/ModalBody";
 import { transformAllocationData } from "../../../utils/helpers";
-import EditModal from "../../../components/UI/EditModal";
 import { showError } from "../../../utils/toastHelper";
 
 const { width } = Dimensions.get("window");
@@ -20,8 +19,6 @@ const { width } = Dimensions.get("window");
 const showAccomodationDetails = () => {
   const { id, tourId } = useLocalSearchParams();
   const [modalVisible, setModalVisible] = useState(false);
-
-  const [editModalVisible, setEditModalVisible] = useState(false);
 
   const [guests, setGuests] = useState([]);
 
@@ -85,11 +82,15 @@ const showAccomodationDetails = () => {
     }
   };
 
-  useEffect(() => {
-    getBookedUsers();
-    getAllAllocations();
-    getAllocationsByGuestHouseId();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      setLoading(true);
+      getAllocationsByGuestHouseId();
+      getBookedUsers();
+      getAllAllocations();
+      setLoading(false);
+    }, [])
+  );
 
   if (loading) {
     return (
@@ -125,7 +126,6 @@ const showAccomodationDetails = () => {
                 getAllocationsByGuestHouseId={getAllocationsByGuestHouseId}
                 getBookedUsers={getBookedUsers}
                 getAllAllocations={getAllAllocations}
-                setEditModalVisible={setEditModalVisible}
               />
             ))}
           </>
@@ -134,7 +134,9 @@ const showAccomodationDetails = () => {
       <View className="w-full absolute bottom-2 h-12 flex justify-center items-center">
         <TouchableOpacity
           activeOpacity={0.9}
-          onPress={() => setModalVisible(true)}
+          onPress={() =>
+            router.push(`(addTourDetails)/allocateRoom/${id}?tourId=${tourId}`)
+          }
           style={{
             width: width * 0.9,
             backgroundColor: "#228B22",
@@ -180,43 +182,6 @@ const showAccomodationDetails = () => {
               getBookedUsers={getBookedUsers}
               getAllAllocations={getAllAllocations}
               guestsToDisable={guestsToDisable}
-            />
-          </View>
-        </View>
-      </Modal>
-      <Modal
-        transparent={true}
-        animationType="fade"
-        visible={editModalVisible}
-        onRequestClose={() => setEditModalVisible(false)}
-      >
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-          }}
-        >
-          <View
-            style={{
-              width: width * 0.9,
-              padding: 16,
-              backgroundColor: "white",
-              borderRadius: 10,
-              elevation: 8,
-            }}
-          >
-            <EditModal
-              guests={guests}
-              tourId={tourId}
-              allocations={allocations}
-              accommodationId={id}
-              getAllocationsByGuestHouseId={getAllocationsByGuestHouseId}
-              getBookedUsers={getBookedUsers}
-              getAllAllocations={getAllAllocations}
-              guestsToDisable={guestsToDisable}
-              setEditModalVisible={setEditModalVisible}
             />
           </View>
         </View>

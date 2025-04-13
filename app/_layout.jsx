@@ -125,6 +125,10 @@ export default function RootLayout() {
               )}
             />
             <Stack.Screen
+              name="(addTourDetails)/allocateRoom/[id]"
+              options={getOpt("Allocate Room", "(addTourDetails)/tourDetails")}
+            />
+            <Stack.Screen
               name="(addTourDetails)/editTransportationDetails/[id]"
               options={getOpt(
                 "Edit Transport Details",

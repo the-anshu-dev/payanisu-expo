@@ -2,7 +2,6 @@ import { View, Text } from "react-native";
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
-import EditIcon from "../../assets/edit.svg";
 import { ActivityIndicator } from "react-native-paper";
 import { showError, showSuccess } from "../../utils/toastHelper";
 
@@ -11,7 +10,6 @@ const AllocatedRoomCard = ({
   getAllocationsByGuestHouseId,
   getBookedUsers,
   getAllAllocations,
-  setEditModalVisible,
 }) => {
   const [deleting, setDeleting] = React.useState(false);
 
@@ -59,14 +57,8 @@ const AllocatedRoomCard = ({
           alignItems: "center",
         }}
       >
-        <Text>Room 1</Text>
-        <View className="flex flex-row justify-center items-center gap-5 pr-2">
-          <TouchableOpacity
-            onPress={() => setEditModalVisible(true)}
-            activeOpacity={0.9}
-          >
-            <EditIcon height={20} width={20} />
-          </TouchableOpacity>
+        <Text>Room</Text>
+        <View className="flex flex-row justify-center items-center pr-2">
           <TouchableOpacity
             onPress={handleDeleteAllocation}
             activeOpacity={0.9}
