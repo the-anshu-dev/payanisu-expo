@@ -64,7 +64,7 @@ const Community = () => {
   };
 
   const handlePost = async () => {
-    if (!images.length || !text) return;
+    if (!images.length && !text) return;
     setLoading(true);
     try {
       const postRes = await fetch(
@@ -82,8 +82,8 @@ const Community = () => {
 
       if (postRes.status !== 201) throw new Error("Failed to post.");
       const res = await postRes.json();
-      const imgRes = await uploadFilesToS3(images, res.data._id);
-      if (!imgRes) throw new Error("Failed to upload images.");
+      const imgRes = images && (await uploadFilesToS3(images, res.data._id));
+      if (images && !imgRes) throw new Error("Failed to upload images.");
 
       setText("");
       setImages([]);
@@ -107,7 +107,10 @@ const Community = () => {
   }
 
   return (
-    <SafeAreaView style={communityTabStyles.safeArea} edges={["left", "right", "bottom"]}>
+    <SafeAreaView
+      style={communityTabStyles.safeArea}
+      edges={["left", "right", "bottom"]}
+    >
       <View style={communityTabStyles.container}>
         <ScrollView
           contentContainerStyle={communityTabStyles.scrollContainer}
@@ -117,12 +120,16 @@ const Community = () => {
           }
         >
           <View className="w-full gap-3">
-            {allPosts.length > 0 ? allPosts?.map((post, index) => (
-              <PostComponent key={index} post={post} />
-            )) : <NotAvailableComponent
-            text={"No Posts Yet"}
-            iconName={"alert-circle-outline"}
-          />}
+            {allPosts.length > 0 ? (
+              allPosts?.map((post, index) => (
+                <PostComponent key={index} post={post} />
+              ))
+            ) : (
+              <NotAvailableComponent
+                text={"No Posts Yet"}
+                iconName={"alert-circle-outline"}
+              />
+            )}
           </View>
         </ScrollView>
         <View style={communityTabStyles.shareButtonContainer}>
@@ -130,7 +137,9 @@ const Community = () => {
             onPress={() => addPostRef.current?.open()}
             style={communityTabStyles.shareButton}
           >
-            <Text style={communityTabStyles.shareButtonText}>Share your experience</Text>
+            <Text style={communityTabStyles.shareButtonText}>
+              Share your experience
+            </Text>
           </TouchableOpacity>
         </View>
         <Modalize
@@ -139,7 +148,9 @@ const Community = () => {
           handlePosition="inside"
         >
           <View style={communityTabStyles.modalContent}>
-            <Text style={communityTabStyles.modalTitle}>Share your experience</Text>
+            <Text style={communityTabStyles.modalTitle}>
+              Share your experience
+            </Text>
             <TextInput
               multiline
               numberOfLines={6}
@@ -153,13 +164,18 @@ const Community = () => {
               onPress={pickImage}
               style={communityTabStyles.addImagesButton}
             >
-              <Text style={communityTabStyles.addImagesButtonText}>Add Images</Text>
+              <Text style={communityTabStyles.addImagesButtonText}>
+                Add Images
+              </Text>
             </TouchableOpacity>
             {images.length > 0 && (
               <View style={communityTabStyles.imagesContainer}>
                 {images.map((img, idx) => (
                   <View key={idx} style={communityTabStyles.imageWrapper}>
-                    <Image source={{ uri: img.uri }} style={communityTabStyles.image} />
+                    <Image
+                      source={{ uri: img.uri }}
+                      style={communityTabStyles.image}
+                    />
                     <TouchableOpacity
                       onPress={() => handleUnselect(img.uri)}
                       style={communityTabStyles.imageCloseButton}
@@ -170,7 +186,10 @@ const Community = () => {
                 ))}
               </View>
             )}
-            <TouchableOpacity onPress={handlePost} style={communityTabStyles.postButton}>
+            <TouchableOpacity
+              onPress={handlePost}
+              style={communityTabStyles.postButton}
+            >
               {loading ? (
                 <ActivityIndicator color="white" />
               ) : (

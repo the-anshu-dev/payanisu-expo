@@ -195,7 +195,7 @@ const Page = () => {
               }}
             >
               <Picker.Item label="Geo Tagging" value="Geo Tagging" />
-              <Picker.Item label="QR Code" value="Qr Code" />
+              <Picker.Item label="QR CODE" value="Qr Code" />
             </Picker>
             <TouchableOpacity
               onPress={() => setModalVisible(true)}

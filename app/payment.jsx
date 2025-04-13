@@ -130,7 +130,7 @@ const Payment = () => {
         await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
       }
 
-      showSuccess(`QR code saved as ${filename}`);
+      showSuccess(`QR CODE saved as ${filename}`);
     } catch (error) {
       showError(error.message || "Failed to download the image.");
     }

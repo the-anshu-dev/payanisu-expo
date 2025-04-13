@@ -271,7 +271,7 @@ const Checkpoints = () => {
                   fontSize: 16,
                 }}
               >
-                Download QR code
+                Download QR CODE
               </Text>
             )}
           </TouchableOpacity>
