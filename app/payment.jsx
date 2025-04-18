@@ -7,6 +7,7 @@ import {
   Platform,
   Alert,
 } from "react-native";
+
 import React, { useState, useRef } from "react";
 import { Checkbox } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";

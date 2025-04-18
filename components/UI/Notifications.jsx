@@ -33,7 +33,11 @@ const Notifications = ({ id, title, content, seen, createdAt, onRefresh }) => {
       }
     }
     setModalVisible(true);
-    onRefresh();
+  };
+
+  const handleClose = async () => {
+    setModalVisible(false);
+    await onRefresh();
   };
 
   const formattedDateTime = format(new Date(createdAt), "dd MMM yyyy h:mm a");
@@ -71,10 +75,10 @@ const Notifications = ({ id, title, content, seen, createdAt, onRefresh }) => {
         </View>
       </TouchableOpacity>
       <Modal
-        animationType="fade"
+        animationType="slide"
         transparent={true}
         visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
+        onRequestClose={handleClose}
       >
         <View className="flex-1 justify-center items-center bg-black/50 px-4">
           <View

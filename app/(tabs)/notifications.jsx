@@ -71,7 +71,11 @@ const NotificationsScreen = () => {
   };
 
   const onRefresh = async () => {
-    await fetchData();
+    try {
+      await fetchData();
+    } catch (error) {
+      showError(error.message || "Failed to refresh notifications.");
+    }
   };
 
   useEffect(() => {

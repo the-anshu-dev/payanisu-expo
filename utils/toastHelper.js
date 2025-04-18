@@ -1,17 +1,21 @@
-import { ToastAndroid } from "react-native";
+import { Platform, ToastAndroid } from "react-native";
+import Toast from "react-native-root-toast";
 
-export const showSuccess = (message) => {
-  ToastAndroid.show(message, ToastAndroid.SHORT);
+const showToast = (message) => {
+  if (Platform.OS === 'android') {
+    ToastAndroid.show(message, ToastAndroid.SHORT);
+  } else {
+    Toast.show(message, {
+      duration: Toast.durations.SHORT,
+      position: Toast.positions.BOTTOM,
+      shadow: true,
+      animation: true,
+      hideOnPress: true,
+    });
+  }
 };
 
-export const showError = (message) => {
-  ToastAndroid.show(message, ToastAndroid.SHORT);
-};
-
-export const showInfo = (message) => {
-  ToastAndroid.show(message, ToastAndroid.SHORT);
-};
-
-export const showWarning = (message) => {
-  ToastAndroid.show(message, ToastAndroid.SHORT);
-};
+export const showSuccess = (message) => showToast(message);
+export const showError = (message) => showToast(message);
+export const showInfo = (message) => showToast(message);
+export const showWarning = (message) => showToast(message);

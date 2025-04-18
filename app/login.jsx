@@ -21,8 +21,9 @@ const Login = () => {
   const [sessionActive, setSessionActive] = useState(false);
   const [_, response, promptAsync] = Google.useAuthRequest({
     androidClientId: process.env.EXPO_PUBLIC_ANDROID_CLIENT_ID,
+    iosClientId: process.env.EXPO_PUBLIC_IOS_CLIENT_ID,
   });
-
+  
   const storeUserData = async (user) => {
     try {
       await AsyncStorage.setItem("user", JSON.stringify(user));
