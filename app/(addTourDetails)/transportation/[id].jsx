@@ -138,17 +138,6 @@ const Transportation = () => {
       </ScrollView>
       <View style={styles.buttonsContainer}>
         <TouchableOpacity
-          style={[styles.buttons, { backgroundColor: "white", borderWidth: 1 }]}
-          activeOpacity={0.9}
-          onPress={handleExport}
-        >
-          {exporting ? (
-            <ActivityIndicator color="#228B22" size={"small"} />
-          ) : (
-            <Text style={styles.buttonText}>Export Excel</Text>
-          )}
-        </TouchableOpacity>
-        <TouchableOpacity
           style={[styles.buttons, { backgroundColor: "#228B22" }]}
           activeOpacity={0.9}
           onPress={() =>
@@ -230,15 +219,13 @@ const styles = StyleSheet.create({
   },
   buttonsContainer: {
     width: width,
-    position: "absolute",
     bottom: 10,
     display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingHorizontal: 30,
+    justifyContent: "center",
+    alignItems: "center",
   },
   buttons: {
-    width: width * 0.4,
+    width: width * 0.9,
     height: height * 0.05,
     borderRadius: 6,
     display: "flex",

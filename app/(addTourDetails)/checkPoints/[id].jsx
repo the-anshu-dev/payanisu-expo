@@ -393,8 +393,8 @@ const Checkpoints = () => {
             options={{ format: "png", quality: 1.0 }}
           >
             <View className="p-1 border border-[#228B22] rounded-xl">
-              <Text className="text-base font-semibold text-center w-full py-1">
-                {currentTour?.name}
+              <Text className="text-base font-semibold text-center w-full bg-white rounded-md text-black mb-1">
+                {shorten(currentTour?.name, 25)}
               </Text>
               <Image
                 source={qrUrl}

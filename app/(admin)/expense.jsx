@@ -46,7 +46,6 @@ const expense = () => {
   const addExpenseDetailRef = useRef(null);
   const showExpenseDetailRef = useRef(null);
 
-  const [exporting, setExporting] = useState(false);
   const [open, setOpen] = useState(false);
 
   const [showExpenseDetails, setShowExpenseDetails] = useState(null);
@@ -185,23 +184,6 @@ const expense = () => {
       showError(error.message || "Please try again.");
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleExport = async () => {
-    setExporting(true);
-    try {
-      const formattedData = await excelData.map((d) => ({
-        Name: d?.name || "",
-        Category: d?.category || "",
-        Amount: d?.amount || 0,
-      }));
-
-      await exportDataToExcel(formattedData, `expenseDetail`);
-    } catch (error) {
-      showError("Failed to export expense details");
-    } finally {
-      setExporting(false);
     }
   };
 
@@ -367,28 +349,14 @@ const expense = () => {
           </>
         )}
         <View
-          className={`flex flex-grow flex-row justify-between items-center w-full absolute bottom-14 px-4 py-2 bg-white `}
+          className={`flex flex-grow flex-row justify-center items-center w-full absolute bottom-14 py-2 bg-white `}
         >
-          <TouchableOpacity activeOpacity={0.9} onPress={handleExport}>
-            <View
-              style={{ width: width * 0.45, backgroundColor: "#228B22" }}
-              className=" py-3 rounded-lg flex justify-center items-center"
-            >
-              {exporting ? (
-                <ActivityIndicator color={"white"} size={"small"} />
-              ) : (
-                <Text className="text-white text-base font-semibold">
-                  Export Excel
-                </Text>
-              )}
-            </View>
-          </TouchableOpacity>
           <TouchableOpacity
             activeOpacity={0.9}
             onPress={() => addExpenseDetailRef?.current?.open()}
           >
             <View
-              style={{ width: width * 0.45, backgroundColor: "#228B22" }}
+              style={{ width: width * 0.9, backgroundColor: "#228B22" }}
               className="py-3 rounded-lg flex justify-center  items-center"
             >
               <Text className="text-white text-base font-semibold">

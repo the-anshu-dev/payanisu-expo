@@ -23,8 +23,7 @@
     "preview": {
       "distribution": "internal",
       "ios": {
-        "simulator": false,
-        "googleServicesFile": "./GoogleService-Info.plist"
+        "simulator": false
       },
       "android": {
         "buildType": "apk"

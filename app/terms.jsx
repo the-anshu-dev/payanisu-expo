@@ -46,7 +46,7 @@ const Terms = () => {
       <Text style={styles.subHeader}>4. Reviews, Feedback, Submissions</Text>
       <Text style={styles.paragraph}>
         All feedback, suggestions, or reviews submitted to Payanisu become the
-        property of Payanisu. You agree to refrain from submitting offensive or
+        propriatory of Payanisu. You agree to refrain from submitting offensive or
         unlawful content and indemnify Payanisu against any resulting claims.
       </Text>
       <Text style={styles.subHeader}>

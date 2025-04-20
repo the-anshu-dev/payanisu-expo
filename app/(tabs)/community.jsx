@@ -1,9 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
-  Dimensions,
   ActivityIndicator,
   RefreshControl,
 } from "react-native";
@@ -12,11 +11,12 @@ import { Modalize } from "react-native-modalize";
 import PostComponent from "../../components/UI/PostComponent";
 import { useSelector } from "react-redux";
 import * as ImagePicker from "expo-image-picker";
+import * as FileSystem from "expo-file-system";
 import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
 import { uploadFilesToS3 } from "../../utils/uploadFileHelper";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Redirect } from "expo-router";
+import { Redirect, useFocusEffect } from "expo-router";
 import { showError } from "../../utils/toastHelper";
 import Loader from "../../components/common/Loader";
 import NotAvailableComponent from "../../components/UI/NotAvailableComponent";
@@ -30,6 +30,7 @@ const Community = () => {
   const [allPosts, setAllPosts] = useState([]);
   const addPostRef = useRef(null);
   const [refresh, setRefresh] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -40,7 +41,25 @@ const Community = () => {
     });
 
     if (!result.canceled) {
-      setImages((prevImages) => [...prevImages, ...result.assets]);
+      const newImages = [];
+
+      for (const asset of result.assets) {
+        const fileName = asset.uri.split("/").pop();
+        const destPath = `${FileSystem.documentDirectory}${fileName}`;
+
+        try {
+          await FileSystem.copyAsync({
+            from: asset.uri,
+            to: destPath,
+          });
+          newImages.push({ uri: destPath, ...asset });
+        } catch (err) {
+          console.error("Failed to persist file:", err);
+          showError("Error processing selected images.");
+        }
+      }
+
+      setImages((prevImages) => [...prevImages, ...newImages]);
     }
   };
 
@@ -64,8 +83,10 @@ const Community = () => {
   };
 
   const handlePost = async () => {
-    if (!images.length && !text) return;
+    if (!images.length && !text.trim()) return;
+
     setLoading(true);
+
     try {
       const postRes = await fetch(
         `${process.env.EXPO_PUBLIC_BASE_URL}/api/Post/create-post`,
@@ -82,8 +103,20 @@ const Community = () => {
 
       if (postRes.status !== 201) throw new Error("Failed to post.");
       const res = await postRes.json();
-      const imgRes = images && (await uploadFilesToS3(images, res.data._id));
-      if (images && !imgRes) throw new Error("Failed to upload images.");
+      const postId = res.data._id;
+
+      if (images.length) {
+        const imgRes = await uploadFilesToS3(images, postId);
+        if (!imgRes) {
+          await fetch(
+            `${process.env.EXPO_PUBLIC_BASE_URL}/api/Post/delete-post/${postId}`,
+            {
+              method: "DELETE",
+            }
+          );
+          throw new Error("Failed to upload images. Post discarded.");
+        }
+      }
 
       setText("");
       setImages([]);
@@ -96,15 +129,22 @@ const Community = () => {
     }
   };
 
+  useFocusEffect(
+    useCallback(() => {
+      getAllPosts();
+    }, [])
+  );
+
   useEffect(() => {
-    getAllPosts();
+    (async () => {
+      await getAllPosts();
+      setInitialLoading(false);
+    })();
   }, []);
 
   if (!user) return <Redirect href="/login" />;
 
-  if (refresh) {
-    return <Loader />;
-  }
+  if (initialLoading) return <Loader />;
 
   return (
     <SafeAreaView
@@ -160,14 +200,6 @@ const Community = () => {
               placeholder="Write your thoughts...."
               style={communityTabStyles.textInput}
             />
-            <TouchableOpacity
-              onPress={pickImage}
-              style={communityTabStyles.addImagesButton}
-            >
-              <Text style={communityTabStyles.addImagesButtonText}>
-                Add Images
-              </Text>
-            </TouchableOpacity>
             {images.length > 0 && (
               <View style={communityTabStyles.imagesContainer}>
                 {images.map((img, idx) => (
@@ -186,6 +218,14 @@ const Community = () => {
                 ))}
               </View>
             )}
+            <TouchableOpacity
+              onPress={pickImage}
+              style={communityTabStyles.addImagesButton}
+            >
+              <Text style={communityTabStyles.addImagesButtonText}>
+                {images.length > 0 ? "Add more images" : "Add Images"}
+              </Text>
+            </TouchableOpacity>
             <TouchableOpacity
               onPress={handlePost}
               style={communityTabStyles.postButton}

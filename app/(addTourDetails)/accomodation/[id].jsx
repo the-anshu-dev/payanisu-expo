@@ -137,30 +137,9 @@ const Accomodation = () => {
           width: "100%",
           justifyContent: "space-between",
           position: "absolute",
-          bottom: 16,
-          paddingHorizontal: 12,
+          bottom: 10,
         }}
       >
-        <TouchableOpacity
-          activeOpacity={0.9}
-          onPress={handleExportDetails}
-          style={{
-            flex: 1,
-            backgroundColor: "#ccc",
-            paddingVertical: 12,
-            borderRadius: 5,
-            alignItems: "center",
-            marginRight: 5,
-          }}
-        >
-          {exporting ? (
-            <ActivityIndicator size={"small"} color="#228B22" />
-          ) : (
-            <Text style={{ color: "black", fontWeight: "400" }}>
-              Export Details
-            </Text>
-          )}
-        </TouchableOpacity>
         <TouchableOpacity
           activeOpacity={0.9}
           onPress={() =>
@@ -191,7 +170,6 @@ const AccomodationButton = ({
   tourId,
   allocatedCount,
 }) => {
-
   const handleDeleteAccomodation = async () => {
     try {
       const response = await fetch(
@@ -207,7 +185,7 @@ const AccomodationButton = ({
     } catch (error) {
       showError(error.message || "Please try again.");
     }
-  }
+  };
 
   return (
     <Pressable
@@ -233,7 +211,7 @@ const AccomodationButton = ({
                 ),
             },
           ]
-        )    
+        )
       }
       onPress={() =>
         router.push(
