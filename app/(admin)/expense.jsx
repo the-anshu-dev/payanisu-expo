@@ -23,7 +23,11 @@ import LabelValue from "../../components/UI/LabelValue.jsx";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { setTour } from "../../redux/slices/tourSlice.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { showError, showWarning } from "../../utils/toastHelper.js";
+import {
+  showError,
+  showSuccess,
+  showWarning,
+} from "../../utils/toastHelper.js";
 import { Picker } from "@react-native-picker/picker";
 import ExpenseCard from "../../components/UI/ExpenseCard.jsx";
 import { useFocusEffect } from "expo-router";
@@ -58,6 +62,7 @@ const expense = () => {
   const [image, setImage] = useState(null);
   const [date, setDate] = useState("");
   const [loading, setLoading] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const [currentTour, setCurrentTour] = useState(
     toursDataForDropdown[0]?.value
@@ -202,6 +207,38 @@ const expense = () => {
       return "document-text-outline";
     } else {
       return "card-outline";
+    }
+  };
+
+  const handleDeleteExpense = async (id) => {
+    console.log("delete clicked");
+    if (!id) {
+      showError("Invalid expense ID");
+      return;
+    }
+
+    setDeleting(true);
+    try {
+      const res = await fetch(
+        `${process.env.EXPO_PUBLIC_BASE_URL}/api/expanse/delete-expanse?id=${id}`,
+        {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      if (res.status !== 200) {
+        throw new Error("Failed to delete expense");
+      }
+
+      showSuccess("Expense deleted successfully");
+      await fetchExpense();
+    } catch (error) {
+      showError(error.message || "Please try again.");
+    } finally {
+      setDeleting(false);
+      showExpenseDetailRef.current?.close();
+      fetchExpense();
     }
   };
 
@@ -372,7 +409,9 @@ const expense = () => {
             <View className="flex justify-center items-center py-3">
               <Text className="text-xl font-semibold">Expense Details</Text>
             </View>
-            <LabelValue label={"Notes"} value={showExpenseDetails?.note} />
+            <View style={{ marginBottom: 10 }}>
+              <LabelValue label={"Notes"} value={showExpenseDetails?.note} />
+            </View>
             {showExpenseDetails?.receipt && (
               <View className="py-2 flex justify-center items-center">
                 <Image
@@ -384,11 +423,16 @@ const expense = () => {
           </ScrollView>
           <View className="w-full flex justify-center items-center mb-3">
             <TouchableOpacity
+              onPress={() => handleDeleteExpense(showExpenseDetails?._id)}
               activeOpacity={0.9}
               style={{ width: width * 0.9 }}
               className=" bg-red-700 rounded-lg py-3 flex justify-center items-center"
             >
-              <Text className="text-white font-semibold">Delete</Text>
+              {deleting ? (
+                <ActivityIndicator size={"small"} color={"white"} />
+              ) : (
+                <Text className="text-white font-semibold">Delete</Text>
+              )}
             </TouchableOpacity>
           </View>
         </View>
