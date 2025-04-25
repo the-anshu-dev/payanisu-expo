@@ -22,7 +22,7 @@ const { width, height } = Dimensions.get("window");
 
 const ViewCheckIns = () => {
   const { id } = useLocalSearchParams();
-  const { checkPoints } = useSelector((state) => state.tour);
+  const { checkPoints } = useSelector((state) => state.checkPoints);
   const checkPointData = checkPoints?.find((i) => i._id === id);
   const tourId = checkPoints[0].tourId;
 
@@ -101,7 +101,7 @@ const ViewCheckIns = () => {
       setCheckedInMembersLoading(false);
     }
   };
- 
+
   const handleCheckIn = async (email) => {
     setCheckingIn(true);
     try {

@@ -25,16 +25,17 @@ import {
   uploadFileToS3,
 } from "../../../utils/uploadFileHelper";
 import * as DocumentPicker from "expo-document-picker";
+import { useTours } from "../../../hooks/useTours";
 
 const { height, width } = Dimensions.get("window");
 
 const EditTour = () => {
-  const { tour } = useSelector((state) => state.tour);
   const { id } = useLocalSearchParams();
 
   const { user } = useSelector((state) => state.user);
 
-  const tourDetails = tour.find((t) => t._id === id);
+  const { tours } = useTours();
+  const tourDetails = tours.find((t) => t._id === id);
 
   const [error, setError] = useState(null);
 

@@ -20,6 +20,7 @@ import MyTourCheckPointsListView from "../../components/MyTourCheckPointsListVie
 import { useSelector } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { showError } from "../../utils/toastHelper";
+import { useBookedTours } from "../../hooks/useBookedTours";
 
 const { width } = Dimensions.get("window");
 
@@ -28,9 +29,8 @@ const MyTourDetails = () => {
   const { user } = useSelector((state) => state.user);
   const { mapLink } = useSelector((state) => state.map);
 
-  const { bookedTour } = useSelector((state) => state.tour);
-
-  const tour = bookedTour?.find((t) => t.tourDetails._id === id);
+  const { bookedTours } = useBookedTours(user?.email);
+  const tour = bookedTours?.find((t) => t.tourDetails._id === id);
 
   const isTourCurrentlyActive =
     new Date() >= new Date(tour?.tourDetails.tour_start) &&

@@ -21,8 +21,6 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { format as formatDateFns } from "date-fns";
 import LabelValue from "../../components/UI/LabelValue.jsx";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { setTour } from "../../redux/slices/tourSlice.js";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   showError,
   showSuccess,
@@ -32,14 +30,17 @@ import { Picker } from "@react-native-picker/picker";
 import ExpenseCard from "../../components/UI/ExpenseCard.jsx";
 import { useFocusEffect } from "expo-router";
 import NotAvailableComponent from "../../components/UI/NotAvailableComponent.jsx";
+import { fetchAllTours } from "../../redux/slices/toursSlice.js";
+import { useBookedTours } from "../../hooks/useBookedTours.js";
+import { useTours } from "../../hooks/useTours.js";
 
 const { width } = Dimensions.get("window");
 
 const expense = () => {
-  const { tour } = useSelector((state) => state.tour);
+  const { tours } = useTours();
   const { user } = useSelector((state) => state.user);
 
-  const toursDataForDropdown = tour
+  const toursDataForDropdown = tours
     .filter((t) => t.email == user?.email)
     .map((t) => {
       return { label: t.name, value: t._id };
@@ -68,29 +69,11 @@ const expense = () => {
     toursDataForDropdown[0]?.value
   );
 
-  const [excelData, setExcelData] = useState(null);
-
   const [showDatePicker, setShowDatePicker] = useState(false);
 
-  const [tours, setTours] = useState(toursDataForDropdown);
+  const [dropDownTours, setDropDownTours] = useState(toursDataForDropdown);
 
   const [refresh, setRefresh] = useState(false);
-
-  const getAllTours = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.EXPO_PUBLIC_BASE_URL}/api/tour/get-alltours`
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch tours due to server error.");
-      }
-      const tour = await response.json();
-      await AsyncStorage.setItem("tours", JSON.stringify(tour));
-      dispatch(setTour(tour));
-    } catch (error) {
-      showError(error.message || "Please try again.");
-    }
-  };
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -184,7 +167,6 @@ const expense = () => {
         spent: data?.spent[0]?.spent || 0,
         balance: data?.balance,
       });
-      setExcelData(data?.expanses);
     } catch (error) {
       showError(error.message || "Please try again.");
     } finally {
@@ -258,7 +240,7 @@ const expense = () => {
       if (currentTour) {
         fetchExpense();
       }
-      await getAllTours();
+      dispatch(fetchAllTours());
     } finally {
       setRefresh(false);
     }
@@ -296,10 +278,10 @@ const expense = () => {
           <DropDownPicker
             open={open}
             value={currentTour}
-            items={tours}
+            items={dropDownTours}
             setOpen={setOpen}
             setValue={setCurrentTour}
-            setItems={setTours}
+            setItems={setDropDownTours}
             closeOnBackPressed={true}
             placeholder="Select Tour"
             zIndex={1000}

@@ -20,7 +20,7 @@ import { ActivityIndicator } from "react-native-paper";
 import * as FileSystem from "expo-file-system";
 import * as MediaLibrary from "expo-media-library";
 import { useDispatch, useSelector } from "react-redux";
-import { setCheckPoints } from "../../../redux/slices/tourSlice";
+import { setCheckPoints } from "../../../redux/slices/checkPointsSlice";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as Location from "expo-location";
 import {
@@ -31,6 +31,7 @@ import {
 import { shorten } from "../../../utils/helpers";
 import { captureRef } from "react-native-view-shot";
 import ViewShot from "react-native-view-shot";
+import { useTours } from "../../../hooks/useTours";
 
 const { height, width } = Dimensions.get("window");
 
@@ -38,8 +39,8 @@ const Checkpoints = () => {
   const { id } = useLocalSearchParams();
   const dispatch = useDispatch();
 
-  const { tour } = useSelector((state) => state.tour);
-  const currentTour = tour.find((tour) => tour._id === id);
+  const {tours} = useTours();
+  const currentTour = tours.find((tour) => tour._id === id);
 
   const [qrUrl, setQrUrl] = useState();
   const [allCheckPoints, setAllCheckPoints] = useState([]);

@@ -8,13 +8,14 @@ import { ScrollView } from "react-native-gesture-handler";
 import { showError } from "../../../utils/toastHelper";
 import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
+import { useTours } from "../../../hooks/useTours";
 
 const TourDetails = () => {
   const { id } = useLocalSearchParams();
-  const { tour } = useSelector((state) => state.tour);
+  const { tours } = useTours();
   const { user } = useSelector((state) => state.user);
 
-  const tourData = tour.find((item) => item._id === id);
+  const tourData = tours.find((item) => item._id === id);
 
   const handleEditTour = () => {
     if (tourData.email !== user.email) {

@@ -194,6 +194,23 @@ export const myTourScreenStyles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  toggleContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    backgroundColor: "white",
+  },
+  toggleButton: {
+    width: "48%",
+    borderWidth: 1,
+    borderRadius: 100,
+    paddingVertical: 5,
+    alignItems: "center",
+    justifyContent: "center",
+  },
 });
 
 export const notificationScreenStyles = StyleSheet.create({

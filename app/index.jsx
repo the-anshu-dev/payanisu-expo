@@ -4,9 +4,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { setProfile, setRole, setUser } from "../redux/slices/userSlice";
 import Loader from "../components/common/Loader";
 import { Redirect } from "expo-router";
-import { setBookedTour, setTour } from "../redux/slices/tourSlice";
 import * as SplashScreen from "expo-splash-screen";
 import { showWarning } from "../utils/toastHelper";
+import { fetchAllTours } from "../redux/slices/toursSlice";
+import { fetchBookedTours } from "../redux/slices/bookedToursSlice";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -40,7 +41,7 @@ const Index = () => {
           dispatch(setProfile(profileData));
         }
       }
-      await getAllBookedTours(email);
+      dispatch(fetchBookedTours(email));
     } catch (error) {
       showWarning(
         error.message ||
@@ -70,48 +71,10 @@ const Index = () => {
     }
   };
 
-  const getAllBookedTours = async (email) => {
-    try {
-      const response = await fetch(
-        `${process.env.EXPO_PUBLIC_BASE_URL}/api/booking/get-my-tour?email=${email}`
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch booked tours.");
-      }
-      const data = await response.json();
-      await AsyncStorage.setItem("bookedTours", JSON.stringify(data.data));
-      dispatch(setBookedTour(data.data));
-    } catch (error) {
-      showWarning(
-        error.message ||
-          "Failed to fetch booked tours. Please check your network connection."
-      );
-    }
-  };
-
-  const getAllTours = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.EXPO_PUBLIC_BASE_URL}/api/tour/get-alltours`
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch tours due to server error.");
-      }
-      const tour = await response.json();
-      await AsyncStorage.setItem("tours", JSON.stringify(tour));
-      dispatch(setTour(tour));
-    } catch (error) {
-      showWarning(
-        error.message ||
-          "Failed to fetch tours. Please check your network connection."
-      );
-    }
-  };
-
   useEffect(() => {
     const initializeApp = async () => {
       await loadUserData();
-      await getAllTours();
+      dispatch(fetchAllTours());
     };
     initializeApp();
   }, []);

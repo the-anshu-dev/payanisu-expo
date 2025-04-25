@@ -1,32 +1,29 @@
-import {
-  View,
-  ScrollView,
-  StyleSheet,
-  RefreshControl,
-  Text,
-} from "react-native";
+import { View, ScrollView, RefreshControl, Text } from "react-native";
 import React, { useEffect, useState } from "react";
 import Notifications from "../../components/UI/Notifications";
 import { StatusBar } from "expo-status-bar";
-import { apiRequest } from "../../utils/helpers";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Redirect } from "expo-router";
 import { showError } from "../../utils/toastHelper";
 import { notificationTypes } from "../../constants/constant";
 import NotificationChips from "../../components/UI/NotificationChips";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { MaterialIcons } from "@expo/vector-icons";
 import Loader from "../../components/common/Loader";
 import NotAvailableComponent from "../../components/UI/NotAvailableComponent";
 import { notificationScreenStyles } from "../../constants/Styles";
+import { useNotifications } from "../../hooks/useNotifications";
+import { fetchNotifications } from "../../redux/slices/notificationsSlice";
 
 const NotificationsScreen = () => {
   const { user } = useSelector((state) => state.user);
-  const [data, setData] = useState([]);
-  const [allData, setAllData] = useState([]);
-  const [refreshing, setRefreshing] = useState(false);
   const [selectedValue, setSelectedValue] = useState("all");
+  const [refreshing, setRefreshing] = useState(false);
+  const [filteredData, setFilteredData] = useState([]);
+
+  const dispatch = useDispatch();
+
+  const { notifications, loading, error } = useNotifications(user?.email);
 
   useEffect(() => {
     const loadStoredFilter = async () => {
@@ -40,62 +37,41 @@ const NotificationsScreen = () => {
     loadStoredFilter();
   }, []);
 
-  const fetchData = async () => {
-    setRefreshing(true);
+  useEffect(() => {
+    if (!notifications) return;
+    const filtered = notifications.filter((item) => {
+      if (selectedValue === "all") return true;
+      if (selectedValue === "read") return item.seen;
+      if (selectedValue === "unread") return !item.seen;
+    });
+    setFilteredData(filtered);
+  }, [selectedValue, notifications]);
+
+  const handleSelect = async (value) => {
+    setSelectedValue(value);
+    await AsyncStorage.setItem("notificationType", value);
+  };
+
+  const onRefresh = async () => {
     try {
-      const newData = await apiRequest(
-        `${process.env.EXPO_PUBLIC_BASE_URL}/api/notification/get?email=${user.email}`
-      );
-      setAllData(newData);
-      applyFilter(selectedValue, newData);
+      setRefreshing(true);
+      dispatch(fetchNotifications(user?.email));
     } catch (error) {
-      showError(error.message || "Please try again.");
+      showError(error.message || "Failed to refresh notifications.");
     } finally {
       setRefreshing(false);
     }
   };
 
-  const applyFilter = (value, sourceData = allData) => {
-    const filteredData = sourceData.filter((item) => {
-      if (value === "all") return true;
-      if (value === "read") return item.seen;
-      if (value === "unread") return !item.seen;
-    });
-    setData(filteredData);
-  };
-
-  const handleSelect = async (value) => {
-    setSelectedValue(value);
-    await AsyncStorage.setItem("notificationType", value);
-    applyFilter(value);
-  };
-
-  const onRefresh = async () => {
-    try {
-      await fetchData();
-    } catch (error) {
-      showError(error.message || "Failed to refresh notifications.");
-    }
-  };
-
-  useEffect(() => {
-    if (user) fetchData();
-  }, [user]);
-
   if (!user) return <Redirect href="/login" />;
-
-  if (refreshing) {
-    return <Loader />;
-  }
-
-  if (allData.length === 0) {
+  if (loading && !refreshing) return <Loader />;
+  if (!notifications || notifications.length === 0)
     return (
       <NotAvailableComponent
-        text={"No Posts Available"}
-        iconName={"alert-circle-outline"}
+        text={"No Notifications Available"}
+        iconName={"notifications-off"}
       />
     );
-  }
 
   return (
     <SafeAreaView
@@ -126,13 +102,14 @@ const NotificationsScreen = () => {
               />
             ))}
           </View>
-          {data.length === 0 ? (
+
+          {filteredData.length === 0 ? (
             <NotAvailableComponent
               text={"No Notifications Available"}
               iconName={"notifications-off"}
             />
           ) : (
-            data?.map((notification) => (
+            filteredData.map((notification) => (
               <Notifications
                 key={notification._id}
                 id={notification._id}

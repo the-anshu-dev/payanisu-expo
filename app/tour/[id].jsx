@@ -18,15 +18,15 @@ import { Ionicons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { formatDate } from "../../utils/helpers";
 import { ActivityIndicator } from "react-native-paper";
-import { setTour } from "../../redux/slices/tourSlice";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { showError, showSuccess, showWarning } from "../../utils/toastHelper";
+import { useTours } from "../../hooks/useTours";
+import { fetchAllTours } from "../../redux/slices/toursSlice";
 
 const { width } = Dimensions.get("window");
 
 const TourDetails = () => {
   const { id } = useLocalSearchParams();
-  const { tour } = useSelector((state) => state.tour);
+  const { tours } = useTours();
   const { user } = useSelector((state) => state.user);
 
   const [loading, setLoading] = useState(false);
@@ -36,25 +36,9 @@ const TourDetails = () => {
 
   const navigation = useNavigation();
 
-  const tourDetail = tour?.find((item) => item._id === id) ?? null;
+  const tourDetail = tours?.find((item) => item._id === id) ?? null;
 
   const dispatch = useDispatch();
-
-  const getAllTours = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.EXPO_PUBLIC_BASE_URL}/api/tour/get-alltours`
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch tours due to server error.");
-      }
-      const tour = await response.json();
-      await AsyncStorage.setItem("tours", JSON.stringify(tour));
-      await dispatch(setTour(tour));
-    } catch (error) {
-      showWarning(error.message || "Failed to fetch tours.");
-    }
-  };
 
   const handleDeleteTour = async () => {
     if (tourDetail.status === true) {
@@ -116,16 +100,7 @@ const TourDetails = () => {
         throw new Error("Failed to unpublish");
       }
 
-      const refreshTour = await fetch(
-        `${process.env.EXPO_PUBLIC_BASE_URL}/api/tour/get-alltours`
-      );
-
-      if (!refreshTour.ok) {
-        throw new Error("Failed to fetch tours");
-      }
-
-      const tour = await refreshTour.json();
-      dispatch(setTour(tour));
+      dispatch(fetchAllTours());
       showSuccess("Tour Status Updated.");
     } catch (error) {
       showError(error.message || "Please try again.");
@@ -134,9 +109,9 @@ const TourDetails = () => {
     }
   };
 
-  const onRefresh = async () => {
+  const onRefresh = () => {
     try {
-      await getAllTours();
+      dispatch(fetchAllTours());
     } catch (error) {
       showError(error.message || "Please try again.");
     }

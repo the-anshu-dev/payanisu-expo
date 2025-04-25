@@ -1,46 +1,23 @@
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import TourCard from "../../components/admin/UI/TourCard";
 import { router, useFocusEffect } from "expo-router";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { SafeAreaView } from "react-native-safe-area-context";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { setTour } from "../../redux/slices/tourSlice";
-import { showError } from "../../utils/toastHelper";
 import NotAvailableComponent from "../../components/UI/NotAvailableComponent";
 import Loader from "../../components/common/Loader";
 import { tourScreenStyles } from "../../constants/Styles";
+import { fetchAllTours } from "../../redux/slices/toursSlice";
+import { useTours } from "../../hooks/useTours";
 
 const Tours = () => {
-  const [tours, setTours] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const { tours, loading } = useTours();
 
   const dispatch = useDispatch();
 
-  const getAllTours = async () => {
-    
-    setLoading(true);
-    try {
-      const response = await fetch(
-        `${process.env.EXPO_PUBLIC_BASE_URL}/api/tour/get-alltours`
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch tours due to server error.");
-      }
-      const tour = await response.json();
-      dispatch(setTour(tour));
-      await AsyncStorage.setItem("tours", JSON.stringify(tour));
-      setTours(tour);
-    } catch (error) {
-      showError(error.message || "Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useFocusEffect(
     useCallback(() => {
-      getAllTours();
+      dispatch(fetchAllTours());
     }, [])
   );
 

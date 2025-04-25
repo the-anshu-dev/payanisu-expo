@@ -28,12 +28,13 @@ import {
 } from "../../redux/slices/bookingSlice.js";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { showError, showWarning } from "../../utils/toastHelper";
+import { useTours } from "../../hooks/useTours.js";
 
 const { width, height } = Dimensions.get("window");
 
 const DetailsScreen = () => {
   const { id } = useLocalSearchParams();
-  const { tour } = useSelector((state) => state.tour);
+  const { tours } = useTours();
   const { user, profile, members } = useSelector((state) => state.user);
 
   const [viewFAQ, setViewFAQ] = useState(false);
@@ -42,7 +43,7 @@ const DetailsScreen = () => {
 
   const [filteredMembers, setFilteredMembers] = useState([]);
 
-  const tourData = tour.find((tourData) => tourData._id === id) || {};
+  const tourData = tours.find((tourData) => tourData._id === id) || {};
 
   const {
     backpacks = [],
@@ -213,7 +214,7 @@ const DetailsScreen = () => {
             loop
             width={width}
             height={288}
-            autoPlay={true}
+            autoPlay={images.length > 1}
             data={images}
             autoPlayInterval={2000}
             scrollAnimationDuration={1000}

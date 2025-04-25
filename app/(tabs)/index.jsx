@@ -4,18 +4,16 @@ import { Dimensions, View, Text, TouchableOpacity } from "react-native";
 import CarouselComponent from "@/components/CarouselComponent";
 import { useEffect, useState } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
-import { setTour } from "../../redux/slices/tourSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useIsFocused } from "@react-navigation/native";
 import {
   setAdminAccessEnabled,
-  setMembers,
 } from "../../redux/slices/userSlice";
 import { checkNetworkStatus } from "../../utils/offlineLocationHelper";
 import { router } from "expo-router";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { showError } from "../../utils/toastHelper";
 import { homeScreenStyles } from "../../constants/Styles";
+import { fetchMembers } from "../../redux/slices/membersSlice";
+import { fetchAllTours } from "../../redux/slices/toursSlice";
 
 const { width, height } = Dimensions.get("window");
 
@@ -23,6 +21,7 @@ export default function HomeScreen() {
   const [isConnected, setIsConnected] = useState(true);
   const { user } = useSelector((state) => state.user);
 
+  // thunk
   const dispatch = useDispatch();
 
   const isFocused = useIsFocused();
@@ -32,59 +31,14 @@ export default function HomeScreen() {
     setIsConnected(status);
   };
 
-  const handleGetMembers = async () => {
-    if (!user?.email) {
-      showError("User email is not available.");
-      return;
-    }
-    try {
-      const response = await fetch(
-        `${process.env.EXPO_PUBLIC_BASE_URL}/api/member/get-member?email=${user.email}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (response.status !== 200) {
-        const text = await response.text();
-        throw new Error("Failed to fetch members.");
-      }
-      const data = await response.json();
-      dispatch(setMembers(data));
-    } catch (error) {
-      showError(error.message || "Please try again.");
-    }
-  };
-
-  const getAllTours = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.EXPO_PUBLIC_BASE_URL}/api/tour/get-alltours`
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch tours due to server error.");
-      }
-      const tour = await response.json();
-      if (tour.length === 0) {
-        showError("No upcoming tours available.");
-      }
-      await AsyncStorage.setItem("tours", JSON.stringify(tour));
-      dispatch(setTour(tour));
-    } catch (error) {
-      showError(error.message || "Please try again.");
-    }
-  };
-
   useEffect(() => {
     dispatch(setAdminAccessEnabled(false));
   }, [isFocused]);
 
   useEffect(() => {
     checkNetworkStatus();
-    getAllTours();
-    handleGetMembers();
+    dispatch(fetchAllTours());
+    dispatch(fetchMembers(user?.email));
     const interval = setInterval(() => {
       checkNetworkConnection();
     }, 5000);

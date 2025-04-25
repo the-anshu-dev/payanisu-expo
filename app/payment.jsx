@@ -25,14 +25,16 @@ import ViewShot from "react-native-view-shot";
 import * as FileSystem from "expo-file-system";
 import { Image } from "expo-image";
 import { showError, showSuccess, showWarning } from "../utils/toastHelper";
+import { useTours } from "../hooks/useTours";
 
 const { width } = Dimensions.get("window");
 
 const Payment = () => {
   const { id } = useLocalSearchParams();
   const { tourMembers, totalCost } = useSelector((state) => state.booking);
-  const { tour } = useSelector((state) => state.tour);
-  const bookingTour = tour?.find((t) => t._id === id);
+
+  const { tours } = useTours();
+  const bookingTour = tours?.find((t) => t._id === id);
 
   const [image, setImage] = useState(null);
   const [agree, setAgree] = useState(false);

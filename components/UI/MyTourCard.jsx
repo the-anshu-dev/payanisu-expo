@@ -31,6 +31,23 @@ const MyTourCard = ({ tour, status }) => {
     1: "Booked",
     2: "Pending",
     3: "Cancelled",
+    4: "Completed",
+  };
+
+  const statusColor = {
+    0: "red",
+    1: "green",
+    2: "orange",
+    3: "red",
+    4: "gray",
+  };
+
+  const statusIcon = {
+    0: "close-circle-outline",
+    1: "checkmark-outline",
+    2: "time-outline",
+    3: "close-circle-outline",
+    4: "checkmark-outline",
   };
 
   return (
@@ -48,7 +65,7 @@ const MyTourCard = ({ tour, status }) => {
             loop
             width={width * 0.9}
             height={height / 4}
-            autoPlay
+            autoPlay={images.length > 1}
             data={images}
             autoPlayInterval={2000}
             scrollAnimationDuration={1000}
@@ -61,22 +78,11 @@ const MyTourCard = ({ tour, status }) => {
             <Text>{calculateDuration(tour?.tour_start, tour?.tour_end)}</Text>
           </View>
           <View
-            className={`w-28 ${
-              status === 1
-                ? "bg-[#228B22]"
-                : status === 2
-                ? "bg-orange-500"
-                : "bg-red-500"
-            } flex flex-row justify-center items-center gap-2 mt-2 rounded-lg h-6`}
+            style={{ backgroundColor: statusColor[status] }}
+            className={`w-28 flex flex-row justify-center items-center gap-2 mt-2 rounded-lg h-6`}
           >
             <Ionicons
-              name={`${
-                status === 1
-                  ? "checkmark-outline"
-                  : status === 2
-                  ? "time-outline"
-                  : "close-circle-outline"
-              }`}
+              name={`${statusIcon[status]}`}
               size={16}
               color={"white"}
             />
@@ -96,12 +102,10 @@ const MyTourCard = ({ tour, status }) => {
             <FontAwesome6 name="person-hiking" size={16} color="#228B22" />
             <Text>{tour?.difficulty}</Text>
           </View>
-
           <View className="flex flex-row gap-3">
             <FontAwesome6 name="route" size={16} color="#228B22" />
             <Text>{tour?.distance} KMS</Text>
           </View>
-
           <View className="flex flex-row gap-3">
             <Ionicons name="person-outline" size={16} color="#228B22" />
             <Text>{`${tour.bookedCount}/${tour?.total_seats} seats`}</Text>

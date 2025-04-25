@@ -14,19 +14,20 @@ import { showError, showSuccess } from "../../../utils/toastHelper";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { uploadFileToS3 } from "../../../utils/uploadFileHelper";
+import { useTours } from "../../../hooks/useTours";
 
 const { height } = Dimensions.get("window");
 
 const UploadFaq = () => {
   const { id } = useLocalSearchParams();
-  const { tour } = useSelector((state) => state.tour);
+  const { tours } = useTours();
   const { user } = useSelector((state) => state.user);
 
   const [faq, setFaq] = useState(null);
 
   const [loading, setLoading] = useState(false);
 
-  const tourDetail = tour?.find((item) => item._id === id) ?? null;
+  const tourDetail = tours?.find((item) => item._id === id) ?? null;
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({

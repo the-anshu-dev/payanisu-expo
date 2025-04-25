@@ -24,15 +24,15 @@ import { Ionicons } from "@expo/vector-icons";
 import { ActivityIndicator, Checkbox } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { showError, showSuccess } from "../../../utils/toastHelper";
+import { useTours } from "../../../hooks/useTours";
 
 const { height, width } = Dimensions.get("window");
 
 const GuestsEnrolled = () => {
   const { id } = useLocalSearchParams();
 
-  const { tour } = useSelector((state) => state.tour);
-
-  const currentTour = tour?.find((i) => i._id === id);
+  const { tours } = useTours();
+  const currentTour = tours?.find((i) => i._id === id);
 
   const [refreshing, setRefreshing] = useState(false);
 

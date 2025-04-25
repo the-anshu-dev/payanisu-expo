@@ -6,18 +6,16 @@ import {
   StyleSheet,
   TouchableOpacity,
   Switch,
-  RefreshControl,
 } from "react-native";
-import React, { useCallback, useState } from "react";
-import { router, useFocusEffect, useRouter } from "expo-router";
+import { router, useRouter } from "expo-router";
 import LabelValue from "../components/UI/LabelValue";
 import { useDispatch, useSelector } from "react-redux";
 import MemberCard from "../components/UI/MemberCard";
 import { formatDate } from "../utils/helpers";
-import { setMembers, setAdminAccessEnabled } from "../redux/slices/userSlice";
+import { setAdminAccessEnabled } from "../redux/slices/userSlice";
 import LinearGradient from "react-native-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
-import { showError } from "../utils/toastHelper";
+import { useMembers } from "../hooks/useMembers";
 
 const { width, height } = Dimensions.get("window");
 
@@ -26,12 +24,10 @@ const Profile = () => {
     (state) => state.user
   );
 
+  const { members, loading } = useMembers(user?.email);
+
   const router = useRouter();
   const dispatch = useDispatch();
-
-  const [membersData, setMembersData] = useState([]);
-
-  const [refresh, setRefresh] = useState(false);
 
   const handleAccessChange = (value) => {
     if (value) {
@@ -43,60 +39,12 @@ const Profile = () => {
     }
   };
 
-  const handleGetMembers = async () => {
-    if (!user?.email) {
-      console.error("User email is not available.");
-      return;
-    }
-    try {
-      const response = await fetch(
-        `${process.env.EXPO_PUBLIC_BASE_URL}/api/member/get-member?email=${user.email}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (response.status !== 200) {
-        const text = await response.text();
-        console.error("Error response:", response.status, text);
-        throw new Error("Failed to fetch members.");
-      }
-      const data = await response.json();
-
-      setMembersData(data);
-      dispatch(setMembers(data));
-    } catch (error) {
-      showError("Could not fetch members");
-      console.error("Error fetching members:", error);
-    }
-  };
-
-  const onRefresh = async () => {
-    setRefresh(true);
-    try {
-      await handleGetMembers();
-    } finally {
-      setRefresh(false);
-    }
-  };
-
-  useFocusEffect(
-    useCallback(() => {
-      onRefresh();
-    }, [])
-  );
-
   return (
     <View style={styles.container}>
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
-        refreshControl={
-          <RefreshControl refreshing={refresh} onRefresh={onRefresh} />
-        }
       >
         <View style={styles.profileContainer}>
           <Ionicons
@@ -158,9 +106,9 @@ const Profile = () => {
                 Added Members
               </Text>
             </View>
-            {membersData.length !== 0 ? (
+            {members.length !== 0 ? (
               <>
-                {membersData.map((mem, index) => (
+                {members.map((mem, index) => (
                   <MemberCard data={mem} key={index} />
                 ))}
               </>

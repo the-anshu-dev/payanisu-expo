@@ -2,32 +2,32 @@ import { Dimensions, Text, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import CarouselCard from "./UI/CarouselCard";
 import { ScrollView } from "react-native-gesture-handler";
-import { useSelector } from "react-redux";
 import CardSkeleton from "./UI/CardSkeleton";
 import { StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useTours } from "../hooks/useTours";
 
 const { width, height } = Dimensions.get("window");
 
 const CarouselComponent = () => {
-  const { tour } = useSelector((state) => state.tour);
+  const {tours, loading} = useTours();
+
   const [activeTours, setActiveTours] = useState([]);
 
   useEffect(() => {
-    if (!Array.isArray(tour)) return;
+    if (!Array.isArray(tours)) return;
   
     const today = new Date();
     const todayStr = today.toISOString().split("T")[0];
   
-    const filteredTours = tour.filter((item) => {
+    const filteredTours = tours.filter((item) => {
       const closeDateStr = new Date(item.booking_close).toISOString().split("T")[0];
       return closeDateStr >= todayStr && item.status;
     });
   
     setActiveTours(filteredTours);
-  }, [tour]);
+  }, [tours]);
   
-
   if (activeTours.length === 0)
     return (
       <View style={styles.container}>

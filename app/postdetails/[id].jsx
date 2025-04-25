@@ -59,7 +59,7 @@ const postdetails = () => {
           loop
           width={width}
           height={288}
-          autoPlay={true}
+          autoPlay={images.length > 1}
           data={images}
           autoPlayInterval={2000}
           scrollAnimationDuration={1000}

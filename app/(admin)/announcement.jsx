@@ -17,14 +17,15 @@ import { showError, showSuccess } from "../../utils/toastHelper";
 import { useFocusEffect } from "expo-router";
 import Notifications from "../../components/UI/Notifications";
 import { announcementScreenStyles } from "../../constants/Styles";
+import { useTours } from "../../hooks/useTours";
 
 const { width, height } = Dimensions.get("window");
 
 const AnnouncementScreen = () => {
-  const { tour } = useSelector((state) => state.tour);
+  const { tours: allTours } = useTours();
   const { user } = useSelector((state) => state.user);
 
-  const toursData = tour
+  const toursData = allTours
     .filter((t) => t.email == user?.email)
     .map((t) => {
       return { label: t.name, value: t._id };

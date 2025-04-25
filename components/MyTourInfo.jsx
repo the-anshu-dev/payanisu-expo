@@ -233,7 +233,7 @@ const MyTourInfo = ({ tour }) => {
             loop
             width={width}
             height={200}
-            autoPlay={true}
+            autoPlay={images.length > 1}
             data={images}
             autoPlayInterval={2000}
             scrollAnimationDuration={1000}

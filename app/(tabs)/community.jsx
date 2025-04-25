@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -9,28 +9,30 @@ import {
 import { ScrollView, TextInput } from "react-native-gesture-handler";
 import { Modalize } from "react-native-modalize";
 import PostComponent from "../../components/UI/PostComponent";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
 import { uploadFilesToS3 } from "../../utils/uploadFileHelper";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Redirect, useFocusEffect } from "expo-router";
+import { Redirect } from "expo-router";
 import { showError } from "../../utils/toastHelper";
 import Loader from "../../components/common/Loader";
 import NotAvailableComponent from "../../components/UI/NotAvailableComponent";
 import { communityTabStyles } from "../../constants/Styles";
+import { fetchAllPosts } from "../../redux/slices/postsSlice";
+import { usePosts } from "../../hooks/usePosts";
 
 const Community = () => {
   const { user } = useSelector((state) => state.user);
   const [images, setImages] = useState([]);
   const [text, setText] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [allPosts, setAllPosts] = useState([]);
   const addPostRef = useRef(null);
-  const [refresh, setRefresh] = useState(false);
-  const [initialLoading, setInitialLoading] = useState(true);
+  const [posting, setPosting] = useState(false);
+
+  const dispatch = useDispatch();
+  const { posts, loading } = usePosts();
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -67,25 +69,10 @@ const Community = () => {
     setImages((prevImages) => prevImages.filter((image) => image.uri !== uri));
   };
 
-  const getAllPosts = async () => {
-    setRefresh(true);
-    try {
-      const res = await fetch(
-        `${process.env.EXPO_PUBLIC_BASE_URL}/api/Post/get-posts`
-      );
-      const posts = await res.json();
-      setAllPosts(posts.data);
-    } catch (error) {
-      showError(error.message || "Please try again.");
-    } finally {
-      setRefresh(false);
-    }
-  };
-
   const handlePost = async () => {
     if (!images.length && !text.trim()) return;
 
-    setLoading(true);
+    setPosting(true);
 
     try {
       const postRes = await fetch(
@@ -110,9 +97,7 @@ const Community = () => {
         if (!imgRes) {
           await fetch(
             `${process.env.EXPO_PUBLIC_BASE_URL}/api/Post/delete-post/${postId}`,
-            {
-              method: "DELETE",
-            }
+            { method: "DELETE" }
           );
           throw new Error("Failed to upload images. Post discarded.");
         }
@@ -121,30 +106,16 @@ const Community = () => {
       setText("");
       setImages([]);
       addPostRef.current?.close();
-      await getAllPosts();
+      dispatch(fetchAllPosts());
     } catch (error) {
       showError(error.message || "Please try again.");
     } finally {
-      setLoading(false);
+      setPosting(false);
     }
   };
 
-  useFocusEffect(
-    useCallback(() => {
-      getAllPosts();
-    }, [])
-  );
-
-  useEffect(() => {
-    (async () => {
-      await getAllPosts();
-      setInitialLoading(false);
-    })();
-  }, []);
-
   if (!user) return <Redirect href="/login" />;
-
-  if (initialLoading) return <Loader />;
+  if (loading) return <Loader />;
 
   return (
     <SafeAreaView
@@ -156,12 +127,15 @@ const Community = () => {
           contentContainerStyle={communityTabStyles.scrollContainer}
           showsVerticalScrollIndicator={false}
           refreshControl={
-            <RefreshControl refreshing={refresh} onRefresh={getAllPosts} />
+            <RefreshControl
+              refreshing={loading}
+              onRefresh={() => dispatch(fetchAllPosts())}
+            />
           }
         >
           <View className="w-full gap-3">
-            {allPosts.length > 0 ? (
-              allPosts?.map((post, index) => (
+            {posts.length > 0 ? (
+              posts?.map((post, index) => (
                 <PostComponent key={index} post={post} />
               ))
             ) : (
@@ -172,6 +146,7 @@ const Community = () => {
             )}
           </View>
         </ScrollView>
+
         <View style={communityTabStyles.shareButtonContainer}>
           <TouchableOpacity
             onPress={() => addPostRef.current?.open()}
@@ -182,6 +157,7 @@ const Community = () => {
             </Text>
           </TouchableOpacity>
         </View>
+
         <Modalize
           adjustToContentHeight
           ref={addPostRef}
@@ -191,6 +167,7 @@ const Community = () => {
             <Text style={communityTabStyles.modalTitle}>
               Share your experience
             </Text>
+
             <TextInput
               multiline
               numberOfLines={6}
@@ -200,6 +177,7 @@ const Community = () => {
               placeholder="Write your thoughts...."
               style={communityTabStyles.textInput}
             />
+
             {images.length > 0 && (
               <View style={communityTabStyles.imagesContainer}>
                 {images.map((img, idx) => (
@@ -218,6 +196,7 @@ const Community = () => {
                 ))}
               </View>
             )}
+
             <TouchableOpacity
               onPress={pickImage}
               style={communityTabStyles.addImagesButton}
@@ -226,11 +205,12 @@ const Community = () => {
                 {images.length > 0 ? "Add more images" : "Add Images"}
               </Text>
             </TouchableOpacity>
+
             <TouchableOpacity
               onPress={handlePost}
               style={communityTabStyles.postButton}
             >
-              {loading ? (
+              {posting ? (
                 <ActivityIndicator color="white" />
               ) : (
                 <Text style={communityTabStyles.postButtonText}>Post</Text>
