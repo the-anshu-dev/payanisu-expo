@@ -154,7 +154,8 @@ const EditTour = () => {
       setError("Please fill all required fields & add tour images.");
       return;
     }
-
+    console.log('submit ===>');
+    
     setLoading(true);
     try {
       setError("");
@@ -202,6 +203,11 @@ const EditTour = () => {
           body: JSON.stringify(formData),
         }
       );
+
+
+      console.log('====================================');
+      console.log('response===>',response);
+      console.log('====================================');
       if (response.ok) {
         await uploadFilesToS3(imageToAdd, id);
         showSuccess("Tour updated successfully");
@@ -267,9 +273,9 @@ const EditTour = () => {
           flexGrow: 1,
         }}
       >
-        <View className="flex justify-center items-center">
+        <View className="flex items-center justify-center">
           {error && (
-            <Text className="text-red-600 font-semibold text-lg pt-3">
+            <Text className="pt-3 text-lg font-semibold text-red-600">
               {error}
             </Text>
           )}
@@ -284,7 +290,7 @@ const EditTour = () => {
               value={tourName}
               placeholderTextColor="gray"
               onChangeText={setTourName}
-              className="text-black text-lg mt-1"
+              className="mt-1 text-lg text-black"
             />
           </View>
           <View style={styles.input}>
@@ -296,7 +302,7 @@ const EditTour = () => {
               value={location}
               placeholderTextColor="gray"
               onChangeText={setLocation}
-              className="text-black text-lg mt-1"
+              className="mt-1 text-lg text-black"
             />
           </View>
           <View style={styles.input}>
@@ -306,7 +312,7 @@ const EditTour = () => {
               value={state}
               placeholderTextColor="gray"
               onChangeText={setState}
-              className="text-black text-lg mt-1"
+              className="mt-1 text-lg text-black"
             />
           </View>
           <View style={styles.input}>
@@ -319,7 +325,7 @@ const EditTour = () => {
               onChangeText={setDescription}
               placeholderTextColor="gray"
               multiline
-              className="text-black text-lg mt-1"
+              className="mt-1 text-lg text-black"
               style={styles.descriptionInput}
             />
           </View>
@@ -367,7 +373,7 @@ const EditTour = () => {
               placeholderTextColor="gray"
               onChangeText={setTotalSeats}
               keyboardType="numeric"
-              className="text-black text-lg mt-1"
+              className="mt-1 text-lg text-black"
             />
           </View>
           <View style={styles.input}>
@@ -380,7 +386,7 @@ const EditTour = () => {
               placeholderTextColor="gray"
               onChangeText={setDistance}
               keyboardType="numeric"
-              className="text-black text-lg mt-1"
+              className="mt-1 text-lg text-black"
             />
           </View>
           <View style={styles.input}>
@@ -390,7 +396,7 @@ const EditTour = () => {
             <TouchableOpacity onPress={() => setShowStartPicker(true)}>
               <TextInput
                 editable={false}
-                className="py-2 w-full rounded-lg text-black placeholder:text-base"
+                className="w-full py-2 text-black rounded-lg placeholder:text-base"
                 value={startDate ? format(startDate, "yyyy-MM-dd") : new Date()}
                 placeholder={format(tourDetails.tour_start, "yyyy-MM-dd")}
               />
@@ -411,7 +417,7 @@ const EditTour = () => {
             <TouchableOpacity onPress={() => setShowEndPicker(true)}>
               <TextInput
                 editable={false}
-                className=" py-2 w-full rounded-lg text-black placeholder:text-base"
+                className="w-full py-2 text-black rounded-lg placeholder:text-base"
                 value={endDate ? format(endDate, "yyyy-MM-dd") : new Date()}
                 placeholder={format(tourDetails.tour_end, "yyyy-MM-dd")}
               />
@@ -432,7 +438,7 @@ const EditTour = () => {
             <TouchableOpacity onPress={() => setShowBookingClosePicker(true)}>
               <TextInput
                 editable={false}
-                className="py-2 w-full rounded-lg text-black placeholder:text-base"
+                className="w-full py-2 text-black rounded-lg placeholder:text-base"
                 value={
                   bookingCloseDate
                     ? format(bookingCloseDate, "yyyy-MM-dd")
@@ -460,7 +466,7 @@ const EditTour = () => {
               placeholderTextColor="gray"
               onChangeText={setCostPerPerson}
               keyboardType="numeric"
-              className="text-black text-lg mt-1"
+              className="mt-1 text-lg text-black"
             />
           </View>
           <View style={styles.switchContainer}>
@@ -492,8 +498,8 @@ const EditTour = () => {
               marginBottom: 10,
             }}
           >
-            <View className="flex flex-row justify-between item-center w-full rounded-lg px-4 py-2">
-              <View className="flex flex-row justify-center items-center gap-5">
+            <View className="flex flex-row justify-between w-full px-4 py-2 rounded-lg item-center">
+              <View className="flex flex-row items-center justify-center gap-5">
                 <Ionicons
                   name="document-text-outline"
                   color={"#228B22"}
@@ -517,7 +523,7 @@ const EditTour = () => {
           </View>
         )}
         <View style={styles.imageWrapper}>
-          <Text className="text-lg mb-2 font-semibold text-gray-600">
+          <Text className="mb-2 text-lg font-semibold text-gray-600">
             Tour Images
           </Text>
           {images.length > 0 &&
@@ -581,7 +587,7 @@ const EditTour = () => {
           {loading ? (
             <ActivityIndicator color={"white"} />
           ) : (
-            <Text className="text-xl text-white font-semibold">Save</Text>
+            <Text className="text-xl font-semibold text-white">Save</Text>
           )}
         </TouchableOpacity>
       </View>
