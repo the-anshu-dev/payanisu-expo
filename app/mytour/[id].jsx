@@ -52,6 +52,8 @@ const MyTourDetails = () => {
   }));
 
   const handleGetCheckPoints = async () => {
+
+    console.log('Inner GET CHECKPOINT ID ==>', id)
     setLoading(true);
     try {
       const response = await fetch(
@@ -61,6 +63,7 @@ const MyTourDetails = () => {
         throw new Error("Failed to get checkpoints.");
       }
       const result = await response.json();
+      console.log('Inner CHECKPOINTS ========== >', result)
       setCheckPoints(result);
       const geoTaggedData = result.filter(
         (i) => i.type === "Geo Tagging" && i.checked === false
@@ -97,18 +100,18 @@ const MyTourDetails = () => {
 
   return (
     <View className={`relative h-full flex items-center`}>
-      <View className="px-8 w-full flex justify-center items-center">
+      <View className="flex items-center justify-center w-full px-8">
         <View className="flex flex-row justify-between">
           <Pressable onPress={() => handleTabPress("tourInfo")}>
             <View style={{ width: tabWidth }} className="py-2">
-              <Text className="text-center text-xl font-semibold">
+              <Text className="text-xl font-semibold text-center">
                 Tour Details
               </Text>
             </View>
           </Pressable>
           <Pressable onPress={() => handleTabPress("checkPoints")}>
             <View style={{ width: tabWidth }} className="py-2">
-              <Text className="text-center text-xl font-semibold">
+              <Text className="text-xl font-semibold text-center">
                 Checkpoints
               </Text>
             </View>

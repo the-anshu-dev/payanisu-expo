@@ -70,10 +70,12 @@ const Community = () => {
   };
 
   const handlePost = async () => {
+    console.log("BASEURL ERROR ==>",process.env.EXPO_PUBLIC_BASE_URL)
+    console.log('POST0')
     if (!images.length && !text.trim()) return;
-
+    
     setPosting(true);
-
+    
     try {
       const postRes = await fetch(
         `${process.env.EXPO_PUBLIC_BASE_URL}/api/Post/create-post`,
@@ -87,6 +89,7 @@ const Community = () => {
           }),
         }
       );
+      console.log('POST1==>',postRes)
 
       if (postRes.status !== 201) throw new Error("Failed to post.");
       const res = await postRes.json();
@@ -109,6 +112,7 @@ const Community = () => {
       dispatch(fetchAllPosts());
     } catch (error) {
       showError(error.message || "Please try again.");
+      console.log("POST ERROR ==>",error)
     } finally {
       setPosting(false);
     }

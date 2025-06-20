@@ -8,10 +8,12 @@ import membersReducer from "./slices/membersSlice";
 import notificationsReducer from "./slices/notificationsSlice";
 import postsReducer from "./slices/postsSlice";
 import bookedToursReducer from "./slices/bookedToursSlice";
+import autoCheckinReducer from "./slices/autoCheckinSlice";
 
 export const store = configureStore({
   reducer: {
     user: userReducer,
+    autoCheckin: autoCheckinReducer,
     checkPoints: checkPointsReducer,
     tours: toursReducer,
     booking: bookingReducer,
