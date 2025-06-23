@@ -122,6 +122,11 @@ const options = [
     route: "/privacyPolicy",
   },
   {
+     id:"FAQ",
+    name: "FAQ",
+    route: "/faq",
+  },
+  {
     id: "tc",
     name: "Terms and Conditions",
     route: "/terms",
