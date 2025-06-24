@@ -2,7 +2,7 @@ import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
 const BACKGROUND_TASK_DEFINDER='fetch_user_lacation';
-const MINIMUM_INTERVAL=15;
+const MINIMUM_INTERVAL=10000;
 
 export const initializeBackgroundTask= async(innerMountedPromise)=>{
 
