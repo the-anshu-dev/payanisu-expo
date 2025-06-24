@@ -2,6 +2,7 @@ import { Alert, Platform } from "react-native";
 import * as FileSystem from "expo-file-system";
 import * as XLSX from "xlsx";
 import * as MediaLibrary from "expo-media-library";
+import { useDispatch, useSelector } from "react-redux";
 
 export const formatDate = (dateValue) => {
   const date = new Date(dateValue);
@@ -158,5 +159,71 @@ export const checkInUser = async (body) => {
   } catch (error) {
     console.log("Error:", error);
     Alert.alert("Failed to check-in", "Please try again.");
+  }
+};
+
+
+// Get Checkpoints 
+export const handleGetCheckPoints = async (dispatch, user, setGCheckPoints, setGGeoTaggedCheckPoints, setGIsTourCurrentlyActive, setLoading, showError, id) => {
+  setLoading(true);
+  try {
+    const response = await fetch(
+      `${process.env.EXPO_PUBLIC_BASE_URL}/api/checked/get?email=${user?.email}&tourId=${id}`
+    );
+    if (response.status !== 200) {
+      throw new Error("Failed to get checkpoints.");
+    }
+    const result = await response.json();
+    dispatch(setGCheckPoints(result));
+    dispatch(setGIsTourCurrentlyActive(new Date() >= new Date(tour?.tourDetails.tour_start) &&
+      new Date() <= new Date(tour?.tourDetails.tour_end)))
+    setCheckPoints(result);
+    const geoTaggedData = result.filter(
+      (i) => i.type === "Geo Tagging" && i.checked === false
+    );
+    await AsyncStorage.setItem(
+      "geoTaggedCheckPoints",
+      JSON.stringify(geoTaggedData)
+    );
+    dispatch(setGGeoTaggedCheckPoints(geoTaggedData));
+    // setGeoTaggedCheckPoints(geoTaggedData);
+  } catch (error) {
+    showError(error.message || "Please try again.");
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+// handleCheckin 
+export const handleCheckIn = async (setCheckInLoading,showSuccess,sendLocalNotification,dispatch, user, setGCheckPoints, setGGeoTaggedCheckPoints, setGIsTourCurrentlyActive, setLoading, id,showError,  body) => {
+  console.log("CheckedIn run...");
+  setCheckInLoading(true);
+  try {
+    const response = await fetch(
+      `${process.env.EXPO_PUBLIC_BASE_URL}/api/checked/add`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to check in");
+    }
+    showSuccess("You are checked in.");
+    sendLocalNotification(
+      "Check-in Successful",
+      "You have successfully reached the checkpoint."
+    );
+
+    handleGetCheckPoints(dispatch, user, setGCheckPoints, setGGeoTaggedCheckPoints, setGIsTourCurrentlyActive, setLoading, showError, id);
+  } catch (error) {
+    showError(error.message || "Please try again.");
+  } finally {
+    setCheckInLoading(false);
   }
 };

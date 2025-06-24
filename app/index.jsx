@@ -8,9 +8,32 @@ import * as SplashScreen from "expo-splash-screen";
 import { showWarning } from "../utils/toastHelper";
 import { fetchAllTours } from "../redux/slices/toursSlice";
 import { fetchBookedTours } from "../redux/slices/bookedToursSlice";
+import { Text, View } from "react-native";
+import { initializeBackgroundTask } from "../utils/background";
 
 SplashScreen.preventAutoHideAsync();
 
+
+
+
+  let resolver
+  const promise = new Promise(resolve =>
+    (resolver = resolve)
+    );
+  initializeBackgroundTask(promise)
+  
+
+
+
+  useEffect(()=>{
+    if(resolver){
+      resolver();
+      console.log('Resolver Called!');
+    }
+  },[])
+
+
+  
 const Index = () => {
   const [showLoader, setShowLoader] = useState(true);
   const [authenticated, setAuthenticated] = useState(false);
@@ -79,9 +102,17 @@ const Index = () => {
     initializeApp();
   }, []);
 
+
+
   if (showLoader) return <Loader />;
   if (authenticated) return <Redirect href="/(tabs)" />;
   return <Redirect href="/login" />;
+
+  // return (
+  //   <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+  //     <Text>Hello Bg Tasks</Text>
+  //   </View>
+  // )
 };
 
 export default Index;

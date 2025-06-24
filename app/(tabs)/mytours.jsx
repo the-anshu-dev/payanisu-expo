@@ -111,7 +111,7 @@ const MyTours = () => {
                   key={tourItem._id || idx}
                   tour={tourItem.tourDetails}
                   status={
-                    new Date(tourItem.tourDetails.tour_start) < new Date()
+                    new Date(tourItem.tourDetails.tour_end) < new Date()
                       ? 4
                       : tourItem.status
                   }
