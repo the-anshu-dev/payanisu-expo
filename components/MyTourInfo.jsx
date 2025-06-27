@@ -36,6 +36,8 @@ const MyTourInfo = ({ tour }) => {
     Members,
   } = tour;
 
+
+
   const { faqUrl, name, description, tour_start, tour_end, booking_close } =
     tourDetails;
 
@@ -53,7 +55,7 @@ const MyTourInfo = ({ tour }) => {
   const [viewFAQ, setViewFAQ] = useState(false);
 
   const [transport, setTransport] = useState({});
-  const [boardingPoints, setBoardingPoints] = useState([]);
+  const [boardingPoint, setBoardingPoint] = useState({});
   const [accomodationDetails, setAccomodationDetails] = useState([]);
   const [destination, setDestination] = useState({});
 
@@ -68,8 +70,8 @@ const MyTourInfo = ({ tour }) => {
   const [accommodationImg, setAccommodationImg] = useState([]);
 
   const accommodationImages = Array.isArray(accommodationImg)
-  ? accommodationImg.map((i) => i.url)
-  : [];
+    ? accommodationImg.map((i) => i.url)
+    : [];
 
   const handleBusModal = () => {
     setIsModalVisible((prev) => ({ ...prev, busImageModal: true }));
@@ -85,6 +87,7 @@ const MyTourInfo = ({ tour }) => {
 
   const { transportId } = allocatedTransport[0] || {};
   const { accommodationId } = allocatedAccommodation[0] || [];
+  const { boardingPointId } = allocatedTransport[0] || null;
 
   const getTransportDetails = async () => {
     try {
@@ -103,16 +106,17 @@ const MyTourInfo = ({ tour }) => {
     }
   };
 
-  const getBoardingPoints = async () => {
+  const getBoardingPoint = async () => {
     try {
       const response = await fetch(
-        `${process.env.EXPO_PUBLIC_BASE_URL}/api/board/get?transportId=${transportId}`
+        `${process.env.EXPO_PUBLIC_BASE_URL}/api/board/getById?id=${boardingPointId}`
       );
       if (!response.ok || response.status !== 200) {
         throw new Error("Failed to get boarding points.");
       }
       const result = await response.json();
-      setBoardingPoints(result);
+      console.log(result, "this is boarding point")
+      setBoardingPoint(result);
     } catch (error) {
       showError(error.message || "Please try again.");
     }
@@ -157,8 +161,8 @@ const MyTourInfo = ({ tour }) => {
   const onRefresh = async () => {
     setRefresh(true);
     try {
-      if (transportId) {
-        await getBoardingPoints();
+      if (boardingPointId) {
+        await getBoardingPoint();
       }
       if (allocatedTransport && allocatedTransport.length > 0) {
         await getTransportDetails();
@@ -212,6 +216,7 @@ const MyTourInfo = ({ tour }) => {
   useEffect(() => {
     onRefresh();
   }, []);
+
 
   return (
     <View className={`pb-14`}>
@@ -433,7 +438,7 @@ const MyTourInfo = ({ tour }) => {
                   </Text>
                 </TouchableOpacity>
               </View>
-              <View className="mt-2 gap-3">
+              {/* <View className="mt-2 gap-3">
                 {boardingPoints.length > 0 &&
                   boardingPoints.map((point, index) => (
                     <BoardingPointCard
@@ -444,7 +449,12 @@ const MyTourInfo = ({ tour }) => {
                       setDestination={setDestination}
                     />
                   ))}
-              </View>
+              </View> */}
+
+              {
+                boardingPoint && <BoardingPointCard key={boardingPoint._id} point={boardingPoint} handleDirectionModal={handleDirectionModal}
+                  setDestination={setDestination} />
+              }
               <View className="w-full h-[1px] mt-2" />
             </View>
           ) : (

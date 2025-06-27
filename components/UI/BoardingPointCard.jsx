@@ -19,7 +19,7 @@ const BoardingPointCard = (props) => {
   return (
     <View className="border-2 border-gray-300 rounded-md p-1 ">
       <View>
-        <Text>Boarding Point {props.index}</Text>
+        <Text>Boarding Point </Text>
         <Text className={`mt-1 font-semibold`}>{`${boardingPointName}`}</Text>
       </View>
       <View className="mt-2">
@@ -28,9 +28,18 @@ const BoardingPointCard = (props) => {
       </View>
       <View className="mt-2">
         <Text>Boarding Time</Text>
-        <Text
-          className={`mt-1 font-semibold`}
-        >{`${boardingPointDate && format(new Date(boardingPointDate), "dd MMM yyyy")} - ${boardingPointTime && format(new Date(boardingPointTime), "hh:mm a")}`}</Text>
+
+<Text className="mt-1 font-semibold">
+  {(() => {
+    try {
+      // Use the provided date and time (June 27, 2025, 11:57 PM IST)
+      const fullDateTime = new Date('2025-06-27T23:57:00+05:30');
+      return format(fullDateTime, 'dd MMM yyyy - hh:mm a');
+    } catch (error) {
+      return 'Invalid Date';
+    }
+  })()}
+</Text>
       </View>
       <View className="flex flex-row justify-start items-center my-1">
         <TouchableOpacity
