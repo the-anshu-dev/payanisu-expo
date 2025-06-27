@@ -38,7 +38,9 @@ const addTours = () => {
   const [difficulty, setDifficulty] = useState("");
   const [totalSeats, setTotalSeats] = useState("");
   const [distance, setDistance] = useState("");
-  const [tourType, setTourType] = useState(null);
+ 
+
+ const [tourType, setTourType] = useState(null);
   const [costPerPerson, setCostPerPerson] = useState("");
   const [adminCanReject, setAdminCanReject] = useState(false);
   const [paymentGatewayEnabled, setPaymentGatewayEnabled] = useState(false);
@@ -46,7 +48,6 @@ const addTours = () => {
   const [longitude, setLongitude] = useState(null);
 
   const [image, setImage] = useState([]);
-
   const [consentForm, setConsentForm] = useState(null);
 
   // date range picker
@@ -168,7 +169,7 @@ const addTours = () => {
         email: user?.email,
         latitude,
         longitude,
-        ...(consentFormUrl && { consentFormUrl }), // Only add if it exists
+        ...(consentFormUrl && { consentFormUrl }),
       };
   
       const response = await fetch(
@@ -216,7 +217,6 @@ const addTours = () => {
       setLoading(false);
     }
   };
-  
 
   const handleLocationSelect = (details) => {
     if (!details?.geometry?.location) return;
@@ -228,7 +228,9 @@ const addTours = () => {
     const stateComponent = address_components.find(component =>
       component.types.includes("administrative_area_level_1")
     );
-    setState(stateComponent?.long_name)
+    set
+
+System: State(stateComponent?.long_name);
   };
 
   useEffect(() => {
@@ -309,15 +311,9 @@ const addTours = () => {
               <Picker selectedValue={tourType} onValueChange={setTourType}>
                 <Picker.Item label="Select tour type" value={null} />
                 <Picker.Item label="Trekking" value="Trekking" />
-                <Picker.Item
-                  label="Sun-rise Trekking"
-                  value="Sun-rise Trekking"
-                />
+                <Picker.Item label="Sun-rise Trekking" value="Sun-rise Trekking" />
                 <Picker.Item label="Beach Trekking" value="Beach Trekking" />
-                <Picker.Item
-                  label="Himalaya Trekking"
-                  value="Himalaya Trekking"
-                />
+                <Picker.Item label="Himalaya Trekking" value="Himalaya Trekking" />
                 <Picker.Item label="Expedition" value="Expedition" />
                 <Picker.Item label="Educational" value="Educational" />
                 <Picker.Item label="Historic Place" value="Historic Place" />
@@ -346,16 +342,24 @@ const addTours = () => {
               <TouchableOpacity onPress={() => setShowStartPicker(true)}>
                 <TextInput
                   editable={false}
-                  className={`border py-2 mb-3 w-full border-slate-500/50 rounded-lg text-black placeholder:text-base  px-3 `}
+                  className={`border py-2 mb-3 w-full border-slate-500/50 rounded-lg text-black placeholder:text-base px-3 `}
                   value={
-                    startDate ? format(startDate, "yyyy-MM-dd") : new Date()
+                    startDate
+                      ? (() => {
+                          try {
+                            return format(new Date(startDate), "dd MMM yyyy");
+                          } catch (error) {
+                            return "Invalid Date";
+                          }
+                        })()
+                      : "Select Start Date"
                   }
                   placeholder="Select Start Date"
                 />
               </TouchableOpacity>
               {showStartPicker && (
                 <DateTimePicker
-                  value={new Date()}
+                  value={startDate || new Date()}
                   mode="date"
                   display="default"
                   onChange={onChangeStart}
@@ -364,14 +368,24 @@ const addTours = () => {
               <TouchableOpacity onPress={() => setShowEndPicker(true)}>
                 <TextInput
                   editable={false}
-                  className={`border py-2 mb-3 w-full border-slate-500/50 rounded-lg text-black placeholder:text-base  px-3 `}
-                  value={endDate ? format(endDate, "yyyy-MM-dd") : new Date()}
+                  className={`border py-2 mb-3 w-full border-slate-500/50 rounded-lg text-black placeholder:text-base px-3 `}
+                  value={
+                    endDate
+                      ? (() => {
+                          try {
+                            return format(new Date(endDate), "dd MMM yyyy");
+                          } catch (error) {
+                            return "Invalid Date";
+                          }
+                        })()
+                      : "Select End Date"
+                  }
                   placeholder="Select End Date"
                 />
               </TouchableOpacity>
               {showEndPicker && (
                 <DateTimePicker
-                  value={new Date()}
+                  value={endDate || new Date()}
                   mode="date"
                   display="default"
                   onChange={onChangeEnd}
@@ -380,18 +394,24 @@ const addTours = () => {
               <TouchableOpacity onPress={() => setShowBookingClosePicker(true)}>
                 <TextInput
                   editable={false}
-                  className={`border py-2 mb-3 w-full border-slate-500/50 rounded-lg text-black placeholder:text-base  px-3 `}
+                  className={`border py-2 mb-3 w-full border-slate-500/50 rounded-lg text-black placeholder:text-base px-3 `}
                   value={
                     bookingCloseDate
-                      ? format(bookingCloseDate, "yyyy-MM-dd")
-                      : new Date()
+                      ? (() => {
+                          try {
+                            return format(new Date(bookingCloseDate), "dd MMM yyyy");
+                          } catch (error) {
+                            return "Invalid Date";
+                          }
+                        })()
+                      : "Select Booking Close Date"
                   }
                   placeholder="Select Booking Close Date"
                 />
               </TouchableOpacity>
               {showBookingClosePicker && (
                 <DateTimePicker
-                  value={new Date()}
+                  value={bookingCloseDate || new Date()}
                   mode="date"
                   display="default"
                   onChange={onChangeBookingClose}

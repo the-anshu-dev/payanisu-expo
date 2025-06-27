@@ -27,17 +27,12 @@ const TransportDetails = () => {
   const { id, tourId } = useLocalSearchParams();
 
   const [boardingPoints, setBoardingPoints] = useState([]);
-
   const [refreshing, setRefreshing] = useState(false);
-
   const [bookedGuests, setAllBookedGuests] = useState([]);
-
   const [selectedGuests, setSelectedGuests] = useState([]);
-
   const [addingGuests, setAddingGuests] = useState(false);
-
   const [transportAllocatedGuests, setTransportAllocatedGuests] = useState([]);
-
+  const [boardingPointId, setBoardingPointId] = useState(null);
   const alreadyTransportAllocatedGuests = transportAllocatedGuests.map(
     (item) => item.bookingId
   );
@@ -103,8 +98,8 @@ const TransportDetails = () => {
           bookingId: bookingId,
           transportId: id,
           tourId: tourId,
+          boardingPointId:boardingPointId
         };
-
         const response = await fetch(
           `${process.env.EXPO_PUBLIC_BASE_URL}/api/allocatedTransport/create`,
           {
@@ -161,6 +156,12 @@ const TransportDetails = () => {
     }, [])
   );
 
+
+  const handleOpenGuestList = () => {
+    addGuestsRef.current?.open()
+  }
+
+
   return (
     <SafeAreaView
       style={{ height: "100%", width: "100%" }}
@@ -188,6 +189,8 @@ const TransportDetails = () => {
                     boardingPoint={boardingPoint}
                     onRefresh={onRefresh}
                     setRefreshing={setRefreshing}
+                    openGuestList={handleOpenGuestList}
+                    setBoardingPointId={setBoardingPointId}
                   />
                 ))}
               </>
@@ -208,17 +211,8 @@ const TransportDetails = () => {
             )}
           </View>
         </ScrollView>
-        <View style={styles.buttonsContainer}>
-          <TouchableOpacity
-            style={[
-              styles.buttons,
-              { backgroundColor: "white", borderWidth: 1 },
-            ]}
-            activeOpacity={0.9}
-            onPress={() => addGuestsRef.current?.open()}
-          >
-            <Text style={styles.buttonText}>Add Guests</Text>
-          </TouchableOpacity>
+        <View className="flex justify-center items-center mb-4">
+         
           <TouchableOpacity
             style={[styles.buttons, { backgroundColor: "#228B22" }]}
             activeOpacity={0.9}
@@ -256,7 +250,7 @@ const TransportDetails = () => {
                 <Checkbox
                   status={
                     selectedGuests.includes(item._id) ||
-                    alreadyTransportAllocatedGuests.includes(item._id)
+                      alreadyTransportAllocatedGuests.includes(item._id)
                       ? "checked"
                       : "unchecked"
                   }
@@ -266,11 +260,12 @@ const TransportDetails = () => {
                       ? "gray"
                       : "#228B22"
                   }
+                  style={{ marginRight: 10, marginLeft: 10 }}
                 />
                 <View
                   style={{
                     backgroundColor:
-                      item?.gender.toLowerCase() == "male" ? "red" : "#228B22",
+                      item?.gender.toLowerCase() === "male" ? "red" : "#228B22",
                     height: 20,
                     width: 20,
                     borderRadius: 20,
@@ -311,7 +306,7 @@ const TransportDetails = () => {
   );
 };
 
-const BoardingPointCard = ({ boardingPoint, onRefresh, setRefreshing }) => {
+const BoardingPointCard = ({ boardingPoint, onRefresh, setRefreshing, openGuestList, setBoardingPointId }) => {
   const {
     _id: id,
     boardingPointName: name,
@@ -353,10 +348,24 @@ const BoardingPointCard = ({ boardingPoint, onRefresh, setRefreshing }) => {
           paddingBottom: 8,
         }}
       >
-        <Text style={{ fontSize: 16, fontWeight: "600" }}>Boading Point</Text>
+        {/* <Text style={{ fontSize: 16, fontWeight: "600" }}>Boarding Point</Text> */}
         <TouchableOpacity onPress={handleDelete} activeOpacity={0.9}>
           <Ionicons name="trash-outline" color={"red"} size={18} />
         </TouchableOpacity>
+
+        <TouchableOpacity style={[
+          styles.buttons,
+          { backgroundColor: "white", borderWidth: 1 },
+        ]} onPress={() => {
+
+          setBoardingPointId(id)
+          openGuestList()
+        }
+        } activeOpacity={0.9}>
+          <Text style={styles.buttonText}>Add Guests</Text>
+          {/* <Text>Add Guest</Text> */}
+        </TouchableOpacity>
+
       </View>
       <View style={styles.boardingPointFieldBox}>
         <View style={styles.fieldContainer}>
@@ -378,15 +387,31 @@ const BoardingPointCard = ({ boardingPoint, onRefresh, setRefreshing }) => {
             Boarding Date
           </Text>
           <Text style={styles.boardingPointFieldValueText}>
-            {format(date, "yy-MM-dd")}
+            {date
+              ? (() => {
+                try {
+                  return format(new Date(date), "dd MMM yyyy");
+                } catch (error) {
+                  return "Invalid Date";
+                }
+              })()
+              : "N/A"}
           </Text>
         </View>
         <View style={styles.fieldContainer}>
           <Text style={styles.boardingPointFieldPlaceHolderText}>
-            Boarding time
+            Boarding Time
           </Text>
           <Text style={styles.boardingPointFieldValueText}>
-            {format(time, "HH:mm")}
+            {time
+              ? (() => {
+                try {
+                  return format(new Date(time), "hh:mm a");
+                } catch (error) {
+                  return "Invalid Time";
+                }
+              })()
+              : "N/A"}
           </Text>
         </View>
       </View>

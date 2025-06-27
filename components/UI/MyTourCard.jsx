@@ -12,15 +12,17 @@ const MyTourCard = ({ tour, status }) => {
   const images = tour?.images?.filter((i) => !i.type).map((i) => i.url);
 
   const onClickHandler = () => {
+    console.log(status)
     if (status === 0) {
       showWarning("Booking Rejected !!");
       return;
+
     }
     if (status === 3) {
       showWarning("Booking Cancelled !!");
       return;
     }
-    const clickEnabled = status === 1 || status === 2;
+    const clickEnabled = status === 1 || status === 2 || status===4;
     if (clickEnabled) {
       router.push(`/mytour/${tour?._id}`);
     }
