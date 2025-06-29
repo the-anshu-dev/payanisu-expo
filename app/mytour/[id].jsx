@@ -98,6 +98,9 @@ const MyTourDetails = () => {
     }, [])
   );
 
+
+
+
   return (
     <View className={`relative h-full flex items-center`}>
       <View className="flex items-center justify-center w-full px-8">
