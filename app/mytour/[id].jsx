@@ -32,6 +32,8 @@ const MyTourDetails = () => {
   const { bookedTours } = useBookedTours(user?.email);
   const tour = bookedTours?.find((t) => t.tourDetails._id === id);
 
+
+  console.log('tour ===>',tour)
   const isTourCurrentlyActive =
     new Date() >= new Date(tour?.tourDetails.tour_start) &&
     new Date() <= new Date(tour?.tourDetails.tour_end);

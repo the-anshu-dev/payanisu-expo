@@ -87,7 +87,7 @@ const MyTourInfo = ({ tour }) => {
 
   const { transportId } = allocatedTransport[0] || {};
   const { accommodationId } = allocatedAccommodation[0] || [];
-  const { boardingPointId } = allocatedTransport[0] || null;
+  const { boardingPointId } = allocatedTransport?.[0] || {};
 
   const getTransportDetails = async () => {
     try {
@@ -233,7 +233,7 @@ const MyTourInfo = ({ tour }) => {
           <RefreshControl refreshing={refresh} onRefresh={onRefresh} />
         }
       >
-        <View className="bg-white rounded-lg shadow-lg shadow-black overflow-hidden">
+        <View className="overflow-hidden bg-white rounded-lg shadow-lg shadow-black">
           <Carousel
             loop
             width={width}
@@ -246,24 +246,24 @@ const MyTourInfo = ({ tour }) => {
           />
         </View>
         <View className="flex flex-row justify-between items-center gap-2 bg-[#228B22] rounded-lg p-2 py-4 shadow-lg shadow-black px-4">
-          <View className="flex justify-center items-start gap-1">
-            <Text className="text-white text-xs font-semibold">
+          <View className="flex items-start justify-center gap-1">
+            <Text className="text-xs font-semibold text-white">
               Booking Status :
             </Text>
-            <Text className="text-white font-semibold text-lg">
+            <Text className="text-lg font-semibold text-white">
               {statusText[status]}
             </Text>
           </View>
-          <View className="flex justify-center items-end gap-1">
-            <Text className="text-white text-xs font-semibold">
+          <View className="flex items-end justify-center gap-1">
+            <Text className="text-xs font-semibold text-white">
               Booking ID :
             </Text>
-            <Text className="text-white font-semibold text-lg uppercase">
+            <Text className="text-lg font-semibold text-white uppercase">
               {_id.substr(0, 7)}
             </Text>
           </View>
         </View>
-        <View className="bg-white p-2 rounded-lg shadow-lg shadow-black">
+        <View className="p-2 bg-white rounded-lg shadow-lg shadow-black">
           <View>
             <Text className={`text-md font-semibold`}>Tour Name</Text>
             <Text className={`text-base mt-1 tracking-wider`}>{name}</Text>
@@ -282,13 +282,13 @@ const MyTourInfo = ({ tour }) => {
           </View>
         </View>
         {Members.length > 0 && (
-          <View className="bg-white p-2 rounded-lg shadow-lg shadow-black">
+          <View className="p-2 bg-white rounded-lg shadow-lg shadow-black">
             <Text className="font-semibold text-green-700">Booked Members</Text>
             <View className="gap-2">
               {Members.map((member) => (
                 <View
                   key={member._id}
-                  className="flex flex-row gap-2 mt-2 justify-between p-2 bg-white rounded-lg shadow-lg shadow-black "
+                  className="flex flex-row justify-between gap-2 p-2 mt-2 bg-white rounded-lg shadow-lg shadow-black "
                 >
                   <Text className={`text-base mt-1 tracking-wider`}>
                     {member.name}
@@ -307,12 +307,12 @@ const MyTourInfo = ({ tour }) => {
             </View>
           </View>
         )}
-        <View className="p-2 shadow-lg shadow-black bg-white rounded-lg">
-          <View className="flex flex-row justify-left items-center gap-2 border-b border-gray-300/50 pb-1">
+        <View className="p-2 bg-white rounded-lg shadow-lg shadow-black">
+          <View className="flex flex-row items-center gap-2 pb-1 border-b justify-left border-gray-300/50">
             <Ionicons name="thumbs-up-outline" size={20} color={"#228B22"} />
             <Text className={`text-md font-semibold`}>What is included ?</Text>
           </View>
-          <View className="px-1 mt-3 gap-2">
+          <View className="gap-2 px-1 mt-3">
             {includeds.length > 0 ? (
               includeds.map((i) => (
                 <ListComponent
@@ -327,14 +327,14 @@ const MyTourInfo = ({ tour }) => {
             )}
           </View>
         </View>
-        <View className="p-2 shadow-lg shadow-black bg-white rounded-lg">
-          <View className="flex flex-row justify-left items-center gap-2 border-b border-gray-300/50 pb-1">
+        <View className="p-2 bg-white rounded-lg shadow-lg shadow-black">
+          <View className="flex flex-row items-center gap-2 pb-1 border-b justify-left border-gray-300/50">
             <Ionicons name="thumbs-down-outline" size={20} color={"red"} />
             <Text className={`text-md font-semibold`}>
               What is not included ?
             </Text>
           </View>
-          <View className="px-1 mt-3 gap-2">
+          <View className="gap-2 px-1 mt-3">
             {notincludeds.length > 0 ? (
               notincludeds.map((i) => (
                 <ListComponent
@@ -349,12 +349,12 @@ const MyTourInfo = ({ tour }) => {
             )}
           </View>
         </View>
-        <View className="p-2 shadow-lg shadow-black bg-white rounded-lg">
-          <View className="flex flex-row justify-left items-center gap-2 border-b border-gray-300/50 pb-1">
+        <View className="p-2 bg-white rounded-lg shadow-lg shadow-black">
+          <View className="flex flex-row items-center gap-2 pb-1 border-b justify-left border-gray-300/50">
             <Ionicons name="bag-check-outline" size={20} color={"#228B22"} />
             <Text className={`text-md font-semibold`}>Back Pack</Text>
           </View>
-          <View className="px-1 mt-3 gap-2">
+          <View className="gap-2 px-1 mt-3">
             {backpacks.length > 0 ? (
               backpacks.map((i) => (
                 <ListComponent
@@ -369,8 +369,8 @@ const MyTourInfo = ({ tour }) => {
             )}
           </View>
         </View>
-        <View className="p-2 shadow-lg shadow-black bg-white rounded-lg">
-          <View className="flex flex-row justify-left items-center gap-2 border-b border-gray-300/50 pb-1">
+        <View className="p-2 bg-white rounded-lg shadow-lg shadow-black">
+          <View className="flex flex-row items-center gap-2 pb-1 border-b justify-left border-gray-300/50">
             <Ionicons
               name="checkmark-done-circle-outline"
               size={20}
@@ -378,7 +378,7 @@ const MyTourInfo = ({ tour }) => {
             />
             <Text className={`text-md font-semibold`}>Check In Baggage</Text>
           </View>
-          <View className="px-1 mt-3 gap-2">
+          <View className="gap-2 px-1 mt-3">
             {checkinbagages.length > 0 ? (
               checkinbagages.map((i) => (
                 <ListComponent
@@ -393,13 +393,13 @@ const MyTourInfo = ({ tour }) => {
             )}
           </View>
         </View>
-        <View className="p-2 shadow-lg shadow-black bg-white rounded-lg">
-          <View className="flex flex-row gap-2 justify-start items-center py-1 border-b border-gray-300/50">
+        <View className="p-2 bg-white rounded-lg shadow-lg shadow-black">
+          <View className="flex flex-row items-center justify-start gap-2 py-1 border-b border-gray-300/50">
             <Ionicons name="bus" size={20} color={"#228B22"} />
             <Text className={`font-bold`}>Transport Details</Text>
           </View>
           {allocatedTransport && allocatedTransport.length > 0 ? (
-            <View className="ml-2 mt-2">
+            <View className="mt-2 ml-2">
               <View>
                 <Text className={` mt-2 font-semibold`}>Name: {busName}</Text>
                 <Text
@@ -416,11 +416,11 @@ const MyTourInfo = ({ tour }) => {
                   className={`mt-1 font-semibold`}
                 >{`Mob No: ${driverNumber}`}</Text>
               </View>
-              <View className="flex flex-row justify-between items-center gap-3">
+              <View className="flex flex-row items-center justify-between gap-3">
                 <TouchableOpacity
                   onPress={() => router.push(`/bus-mates/${transportId}`)}
                   activeOpacity={0.9}
-                  className="mt-3 flex flex-row justify-center items-center gap-2 px-2 py-1 rounded-md"
+                  className="flex flex-row items-center justify-center gap-2 px-2 py-1 mt-3 rounded-md"
                 >
                   <Ionicons name="compass" size={16} color={"#228B22"} />
                   <Text className={`font-semibold text-sm text-[#228B22]`}>
@@ -430,7 +430,7 @@ const MyTourInfo = ({ tour }) => {
                 <TouchableOpacity
                   onPress={handleBusModal}
                   activeOpacity={0.9}
-                  className="mt-3 flex flex-row justify-center items-center gap-2 px-8 py-1 rounded-md"
+                  className="flex flex-row items-center justify-center gap-2 px-8 py-1 mt-3 rounded-md"
                 >
                   <Ionicons name="images" size={16} color={"#228B22"} />
                   <Text className={`font-semibold text-sm text-[#228B22]`}>
@@ -438,7 +438,7 @@ const MyTourInfo = ({ tour }) => {
                   </Text>
                 </TouchableOpacity>
               </View>
-              {/* <View className="mt-2 gap-3">
+              {/* <View className="gap-3 mt-2">
                 {boardingPoints.length > 0 &&
                   boardingPoints.map((point, index) => (
                     <BoardingPointCard
@@ -471,8 +471,8 @@ const MyTourInfo = ({ tour }) => {
             </View>
           )}
         </View>
-        <View className="p-2 shadow-lg shadow-black bg-white rounded-lg">
-          <View className="flex flex-row gap-2 justify-start items-center py-1 border-b border-gray-300/50">
+        <View className="p-2 bg-white rounded-lg shadow-lg shadow-black">
+          <View className="flex flex-row items-center justify-start gap-2 py-1 border-b border-gray-300/50">
             <Ionicons name="bed" size={20} color={"#228B22"} />
             <Text className={`font-bold`}>Accomodation Details</Text>
           </View>
@@ -503,7 +503,7 @@ const MyTourInfo = ({ tour }) => {
                     className={`font-bold `}
                   >{`${allocatedAccommodation[0]?.occupancy}`}</Text>
                 </View>
-                <View className="flex flex-row justify-between items-center mt-2">
+                <View className="flex flex-row items-center justify-between mt-2">
                   {allocatedAccommodation[0]?.occupancy !== "Single" && (
                     <TouchableOpacity
                       onPress={() =>
@@ -512,9 +512,9 @@ const MyTourInfo = ({ tour }) => {
                         )
                       }
                       activeOpacity={0.9}
-                      className="flex flex-row justify-between items-center py-1 px-2 gap-2"
+                      className="flex flex-row items-center justify-between gap-2 px-2 py-1"
                     >
-                      <View className="flex flex-row justify-start items-center gap-2">
+                      <View className="flex flex-row items-center justify-start gap-2">
                         <Ionicons name="compass" size={20} color={"#228B22"} />
                         <Text
                           className={`font-semibold text-base text-[#228B22]`}
@@ -526,7 +526,7 @@ const MyTourInfo = ({ tour }) => {
                   )}
                   <TouchableOpacity
                     onPress={handleAccomodationModal}
-                    className="flex flex-row justify-center items-center gap-2 px-2 py-1 rounded-md"
+                    className="flex flex-row items-center justify-center gap-2 px-2 py-1 rounded-md"
                   >
                     <Ionicons name="images" size={16} color={"#228B22"} />
                     <Text className={`font-semibold text-base text-[#228B22]`}>
@@ -554,9 +554,9 @@ const MyTourInfo = ({ tour }) => {
           <TouchableOpacity
             onPress={() => setViewFAQ(!viewFAQ)}
             activeOpacity={0.9}
-            className="p-2 rounded-lg shadow-lg shadow-black/50 bg-white flex flex-row justify-between"
+            className="flex flex-row justify-between p-2 bg-white rounded-lg shadow-lg shadow-black/50"
           >
-            <View className="flex flex-row justify-left items-center gap-3 border-gray-300 px-1">
+            <View className="flex flex-row items-center gap-3 px-1 border-gray-300 justify-left">
               <Ionicons
                 name="help-circle-outline"
                 size={24}
@@ -587,9 +587,9 @@ const MyTourInfo = ({ tour }) => {
           <TouchableOpacity
             onPress={handleCancelBooking}
             activeOpacity={0.9}
-            className="flex w-full flex-row justify-center items-center bg-white rounded-lg p-2 py-3 shadow-lg shadow-black"
+            className="flex flex-row items-center justify-center w-full p-2 py-3 bg-white rounded-lg shadow-lg shadow-black"
           >
-            <Text className="text-red-700 text-lg font-semibold">
+            <Text className="text-lg font-semibold text-red-700">
               {cancelling ? "Cancelling.." : "Cancel Booking"}
             </Text>
           </TouchableOpacity>
