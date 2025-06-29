@@ -9,28 +9,28 @@ import { showWarning } from "../utils/toastHelper";
 import { fetchAllTours } from "../redux/slices/toursSlice";
 import { fetchBookedTours } from "../redux/slices/bookedToursSlice";
 import { Text, View } from "react-native";
-import { initializeBackgroundTask } from "../utils/background";
+// import { initializeBackgroundTask } from "../utils/background";
 
 SplashScreen.preventAutoHideAsync();
 
 
 
 
-  let resolver
-  const promise = new Promise(resolve =>
-    (resolver = resolve)
-    );
-  initializeBackgroundTask(promise)
+  // let resolver
+  // const promise = new Promise(resolve =>
+  //   (resolver = resolve)
+  //   );
+  // initializeBackgroundTask(promise)
   
 
 
 
-  useEffect(()=>{
-    if(resolver){
-      resolver();
-      console.log('Resolver Called!');
-    }
-  },[])
+  // useEffect(()=>{
+  //   if(resolver){
+  //     resolver();
+  //     console.log('Resolver Called!');
+  //   }
+  // },[])
 
 
   
