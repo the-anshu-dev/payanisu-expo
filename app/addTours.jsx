@@ -224,13 +224,17 @@ const addTours = () => {
     setLatitude(lat);
     setLongitude(lng);
     setLocation(details.formatted_address);
+    
+    // Extract state from address components
     const { address_components } = details;
-    const stateComponent = address_components.find(component =>
-      component.types.includes("administrative_area_level_1")
-    );
-    set
-
-System: State(stateComponent?.long_name);
+    if (address_components) {
+      const stateComponent = address_components.find(component =>
+        component.types.includes("administrative_area_level_1")
+      );
+      if (stateComponent) {
+        setState(stateComponent.long_name);
+      }
+    }
   };
 
   useEffect(() => {
@@ -246,6 +250,12 @@ System: State(stateComponent?.long_name);
       }
     }
   }, [startDate, endDate, bookingCloseDate]);
+
+  // Debug API key
+  useEffect(() => {
+    console.log('Google API Key available:', !!process.env.EXPO_PUBLIC_GOOGLE_API_KEY);
+    console.log('Google API Key length:', process.env.EXPO_PUBLIC_GOOGLE_API_KEY?.length);
+  }, []);
 
   return (
     <>
@@ -342,7 +352,7 @@ System: State(stateComponent?.long_name);
               <TouchableOpacity onPress={() => setShowStartPicker(true)}>
                 <TextInput
                   editable={false}
-                  className={`border py-2 mb-3 w-full border-slate-500/50 rounded-lg text-black placeholder:text-base px-3 `}
+                  className={`px-3 py-2 mb-3 w-full text-black rounded-lg border border-slate-500/50 placeholder:text-base`}
                   value={
                     startDate
                       ? (() => {
@@ -368,7 +378,7 @@ System: State(stateComponent?.long_name);
               <TouchableOpacity onPress={() => setShowEndPicker(true)}>
                 <TextInput
                   editable={false}
-                  className={`border py-2 mb-3 w-full border-slate-500/50 rounded-lg text-black placeholder:text-base px-3 `}
+                  className={`px-3 py-2 mb-3 w-full text-black rounded-lg border border-slate-500/50 placeholder:text-base`}
                   value={
                     endDate
                       ? (() => {
@@ -394,7 +404,7 @@ System: State(stateComponent?.long_name);
               <TouchableOpacity onPress={() => setShowBookingClosePicker(true)}>
                 <TextInput
                   editable={false}
-                  className={`border py-2 mb-3 w-full border-slate-500/50 rounded-lg text-black placeholder:text-base px-3 `}
+                  className={`px-3 py-2 mb-3 w-full text-black rounded-lg border border-slate-500/50 placeholder:text-base`}
                   value={
                     bookingCloseDate
                       ? (() => {
@@ -451,7 +461,7 @@ System: State(stateComponent?.long_name);
             <View className="w-full">
               {consentForm ? (
                 <View className="flex flex-row justify-between item-center border border-[#228B22] w-full rounded-lg px-4 py-2">
-                  <View className="flex flex-row justify-center items-center gap-5">
+                  <View className="flex flex-row gap-5 justify-center items-center">
                     <Ionicons
                       name="document-text-outline"
                       color={"#228B22"}
@@ -479,7 +489,7 @@ System: State(stateComponent?.long_name);
                 </View>
               )}
             </View>
-            <View className="w-full mt-3">
+            <View className="mt-3 w-full">
               {image.length > 0 ? (
                 <View style={{ width: "100%" }}>
                   {image.map((img, idx) => (
@@ -535,21 +545,35 @@ System: State(stateComponent?.long_name);
           </TouchableOpacity>
         </View>
       </View>
-      <Modal visible={modalVisible} animationType="fade">
-        <View
-          style={{
-            flex: 1,
-            padding: 20,
-            gap: 5,
-          }}
-        >
+      <Modal visible={modalVisible} animationType="slide">
+        <View style={{ flex: 1, padding: 20 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 20 }}>
+            <TouchableOpacity
+              onPress={() => setModalVisible(false)}
+              style={{
+                padding: 10,
+                marginRight: 10,
+              }}
+            >
+              <Ionicons name="arrow-back" size={24} color="#000" />
+            </TouchableOpacity>
+            <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Select Location</Text>
+          </View>
+          
           <GooglePlacesAutocomplete
             ref={googlePlacesRef}
+            listViewDisplayed={"auto"}
             placeholder="Search location"
             fetchDetails={true}
-            onPress={(data, details) => handleLocationSelect(details)}
+            minLength={3}
+            onPress={(data, details) => {
+              console.log('Selected location:', data);
+              console.log('Location details:', details);
+              handleLocationSelect(details);
+              setModalVisible(false);
+            }}
             query={{
-              key: process.env.EXPO_PUBLIC_GOOGLE_API_KEY,
+              key: "AIzaSyAWiZa_f1BStr9sDkGGJdDvmOV76-SVoFo",
               language: "en",
             }}
             styles={{
@@ -579,7 +603,7 @@ System: State(stateComponent?.long_name);
               borderRadius: 10,
             }}
           >
-            <Text style={{ color: "white" }}>Done</Text>
+            <Text style={{ color: "white" }}>Cancel</Text>
           </TouchableOpacity>
         </View>
       </Modal>
