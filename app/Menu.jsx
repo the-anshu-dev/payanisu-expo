@@ -13,15 +13,18 @@ import { router } from "expo-router";
 import { setProfile, setUser } from "../redux/slices/userSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { showError, showSuccess } from "../utils/toastHelper";
+import QRScanner from "../components/UI/GlobalScan";
+import useGetLatestCheckPoint from "../hooks/useGetLatestCheckPoint";
+
 
 const { width, height } = Dimensions.get("window");
 
 const Menu = () => {
   const { profile } = useSelector((state) => state.user);
-
   const [loggingOut, setLoggingOut] = useState(false);
 
   const dispatch = useDispatch();
+  const { data, loading, error } = useGetLatestCheckPoint();
 
   const handleNavigation = (route) => {
     if (route === "/updateProfile") {
@@ -63,6 +66,9 @@ const Menu = () => {
           </TouchableOpacity>
         ))}
       </View>
+      {/* Qr Scanner component  */}
+
+      {data && <QRScanner point={data} loading={loading} error={error} />}
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           onPress={handleLogOut}
@@ -122,7 +128,7 @@ const options = [
     route: "/privacyPolicy",
   },
   {
-     id:"FAQ",
+    id: "FAQ",
     name: "FAQ",
     route: "/faq",
   },

@@ -188,7 +188,7 @@ const CheckPointElement = ({
 
 
 
-  useEffect(() => { 
+  useEffect(() => {
 
     let watchId;
 
@@ -259,8 +259,8 @@ const CheckPointElement = ({
     };
   }, [points, isTourCurrentlyActive]);
 
-console.log("points==>",JSON.stringify(points))
-console.log("isTourCurrentlyActive==>",isTourCurrentlyActive)
+  console.log("points==>", JSON.stringify(points))
+  console.log("isTourCurrentlyActive==>", isTourCurrentlyActive)
 
   if (!permission) {
     return <View />;
@@ -312,9 +312,8 @@ console.log("isTourCurrentlyActive==>",isTourCurrentlyActive)
         </View>
         <View style={styles.header}>
           <View style={styles.checkpointInfo}>
-            <Text style={styles.checkpointText}>{`Check Point ${
-              index + 1
-            }`}</Text>
+            <Text style={styles.checkpointText}>{`Check Point ${index + 1
+              }`}</Text>
             <Text style={styles.pointName}>{points?.name}</Text>
           </View>
           <View style={styles.qrIconContainer}>
