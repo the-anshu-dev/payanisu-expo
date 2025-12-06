@@ -178,7 +178,10 @@ const Payment = () => {
             body: JSON.stringify(body),
           }
         );
-        if (res.status !== 201) throw new Error("Failed to book tour.");
+        if (res.status !== 201) throw new Error("Failed to book tour."), console.log(res.json());
+        console.log('====================================');
+        console.log(res.json());
+        console.log('====================================');
       }
       showSuccess("Tour booked successfully for all members.");
       router.replace("/(tabs)/mytours");
