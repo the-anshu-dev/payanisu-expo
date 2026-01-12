@@ -113,7 +113,7 @@ export default function HomeScreen() {
   const now = new Date();
 
   // GET CHECKPOINTS 
- 
+
 
   //   const handleGetCheckPoints = async (ID) => {
   //   try {
@@ -178,36 +178,36 @@ export default function HomeScreen() {
 
 
   const handleGetCheckPoints = async (ID) => {
-  try {
-    const response = await fetch(
-      `${process.env.EXPO_PUBLIC_BASE_URL}/api/checked/get?email=${user?.email}&tourId=${ID}`
-    );
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_BASE_URL}/api/checked/get?email=${user?.email}&tourId=${ID}`
+      );
 
-    if (response.status !== 200) {
-      throw new Error("Failed to get checkpoints.");
+      if (response.status !== 200) {
+        throw new Error("Failed to get checkpoints.");
+      }
+
+      const result = await response.json();
+      console.log('RESPONSE ===>', result);
+
+      const geoTaggedData = result.filter(
+        (i) => i.type === "Geo Tagging" && i.checked === false
+      );
+      console.log('geoTaggedData ===>', ID, geoTaggedData);
+
+      dispatch(setGGeoTaggedCheckPoints(geoTaggedData)); // ✅ corrected here
+
+      return geoTaggedData;
+    } catch (error) {
+      showError(error.message || "Please try again.");
+    } finally {
+      setLoading(false);
     }
-
-    const result = await response.json();
-    console.log('RESPONSE ===>', result);
-
-    const geoTaggedData = result.filter(
-      (i) => i.type === "Geo Tagging" && i.checked === false
-    );
-    console.log('geoTaggedData ===>', ID, geoTaggedData);
-
-    dispatch(setGGeoTaggedCheckPoints(geoTaggedData)); // ✅ corrected here
-
-    return geoTaggedData;
-  } catch (error) {
-    showError(error.message || "Please try again.");
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
 
 
-const handleCheckIn = async (body) => {
+  const handleCheckIn = async (body) => {
     console.log("============ Home CheckedIn run... ===============");
     try {
       console.log("============ Home CheckedIn Try Block... ===============");
@@ -242,7 +242,7 @@ const handleCheckIn = async (body) => {
 
 
 
-    const getDistance = (lat1, lon1, lat2, lon2) => {
+  const getDistance = (lat1, lon1, lat2, lon2) => {
     const R = 6371e3;
     const φ1 = (lat1 * Math.PI) / 180;
     const φ2 = (lat2 * Math.PI) / 180;
@@ -256,7 +256,7 @@ const handleCheckIn = async (body) => {
 
     return R * c;
   };
-  
+
   const runningTours = bookedTours.filter(
     (tour) =>
       tour.status === 1 &&
@@ -308,22 +308,22 @@ const handleCheckIn = async (body) => {
 
 
   useEffect(() => {
-  const fetchCheckPoints = async () => {
-    // Prevent re-fetch if already fetched
-    if (
-      runningTours.length > 0 &&
-      geoTaggedCheckpoints === null // or geoTaggedCheckpoints?.length === 0
-    ) {
-      const data = await handleGetCheckPoints(runningTours?.[0]?.tourDetails?._id);
-      console.log('DATA ===>', data);
-      if (data?.length > 0) {
-        setGeoCheckPoints(data);
+    const fetchCheckPoints = async () => {
+      // Prevent re-fetch if already fetched
+      if (
+        runningTours.length > 0 &&
+        geoTaggedCheckpoints === null // or geoTaggedCheckpoints?.length === 0
+      ) {
+        const data = await handleGetCheckPoints(runningTours?.[0]?.tourDetails?._id);
+        console.log('DATA ===>', data);
+        if (data?.length > 0) {
+          setGeoCheckPoints(data);
+        }
       }
-    }
-  };
+    };
 
-  fetchCheckPoints();
-}, [runningTours]);
+    fetchCheckPoints();
+  }, [runningTours]);
 
 
 
@@ -334,14 +334,14 @@ const handleCheckIn = async (body) => {
 
   // console.log("geoCheckPoints==>", geoCheckPoints)
   useEffect(() => {
- 
+
 
     console.log('========     Auto Checkin Runs....   ================')
-    
-    
-    
-    
-    
+
+
+
+
+
     // // ✅ Track user’s location
     // const startLocationTracking = async (points) => {
     //   console.log('========     Start Location Tracking....   ================')
@@ -379,7 +379,7 @@ const handleCheckIn = async (body) => {
     //                 checkPointId: point._id,
     //               };
 
-                  
+
     //               handleCheckIn(body);
     //             }
     //           }
@@ -398,67 +398,67 @@ const handleCheckIn = async (body) => {
 
 
     const startLocationTracking = async (points) => {
-  console.log('========     Start Location Tracking....   ================');
-  let watchId;
-  try {
-    console.log('========     Location Permission Tracking....   ================');
-    
-    const permission = await Location.requestForegroundPermissionsAsync();
-    const status = permission.status;
+      console.log('========     Start Location Tracking....   ================');
+      let watchId;
+      try {
+        console.log('========     Location Permission Tracking....   ================');
 
-    console.log('========     Location Permission Status....   ================', status);
+        const permission = await Location.requestForegroundPermissionsAsync();
+        const status = permission.status;
 
-    if (status !== "granted") {
-      showWarning("Location permission is required for auto check-in");
-      return;
-    }
+        console.log('========     Location Permission Status....   ================', status);
 
-    console.log('========     Location Permission Granted....   ================');
-    
-    watchId = await Location.watchPositionAsync(
-      {
-        accuracy: Location.Accuracy.High,
-        distanceInterval: 100,
-      },
-      (location) => {
-        const { latitude, longitude } = location.coords;
-        console.log('========     Location Fetching....   ================');
-        
-        points?.forEach((point) => {
-          if (point.type === "Geo Tagging" && !point.checked) {
-            const distance = getDistance(
-              latitude,
-              longitude,
-              point.latitude,
-              point.longitude
-            );
-            console.log('========     Calculating Distance....   ================');
-            
-            if (distance <= 100) {
-              console.log('========     Checking Under Distance....   ================');
-              const body = {
-                email: user?.email,
-                tourId: point.tourId,
-                checkPointId: point._id,
-              };
-              
-              console.log('========     Handle Auto-Checkin Started....   ================');
-              handleCheckIn(body);
-              console.log('========     Handle Auto-Checkin Finishes....   ================');
-            }
+        if (status !== "granted") {
+          showWarning("Location permission is required for auto check-in");
+          return;
+        }
+
+        console.log('========     Location Permission Granted....   ================');
+
+        watchId = await Location.watchPositionAsync(
+          {
+            accuracy: Location.Accuracy.High,
+            distanceInterval: 100,
+          },
+          (location) => {
+            const { latitude, longitude } = location.coords;
+            console.log('========     Location Fetching....   ================');
+
+            points?.forEach((point) => {
+              if (point.type === "Geo Tagging" && !point.checked) {
+                const distance = getDistance(
+                  latitude,
+                  longitude,
+                  point.latitude,
+                  point.longitude
+                );
+                console.log('========     Calculating Distance....   ================');
+
+                if (distance <= 100) {
+                  console.log('========     Checking Under Distance....   ================');
+                  const body = {
+                    email: user?.email,
+                    tourId: point.tourId,
+                    checkPointId: point._id,
+                  };
+
+                  console.log('========     Handle Auto-Checkin Started....   ================');
+                  handleCheckIn(body);
+                  console.log('========     Handle Auto-Checkin Finishes....   ================');
+                }
+              }
+            });
           }
-        });
+        );
+      } catch (error) {
+        showError("Error getting location: " + error.message);
       }
-    );
-  } catch (error) {
-    showError("Error getting location: " + error.message);
-  }
 
-  // Cleanup on unmount
-  return () => {
-    if (watchId) watchId.remove();
-  };
-};
+      // Cleanup on unmount
+      return () => {
+        if (watchId) watchId.remove();
+      };
+    };
 
     // // ✅ Fire everything here
     startLocationTracking(geoTaggedCheckpoints);
@@ -475,7 +475,8 @@ const handleCheckIn = async (body) => {
     >
       <View style={homeScreenStyles.container}>
         <View style={homeScreenStyles.imageContainer}>
-          <V1 width={width * 1.8} height={height * 0.7} />
+          <View style={{ width: width * 1.8, height: height * 0.7, backgroundColor: '#ddd' }} />
+          {/* <V1 width={width * 1.8} height={height * 0.7} /> */}
         </View>
         <View style={homeScreenStyles.carouselContainer}>
           <CarouselComponent />
