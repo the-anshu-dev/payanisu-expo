@@ -37,7 +37,8 @@
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_BACKGROUND_LOCATION",
         "android.permission.INTERNET",
-        "android.permission.FOREGROUND_SERVICE"
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.FOREGROUND_SERVICE_LOCATION"
       ],
       "intentFilters": [
         {
@@ -58,7 +59,11 @@
       "bundleIdentifier": "com.mycompany.payanisu",
       "infoPlist": {
         "NSAppTransportSecurity": {
-          "NSAllowsArbitraryLoads": true
+          "NSAllowsArbitraryLoads": true,
+          "UIBackgroundModes": [
+            "location",
+            "fetch"
+          ]
         }
       }
     },
@@ -88,7 +93,8 @@
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location.",
+          "isAndroidBackgroundLocationEnabled": true
         }
       ],
       [
@@ -102,15 +108,14 @@
     ],
     "extra": {
       "EXPO_PUBLIC_ANDROID_CLIENT_ID": "701498649058-10gk3o9417ss61nsmk0poebq2ujr956d.apps.googleusercontent.com",
-      "EXPO_PUBLIC_BASE_URL": "http://13.235.234.229:7001",
+      "EXPO_PUBLIC_BASE_URL": "http://16.170.254.178:8080",
       "EXPO_PUBLIC_GOOGLE_API_KEY": "AIzaSyCsSJ8KZ_1mB44pVnIjcqzx_lWV87kuHRc",
       "router": {
         "origin": false
       },
       "eas": {
-        "projectId": "9618ef18-2ab7-4691-b6c2-a5fc359db63e"
+        "projectId": "615515fd-1e79-4fc3-8006-2650d2dd9da2"
       }
-    },
-    "owner": "jha_harsh"
+    }
   }
 }

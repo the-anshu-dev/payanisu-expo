@@ -1,4 +1,5 @@
 import { Stack } from "expo-router";
+import "../src/tasks/BackgroundLocationTask";
 import "../global.css";
 import "react-native-reanimated";
 import { StatusBar } from "expo-status-bar";
