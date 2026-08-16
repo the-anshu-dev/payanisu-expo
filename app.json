@@ -108,13 +108,13 @@
     ],
     "extra": {
       "EXPO_PUBLIC_ANDROID_CLIENT_ID": "701498649058-10gk3o9417ss61nsmk0poebq2ujr956d.apps.googleusercontent.com",
-      "EXPO_PUBLIC_BASE_URL": "http://16.170.254.178:8080",
+      "EXPO_PUBLIC_BASE_URL": "http://3.110.216.183:8000",
       "EXPO_PUBLIC_GOOGLE_API_KEY": "AIzaSyCsSJ8KZ_1mB44pVnIjcqzx_lWV87kuHRc",
       "router": {
         "origin": false
       },
       "eas": {
-        "projectId": "615515fd-1e79-4fc3-8006-2650d2dd9da2"
+        "projectId": "9618ef18-2ab7-4691-b6c2-a5fc359db63e"
       }
     }
   }
