@@ -10,6 +10,7 @@ import { useDispatch } from "react-redux";
 import { setProfile, setRole, setUser } from "../redux/slices/userSlice";
 import payanisuPoster from "../assets/payanisu.jpeg";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Constants from "expo-constants";
 import { showError } from "../utils/toastHelper";
 import { loginScreenStyles } from "../constants/Styles";
 
@@ -19,9 +20,19 @@ const Login = () => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [sessionActive, setSessionActive] = useState(false);
+
+  const androidClientId =
+    process.env.EXPO_PUBLIC_ANDROID_CLIENT_ID ||
+    Constants.expoConfig?.extra?.EXPO_PUBLIC_ANDROID_CLIENT_ID ||
+    "701498649058-10gk3o9417ss61nsmk0poebq2ujr956d.apps.googleusercontent.com";
+  const iosClientId =
+    process.env.EXPO_PUBLIC_IOS_CLIENT_ID ||
+    Constants.expoConfig?.extra?.EXPO_PUBLIC_IOS_CLIENT_ID ||
+    "862722241333-bns3v3h8jogklpvldvdahjvdbvt0f960.apps.googleusercontent.com";
+
   const [_, response, promptAsync] = Google.useAuthRequest({
-    androidClientId: process.env.EXPO_PUBLIC_ANDROID_CLIENT_ID,
-    iosClientId: process.env.EXPO_PUBLIC_IOS_CLIENT_ID,
+    androidClientId,
+    iosClientId,
   });
   
   const storeUserData = async (user) => {
